@@ -1,13 +1,15 @@
 package cl.cmsg.rrhhaprobacionhrsextras;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity{
 
@@ -15,19 +17,54 @@ public class MainActivity extends AppCompatActivity{
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-		setSupportActionBar(toolbar);
+		//Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+		//setSupportActionBar(toolbar);
 
-		FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-		fab.setOnClickListener(new View.OnClickListener(){
+		lista = (ListView) findViewById(R.id.Lista);
+		final String[] opciones = new String[] {
+				"Horas extras pendientes",
+				"Horas extras aprovadas",
+				"Version: 0.1"
+
+		};
+
+		lista.setOnItemClickListener(new AdapterView.OnItemClickListener(){
 			@Override
-			public void onClick(View view){
-				Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-					.setAction("Action", null).show();
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id){
+				switch (opciones[position]){
+					case "Spinner":
+						Intent intent = new Intent(getApplicationContext(),HorasPendientesActivity.class);
+						startActivity(intent);
+						break;
+					case "Saca Fotos":
+						Intent intent2 = new Intent(getApplicationContext(),HorasAprobadasActivity.class);
+						startActivity(intent2);
+						break;
+					case "Version: 0.1":
+						Toast.makeText(getApplicationContext(),"0.1", Toast.LENGTH_SHORT).show();
+						break;
+				}
+
+				// if (opciones[position].equals("Crear Reporte")){
+//     startActivity(new Intent(getApplicationContext(), CrearReporteActivity.class));
+				//} else if (opciones[position].contains("Reportes Pendientes")){
+
+				//}
 			}
 		});
-	}
 
+		lista.setAdapter(
+				new ArrayAdapter<>(
+						this,
+						android.R.layout.simple_list_item_1,
+						android.R.id.text1,
+						opciones
+				)
+		);
+
+
+	}
+	ListView lista;
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu){
 		// Inflate the menu; this adds items to the action bar if it is present.
