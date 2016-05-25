@@ -8,6 +8,6 @@ public class HorasAprobadasActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_hrs_ap);
+        setContentView(R.layout.activity_horasAprovadas);
     }
 }
