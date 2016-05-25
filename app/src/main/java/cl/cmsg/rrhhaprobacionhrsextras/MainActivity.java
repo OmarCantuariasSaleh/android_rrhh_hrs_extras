@@ -23,8 +23,8 @@ public class MainActivity extends AppCompatActivity{
 		lista = (ListView) findViewById(R.id.Lista);
 		final String[] opciones = new String[] {
 				"Horas extras pendientes",
-				"Horas extras aprovadas",
-				"Version: 0.1"
+				"Horas extras aprobadas",
+				"Version: 0.2"
 
 		};
 
@@ -32,15 +32,17 @@ public class MainActivity extends AppCompatActivity{
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id){
 				switch (opciones[position]){
-					case "Spinner":
+					case "Horas extras pendientes":Toast.makeText(getApplicationContext(),"0.1", Toast.LENGTH_SHORT).show();
 						Intent intent = new Intent(getApplicationContext(),HorasPendientesActivity.class);
 						startActivity(intent);
+
+
 						break;
-					case "Saca Fotos":
+					case "Horas extras aprobadas":
 						Intent intent2 = new Intent(getApplicationContext(),HorasAprobadasActivity.class);
 						startActivity(intent2);
 						break;
-					case "Version: 0.1":
+					case "Version: 0.2":
 						Toast.makeText(getApplicationContext(),"0.1", Toast.LENGTH_SHORT).show();
 						break;
 				}
