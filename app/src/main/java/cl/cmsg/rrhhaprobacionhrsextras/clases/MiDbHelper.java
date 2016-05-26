@@ -39,18 +39,33 @@ public class MiDbHelper extends SQLiteOpenHelper{
     private SQLiteDatabase db;
 
     public static final String tablaLogErrores = "log_errores";
-
+    public static final String tablaUsuario = "usuario";
+    public static final String tablaSolicitud = "solicitud";
 
     String crearTablaLogErrores =
             "create table " + tablaLogErrores
-                    + " (id_log_errores integer primary key autoincrement"
-                    + ",fecha_hora datetime not null"
-                    + ",version_app varchar(10) not null"
-                    + ",mac varchar(20) not null"
-                    + ",descripcion text not null)";
+            + " (id_log_errores integer primary key autoincrement"
+            + ",fecha_hora datetime not null"
+            + ",version_app varchar(10) not null"
+            + ",mac varchar(20) not null"
+            + ",descripcion text not null)";
 
-    public static final String tablaUsuario = "usuario";
+    String crearTablaSolicitud =
+            "create table " + tablaSolicitud
+                    + " (rut varchar(11) primary key"
+                    + ",fecha date not null"
+                    + ",nombre varchar(50) not null"
+                    + ",cant_horas integer not null"
+                    + ",monto_pagar integer not null"
+                    + ",motivo varchar(250) not null)"
+                    + ",centro_costo varchar(30) not null"
+                    + ",area varchar(30) not null"
+                    +",estado integer not null)";
 
+    String crearTablaUsuario =
+            "create table " + tablaUsuario
+                    + " (rut_u varchar(11) primary key"
+                    +",nombre_u varchar(50)  not null)";
 
 
     public static MiDbHelper getInstance(Context ctx) {
@@ -79,11 +94,9 @@ public class MiDbHelper extends SQLiteOpenHelper{
 // Cuando se crea la base de datos (primera vez que se instala)
     public void onCreate(SQLiteDatabase db){
         db.execSQL(crearTablaLogErrores);
-        db.execSQL(
-                "create table " + tablaUsuario
-                        + " (id_usuario integer primary key autoincrement"
-                        + ",run varchar(11) not null)"
-        );
+        db.execSQL(crearTablaSolicitud);
+        db.execSQL(crearTablaUsuario);
+
 
     }
 
@@ -124,6 +137,43 @@ public class MiDbHelper extends SQLiteOpenHelper{
         return db.query(tablaLogErrores, new String[]{"*"},null, null, null, null, null);
     }
 
+    public String getRutUsuario(){
+
+        SQLiteDatabase db = getReadableDatabase();
+
+        Cursor cursor = db.query(tablaUsuario, new String[]{"*"},null, null, null, null, null);
+        while(cursor.moveToNext()){
+            return cursor.getString(cursor.getColumnIndex("rut_u"));
+        }
+
+        return "";
+
+    }
+
+    public String getNombreUsuario(){
+
+        SQLiteDatabase db = getReadableDatabase();
+
+        Cursor cursor = db.query(tablaUsuario, new String[]{"*"},null, null, null, null, null);
+        while(cursor.moveToNext()){
+            return cursor.getString(cursor.getColumnIndex("nombre_u"));
+        }
+
+        return "";
+
+    }
+
+    public Cursor getDatoSolicitud(String rut, String fecha){
+
+        SQLiteDatabase db = getReadableDatabase();
+
+        Cursor cursor = db.query(tablaSolicitud, new String[]{"*"},"rut=? and fecha=?",new String[]{rut,fecha} , null, null, null);
+
+        return cursor;
+
+
+    }
+
     // Borra todos los registros con sus respectivos where
     public boolean deleteLogError(int idLogError){
         SQLiteDatabase db = getReadableDatabase();
@@ -145,6 +195,38 @@ public class MiDbHelper extends SQLiteOpenHelper{
         campoValor.put("version_app", context.getString(R.string.version));
 
         long resultado = db.insertOrThrow(tablaLogErrores, null, campoValor);
+        return resultado >= 1;
+    }
+
+    public boolean insertarUsuario(String rut, String nombre){
+        db = getWritableDatabase();
+
+        ContentValues campoValor = new ContentValues();
+
+        campoValor.put("rut_u", rut);
+        campoValor.put("nombre_u", nombre);
+
+        long resultado = db.insertOrThrow(tablaUsuario, null, campoValor);
+        return resultado >= 1;
+    }
+
+    public boolean insertarSolicitud(String rut, String nombre, String fecha, Integer cant_horas, Integer monto_pagar, String motivo,
+                                     String centro_costo, String area, Integer estado){
+        db = getWritableDatabase();
+
+        ContentValues campoValor = new ContentValues();
+
+        campoValor.put("rut", rut);
+        campoValor.put("nombre", nombre);
+        campoValor.put("fecha", fecha);
+        campoValor.put("cant_horas", cant_horas);
+        campoValor.put("monto_pagar", monto_pagar);
+        campoValor.put("motivo", motivo);
+        campoValor.put("centro_costo", centro_costo);
+        campoValor.put("area", area);
+        campoValor.put("estado", estado);
+
+        long resultado = db.insertOrThrow(tablaSolicitud, null, campoValor);
         return resultado >= 1;
     }
 

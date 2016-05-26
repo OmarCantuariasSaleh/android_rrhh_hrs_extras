@@ -26,7 +26,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".HorasPendientesActivity" />
-        <activity android:name=".HorasAprobadasActivity"></activity>
+        <activity android:name=".HorasAprobadasActivity" />
+        <activity android:name=".DetalleActivity"></activity>
     </application>
 
 </manifest>

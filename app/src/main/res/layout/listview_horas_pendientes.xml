@@ -1,26 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:padding="10dp"
+    android:background="#32575757"
+    android:showDividers="middle|beginning|end">
 
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    >
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Hello World!"
         android:id="@+id/lblRut"
-        />
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:textSize="15dp"
+        android:textColor="@color/abc_primary_text_material_light" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Hello World!"
-        android:id="@+id/lblNombre"/>
+        android:id="@+id/lblNombre"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:textSize="15dp"
+        android:textColor="@color/abc_primary_text_material_light" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Hello World!"
-        android:id="@+id/lblFecha"/>
+        android:id="@+id/lblFecha"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:textSize="15dp"
+        android:textColor="@color/abc_primary_text_material_light" />
 </LinearLayout>

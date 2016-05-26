@@ -1,6 +1,7 @@
 package cl.cmsg.rrhhaprobacionhrsextras.horasextras;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,23 +21,24 @@ public class HorasExtrasAdapter extends BaseAdapter{
     ArrayList<HorasExtras> arrayListHorasExtras;
 
     public HorasExtrasAdapter(ArrayList<HorasExtras> arrayListHorasExtras, Context context) {
+        super();
         this.arrayListHorasExtras = arrayListHorasExtras;
         this.context = context;
     }
 
     @Override
     public int getCount() {
-        return 0;
+        return arrayListHorasExtras.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return null;
+        return arrayListHorasExtras.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return 0;
+        return position;
     }
 
     @Override

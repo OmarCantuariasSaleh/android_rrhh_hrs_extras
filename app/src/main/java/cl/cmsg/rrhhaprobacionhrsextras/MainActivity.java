@@ -32,7 +32,8 @@ public class MainActivity extends AppCompatActivity{
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id){
 				switch (opciones[position]){
-					case "Horas extras pendientes":Toast.makeText(getApplicationContext(),"0.1", Toast.LENGTH_SHORT).show();
+					case "Horas extras pendientes":
+						//Toast.makeText(getApplicationContext(),"0.1", Toast.LENGTH_SHORT).show();
 						Intent intent = new Intent(getApplicationContext(),HorasPendientesActivity.class);
 						startActivity(intent);
 
