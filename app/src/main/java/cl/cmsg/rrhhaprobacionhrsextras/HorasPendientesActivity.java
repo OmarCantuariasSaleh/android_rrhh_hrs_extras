@@ -28,14 +28,14 @@ public class HorasPendientesActivity extends AppCompatActivity {
 
         listViewPendientes = (ListView) findViewById(R.id.lstHorasPendientes);
         miDbHelper = MiDbHelper.getInstance(this);
-        miDbHelper.insertarSolicitud("11111111-1","Persona Mcperson","0000-00-00",6,100000,
+        /*miDbHelper.insertarSolicitud("11111111-1","Persona Mcperson","0000-00-00",6,100000,
                 "Porque si!","Informatica","Informatica",0);
         miDbHelper.insertarSolicitud("22222222-1","Persona Mcperson Jr","0002-00-00",6,100000,
                 "Porque si!","Informatica","Informatica",0);
         miDbHelper.insertarSolicitud("11114441-1","Persona Mcperson Senior","0001-00-00",6,100000,
                 "Porque si!","Informatica","Informatica",0);
         miDbHelper.insertarSolicitud("11111121-3","Persona Mcpersona","0000-03-00",6,100000,
-                "Porque si!","Informatica","Informatica",0);
+                "Porque si!","Informatica","Informatica",0);*/
 
 
         horasExtras = new HorasExtras("11111111-1","Persona Mcperson","0000-00-00");

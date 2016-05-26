@@ -52,15 +52,15 @@ public class MiDbHelper extends SQLiteOpenHelper{
 
     String crearTablaSolicitud =
             "create table " + tablaSolicitud
-                    + " (rut varchar(11) primary key"
+                    + " (rut varchar(11) not null"
                     + ",fecha date not null"
                     + ",nombre varchar(50) not null"
                     + ",cant_horas integer not null"
                     + ",monto_pagar integer not null"
-                    + ",motivo varchar(250) not null)"
+                    + ",motivo varchar(250) not null"
                     + ",centro_costo varchar(30) not null"
                     + ",area varchar(30) not null"
-                    +",estado integer not null)";
+                    + ",estado integer not null, primary key (rut, fecha))";
 
     String crearTablaUsuario =
             "create table " + tablaUsuario

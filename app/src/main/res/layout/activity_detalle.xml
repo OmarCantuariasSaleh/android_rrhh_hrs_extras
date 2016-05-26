@@ -43,6 +43,13 @@
                     android:text="Rut :"
                     android:id="@+id/lblRut" />
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="New Text"
+                    android:id="@+id/lblEstado"
+                    android:visibility="invisible" />
+
             </LinearLayout>
 
             <LinearLayout
@@ -58,7 +65,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:text="Nombre :"
-                    android:id="@+id/textView4" />
+                    android:id="@+id/lblNombre" />
             </LinearLayout>
 
             <LinearLayout
@@ -74,7 +81,23 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:text="Fecha :"
-                    android:id="@+id/textView6" />
+                    android:id="@+id/lblFecha" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:backgroundTint="@color/abc_secondary_text_material_light" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Cantidad de horas :"
+                    android:id="@+id/lblCantHoras" />
             </LinearLayout>
 
             <LinearLayout
@@ -90,7 +113,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:text="Monto :"
-                    android:id="@+id/textView10" />
+                    android:id="@+id/lblMonto" />
             </LinearLayout>
 
             <LinearLayout
@@ -122,13 +145,14 @@
                     android:layout_height="wrap_content"
                     android:inputType="textMultiLine"
                     android:ems="10"
-                    android:id="@+id/editText2"
+                    android:id="@+id/lblMotivo"
 
                     android:textColor="#020202"
                     android:text="Frankness applauded by supported ye household. Collected favourite now for for and rapturous repulsive consulted. An seems green be wrote again. She add what own only like. Tolerably we as extremity exquisite do commanded. Doubtful offended do entrance of landlord moreover is mistress in. Nay was appear entire ladies. Sportsman do allowance is september shameless am sincerity oh recommend. Gate tell man day that who.   For though result and talent add are parish valley. Songs in oh other avoid it hours woman style. In myself family as if be agreed. Gay collected son him knowledge delivered put. Added would end ask sight and asked saw dried house. Property expenses yourself occasion endeavor two may judgment she. Me of soon rank be most head time tore. Colonel or passage to ability.   Ye on properly handsome returned throwing am no whatever. In without wishing he of picture no exposed talking minutes. Curiosity continual belonging offending so explained it exquisite. Do remember to followed yourself material mr recurred carriage. High drew west we no or at john. About or given on witty event. Or sociable up material bachelor bringing landlord confined. Busy so many in hung easy find well up. So of exquisite my an explained remainder. Dashwood denoting securing be on perceive my laughing so. "
                     android:padding="5dp"
 
-                    android:maxLength="250" />
+                    android:maxLength="250"
+                    android:editable="true" />
             </LinearLayout>
 
             <LinearLayout
@@ -143,7 +167,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:text="Centro de Costo :"
-                    android:id="@+id/textView8"
+                    android:id="@+id/lblCentroCosto"
                     />
             </LinearLayout>
 
@@ -159,7 +183,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:text="Area :"
-                    android:id="@+id/textView9" />
+                    android:id="@+id/lblArea" />
             </LinearLayout>
 
             <LinearLayout
