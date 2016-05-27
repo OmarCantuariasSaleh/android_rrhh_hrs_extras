@@ -162,7 +162,16 @@ public class MiDbHelper extends SQLiteOpenHelper{
         return "";
 
     }
+    public Cursor getDatoSolicitudAll(){
 
+        SQLiteDatabase db = getReadableDatabase();
+
+        Cursor cursor = db.query(tablaSolicitud, new String[]{"rut,nombre,fecha"},null,null , null, null, null);
+
+        return cursor;
+
+
+    }
     public Cursor getDatoSolicitud(String rut, String fecha){
 
         SQLiteDatabase db = getReadableDatabase();
