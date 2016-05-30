@@ -1,5 +1,8 @@
 <resources>
-    <string name="app_name">RRHH Aprobacion Hrs Extras</string>
+    <string name="app_name">Aprobacion Horas Extras</string>
+    <string name="act_pendientes">Solicitudes Pendientes</string>
+    <string name="act_aprobadas">Solicitudes Aprobadas</string>
+    <string name="act_detalles">Detalles de Solicitud</string>
     <string name="action_settings">Settings</string>
     <string name="ok">Ok</string>
     <string name="version">0.0.1</string>

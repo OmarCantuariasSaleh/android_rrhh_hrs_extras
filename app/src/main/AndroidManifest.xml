@@ -7,27 +7,34 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme.NoActionBar">
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
+           <!-- <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>-->
+        </activity>
+        <activity android:name=".LoginActivity"
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LoginActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".HorasPendientesActivity" />
-        <activity android:name=".HorasAprobadasActivity" />
-        <activity android:name=".DetalleActivity"></activity>
+        <activity android:name=".HorasPendientesActivity"
+            android:parentActivityName=".MainActivity"
+            android:label="@string/act_pendientes"/>
+        <activity android:name=".HorasAprobadasActivity"
+            android:label="@string/act_aprobadas"
+            android:parentActivityName=".MainActivity"/>
+        <activity android:name=".DetalleActivity"
+            android:label="@string/act_detalles"
+            ></activity>
     </application>
 
 </manifest>

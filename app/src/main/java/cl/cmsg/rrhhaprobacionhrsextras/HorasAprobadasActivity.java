@@ -1,16 +1,24 @@
 package cl.cmsg.rrhhaprobacionhrsextras;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
+import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Locale;
 
 import cl.cmsg.rrhhaprobacionhrsextras.clases.MiDbHelper;
 import cl.cmsg.rrhhaprobacionhrsextras.horasextras.HorasExtras;
@@ -18,7 +26,7 @@ import cl.cmsg.rrhhaprobacionhrsextras.horasextras.HorasExtrasAdapter;
 
 public class HorasAprobadasActivity extends AppCompatActivity {
 
-    ListView listViewAprobadas;
+    ListView listViewPendientes;
     HorasExtrasAdapter horasExtrasAdapter;
     HorasExtras horasExtras;
     ArrayList<HorasExtras> arrayListHorasExtra = new ArrayList<>();
@@ -26,12 +34,26 @@ public class HorasAprobadasActivity extends AppCompatActivity {
     TextView lblRut;
     TextView lblNombre;
     TextView lblFecha;
+
+
+    String SetFecha;
     Button btnPeriodoSelect;
+    private SimpleDateFormat dateFormatter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_horas_aprovadas);
         btnPeriodoSelect = (Button) findViewById(R.id.btnPeriodoSelect);
+        listViewPendientes = (ListView) findViewById(R.id.lstHorasPendientes);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        miDbHelper = MiDbHelper.getInstance(this);
+
+        dateFormatter = new SimpleDateFormat("yyyy-MM-", Locale.US);
 
         btnPeriodoSelect.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -44,6 +66,23 @@ public class HorasAprobadasActivity extends AppCompatActivity {
 
 
 
+
+        listViewPendientes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // switch (arrayListHorasExtra.indexOf(position)){
+                //   case 1:
+                Intent intent = new Intent(getApplicationContext(),DetalleActivity.class);
+                HorasExtras horasExtras=arrayListHorasExtra.get(position);
+
+                intent.putExtra("rut",horasExtras.getRut());
+                intent.putExtra("fecha",horasExtras.getFecha());
+                startActivity(intent);
+                //     break;
+                //}
+            }
+        });
+
     }
 
     private DatePickerDialog createDialog() {
@@ -51,6 +90,43 @@ public class HorasAprobadasActivity extends AppCompatActivity {
                 new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                        // Guardar fecha
+                        Calendar newDate = Calendar.getInstance();
+                        newDate.set(year, monthOfYear, dayOfMonth);
+                        SetFecha=(dateFormatter.format(newDate.getTime()));
+
+                        //Toast.makeText(getApplicationContext(),SetFecha, Toast.LENGTH_SHORT).show();
+                        //Cargar lista
+                        arrayListHorasExtra.clear();
+                        lblRut = (TextView) findViewById(R.id.lblRut);
+                        lblNombre = (TextView) findViewById(R.id.lblNombre);
+                        lblFecha = (TextView) findViewById(R.id.lblFecha);
+                        Cursor cursor =   miDbHelper.getDatoSolicitudPorFecha(SetFecha);
+                        String rut;
+                        String nombre;
+                        String fecha;
+                        //Toast.makeText(getApplicationContext(),String.valueOf(cursor.getColumnCount()), Toast.LENGTH_SHORT).show();
+                        while(cursor.moveToNext()){
+                            rut= cursor.getString(cursor.getColumnIndex("rut"));
+                            //lblRut.setText(lblRut.getText().toString() + " " +rut);
+
+                            nombre= cursor.getString(cursor.getColumnIndex("nombre"));
+                            //lblNombre.setText(lblNombre.getText().toString() + " " +nombre);
+
+                            fecha= cursor.getString(cursor.getColumnIndex("fecha"));
+                            // lblFecha.setText(lblFecha.getText().toString() + " " +fecha);
+
+                            horasExtras = new HorasExtras(rut,nombre,fecha);
+                            arrayListHorasExtra.add(horasExtras);
+                        }
+                        /*if(1==1){
+                            return;
+                        }*/
+                        horasExtrasAdapter = new HorasExtrasAdapter(arrayListHorasExtra,getApplicationContext());
+
+                            listViewPendientes.setAdapter(horasExtrasAdapter);
+
+
 
                     }
                 }

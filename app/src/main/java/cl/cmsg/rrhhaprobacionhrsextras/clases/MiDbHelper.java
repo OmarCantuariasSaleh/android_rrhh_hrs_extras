@@ -10,11 +10,13 @@ package cl.cmsg.rrhhaprobacionhrsextras.clases;
         import android.database.Cursor;
         import android.database.sqlite.SQLiteDatabase;
         import android.database.sqlite.SQLiteOpenHelper;
+        import android.util.Log;
 
         import java.text.DateFormat;
         import java.text.SimpleDateFormat;
         import java.util.Date;
         import java.util.Locale;
+        import java.util.StringTokenizer;
 
         import cl.cmsg.rrhhaprobacionhrsextras.R;
 
@@ -26,7 +28,7 @@ public class MiDbHelper extends SQLiteOpenHelper{
 
     private static MiDbHelper mInstance = null;
 
-    private static int DATABASE_VERSION = 1;
+    private static int DATABASE_VERSION = 2;
     private static String DATABASE_NAME = "nombre_base_de_datos" ;
 
     private Context context;
@@ -57,10 +59,18 @@ public class MiDbHelper extends SQLiteOpenHelper{
                     + ",nombre varchar(50) not null"
                     + ",cant_horas integer not null"
                     + ",monto_pagar integer not null"
-                    + ",motivo varchar(250) not null"
+                    + ",motivo varchar(50) not null"
+                    + ",comentario varchar(250) not null"
                     + ",centro_costo varchar(30) not null"
                     + ",area varchar(30) not null"
-                    + ",estado integer not null, primary key (rut, fecha))";
+                    + ",tipo_pacto varchar(30) not null"
+                    + ",estado1 char(1) not null"
+                    + ",rut_admin1 char(1) not null"
+                    + ",estado2 char(1) "
+                    + ",rut_admin2 char(1)"
+                    + ",estado3 char(1)"
+                    + ",rut_admin3 char(1)"
+                    +", primary key (rut, fecha))";
 
     String crearTablaUsuario =
             "create table " + tablaUsuario
@@ -103,22 +113,10 @@ public class MiDbHelper extends SQLiteOpenHelper{
     @Override
 // Cuando se actualiza
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion){
-//  db.execSQL("drop table if exist " + tblReporte);
-//  db.execSQL("drop table if exist " + tablaReporteImagenes);
-
-//  Se pregunta por la nueva versión por si necesitas algun cambio
-        if (newVersion == 2){
-            db.execSQL("drop table if exists " + tablaLogErrores);
-
-//   Aqui hay alguna tabla nueva que quieras agregar en una iteración
-            db.execSQL("Crear alguna tabla");
+        if(newVersion==2){
+            db.execSQL("drop table "+tablaSolicitud);
+            db.execSQL(crearTablaSolicitud);
         }
-
-//  Otra cosa que se necesite.
-        if (newVersion == 3){
-            db.execSQL("Crear alguna otra tabla");
-        }
-
     }
 
     public String getMensajeDeError(){
@@ -162,17 +160,38 @@ public class MiDbHelper extends SQLiteOpenHelper{
         return "";
 
     }
+    // Muestra solicitudes por aprobar
     public Cursor getDatoSolicitudAll(){
 
         SQLiteDatabase db = getReadableDatabase();
 
-        Cursor cursor = db.query(tablaSolicitud, new String[]{"rut,nombre,fecha"},null,null , null, null, null);
+        Cursor cursor = db.query(tablaSolicitud, new String[]{"rut,nombre,fecha"},"estado1=P or estado2=P or estado3=P",null , null, null, null);
+
+        return cursor;
+    }
+
+    // Muestra las solicitudes aprobadas del mes seleccionado
+    public Cursor getDatoSolicitudPorFecha(String fecha){
+
+        SQLiteDatabase db = getReadableDatabase();
+
+        Cursor cursor = db.query(tablaSolicitud, new String[]{"rut,nombre,fecha"},"fecha like ? and estado1=A or estado2=A or estado3=A",new String[]{fecha+"%"}, null, null, null);
+        //Cursor cursor = db.query(tablaSolicitud, new String[]{"rut,nombre,fecha"},null,null , null, null, null);
+
+        return cursor;
+    }
+
+   /* public Cursor getDatoSolicitud(String rut, String fecha){ //Muestra solicitudes por aprovar
+
+        SQLiteDatabase db = getReadableDatabase();
+
+        Cursor cursor = db.query(tablaSolicitud, new String[]{"rut,nombre,fecha"},"rut=? and fecha=? and estado=P",new String[]{rut,fecha} , null, null, null);
 
         return cursor;
 
 
-    }
-    public Cursor getDatoSolicitud(String rut, String fecha){
+    }*/
+    public Cursor getDatoSolicitudDetalle(String rut, String fecha){ //Muestra detalle
 
         SQLiteDatabase db = getReadableDatabase();
 
@@ -188,6 +207,22 @@ public class MiDbHelper extends SQLiteOpenHelper{
         SQLiteDatabase db = getReadableDatabase();
         long resultado = -1;
         resultado = db.delete(tablaLogErrores,"id_log_errores=?",new String[]{String.valueOf(idLogError)});
+        return (resultado >= 1);
+    }
+
+    // Borra solicitud por rut+fecha
+    public boolean deleteSolicitud(String rut, String fecha){
+        SQLiteDatabase db = getReadableDatabase();
+        long resultado = -1;
+        resultado = db.delete(tablaSolicitud,"rut=? and fecha=?",new String[]{rut,fecha});
+        return (resultado >= 1);
+    }
+
+    // Borra todas las solicitudes
+    public boolean deleteSolicitudALL(){
+        SQLiteDatabase db = getReadableDatabase();
+        long resultado = -1;
+        resultado = db.delete(tablaSolicitud,null,null);
         return (resultado >= 1);
     }
 
@@ -220,7 +255,7 @@ public class MiDbHelper extends SQLiteOpenHelper{
     }
 
     public boolean insertarSolicitud(String rut, String nombre, String fecha, Integer cant_horas, Integer monto_pagar, String motivo,
-                                     String centro_costo, String area, Integer estado){
+                                     String centro_costo, String area, String estado){
         db = getWritableDatabase();
 
         ContentValues campoValor = new ContentValues();
@@ -238,5 +273,14 @@ public class MiDbHelper extends SQLiteOpenHelper{
         long resultado = db.insertOrThrow(tablaSolicitud, null, campoValor);
         return resultado >= 1;
     }
+
+    public boolean actualizarEstado (String rut, String fecha,String estado){
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues campoValor = new ContentValues();
+        campoValor.put("estado", estado);
+        long resultado = db.update(tablaSolicitud, campoValor, "rut=? and fecha=?", new String[]{rut,fecha});
+        return resultado >= 1;
+    }
+
 
 }

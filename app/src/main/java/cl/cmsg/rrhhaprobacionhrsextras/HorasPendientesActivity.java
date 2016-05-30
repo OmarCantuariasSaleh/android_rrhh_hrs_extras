@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -31,21 +32,27 @@ public class HorasPendientesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_horas_pendientes);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
         lblRut = (TextView) findViewById(R.id.lblRut);
         lblNombre = (TextView) findViewById(R.id.lblNombre);
         lblFecha = (TextView) findViewById(R.id.lblFecha);
         Bundle bundle= getIntent().getExtras();
         listViewPendientes = (ListView) findViewById(R.id.lstHorasPendientes);
         miDbHelper = MiDbHelper.getInstance(this);
-        /*miDbHelper.insertarSolicitud("11111111-1","Persona Mcperson","0000-00-00",6,100000,
+        /*miDbHelper.insertarSolicitud("11111111-1","Persona Mcperson","2014-02-02",6,100000,
                 "Porque si!","Informatica","Informatica",0);
-        miDbHelper.insertarSolicitud("22222222-1","Persona Mcperson Jr","0002-00-00",6,100000,
+        miDbHelper.insertarSolicitud("22222222-1","Persona Mcperson Jr","2014-01-05",6,100000,
                 "Porque si!","Informatica","Informatica",0);
-        miDbHelper.insertarSolicitud("11114441-1","Persona Mcperson Senior","0001-00-00",6,100000,
+        miDbHelper.insertarSolicitud("11114441-1","Persona Mcperson Senior","2015-03-30",6,100000,
                 "Porque si!","Informatica","Informatica",0);
-        miDbHelper.insertarSolicitud("11111121-3","Persona Mcpersona","0000-03-00",6,100000,
-                "Porque si!","Informatica","Informatica",0);*/
-
+        miDbHelper.insertarSolicitud("11111121-3","Persona Mcpersona","2014-01-04",6,100000,
+                "Porque si!","Informatica","Informatica",0);
+        miDbHelper.insertarSolicitud("11111121-3","Persona Mcpersona","2014-01-03",6,100000,
+                "Porque si!","Informatica","Informatica",1);*/
         Cursor cursor =   miDbHelper.getDatoSolicitudAll();
         String rut;
         String nombre;

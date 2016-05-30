@@ -3,6 +3,7 @@ package cl.cmsg.rrhhaprobacionhrsextras;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,6 +21,10 @@ public class MainActivity extends AppCompatActivity{
 		//Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 		//setSupportActionBar(toolbar);
 
+		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+		setSupportActionBar(toolbar);
+		//getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 		lista = (ListView) findViewById(R.id.Lista);
 		final String[] opciones = new String[] {
 				"Horas extras pendientes",
@@ -34,7 +39,7 @@ public class MainActivity extends AppCompatActivity{
 				switch (opciones[position]){
 					case "Horas extras pendientes":
 						//Toast.makeText(getApplicationContext(),"0.1", Toast.LENGTH_SHORT).show();
-						Intent intent = new Intent(getApplicationContext(),HorasPendientesActivity.class);
+						Intent intent = new Intent(MainActivity.this,HorasPendientesActivity.class);
 						startActivity(intent);
 
 

@@ -1,9 +1,17 @@
 package cl.cmsg.rrhhaprobacionhrsextras;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.text.Layout;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import cl.cmsg.rrhhaprobacionhrsextras.clases.MiDbHelper;
@@ -20,6 +28,9 @@ public class DetalleActivity extends AppCompatActivity {
     TextView lblArea;
     TextView lblEstado;
     MiDbHelper miDbHelper;
+    LinearLayout layoutBotones;
+    Button btnAprobar;
+    Button btnRechazar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,10 +46,17 @@ public class DetalleActivity extends AppCompatActivity {
         lblCentroCosto = (TextView) findViewById(R.id.lblCentroCosto);
         lblArea = (TextView) findViewById(R.id.lblArea);
         lblEstado = (TextView) findViewById(R.id.lblEstado);
+        layoutBotones = (LinearLayout) findViewById(R.id.layoutBotones);
+        btnAprobar = (Button) findViewById(R.id.btnAprobar);
+        btnRechazar = (Button) findViewById(R.id.btnRechazar);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Bundle bundle= getIntent().getExtras();
         miDbHelper = MiDbHelper.getInstance(this);
-        Cursor cursor =   miDbHelper.getDatoSolicitud(bundle.getString("rut",""),bundle.getString("fecha",""));
+        final Cursor cursor =   miDbHelper.getDatoSolicitudDetalle(bundle.getString("rut",""),bundle.getString("fecha",""));
         String rut;
         String nombre;
         String fecha;
@@ -47,7 +65,7 @@ public class DetalleActivity extends AppCompatActivity {
         String motivo;
         String centro_costo;
         String area;
-        Integer estado;
+        String estado;
 
         while(cursor.moveToNext()){
             rut= cursor.getString(cursor.getColumnIndex("rut"));
@@ -74,13 +92,60 @@ public class DetalleActivity extends AppCompatActivity {
             area= cursor.getString(cursor.getColumnIndex("area"));
             lblArea.setText(lblArea.getText().toString() + " " +area);
 
-            estado= cursor.getInt(cursor.getColumnIndex("estado"));
-            lblEstado.setText(estado.toString());
+            estado= cursor.getString(cursor.getColumnIndex("estado"));
+            if(estado=="A"){
+                layoutBotones.setVisibility(View.INVISIBLE);
+            }else if (estado=="P"){
+                layoutBotones.setVisibility(View.VISIBLE);
+            }
+            lblEstado.setText(estado);
             break;
         }
+
+        btnAprobar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String rutA= cursor.getString(cursor.getColumnIndex("rut"));
+                String fechaA= cursor.getString(cursor.getColumnIndex("fecha"));
+                String estadoA= "A";
+
+                MiDbHelper.getInstance(getApplicationContext());
+                miDbHelper.actualizarEstado(rutA,fechaA,estadoA);
+
+                Intent intent = new Intent(getApplicationContext(),HorasPendientesActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        btnRechazar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String rutR= cursor.getString(cursor.getColumnIndex("rut"));
+                String fechaR= cursor.getString(cursor.getColumnIndex("fecha"));
+                String estadoR= "R";
+
+                MiDbHelper.getInstance(getApplicationContext());
+                miDbHelper.actualizarEstado(rutR,fechaR,estadoR);
+
+                Intent intent = new Intent(getApplicationContext(),HorasPendientesActivity.class);
+                startActivity(intent);
+            }
+        });
 
         //lblRut.setText(lblRut.getText().toString() + "" + );
         //lblRut.setText(lblRut.getText().toString() + "" + bundle.getString("fecha",""));
 
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }
