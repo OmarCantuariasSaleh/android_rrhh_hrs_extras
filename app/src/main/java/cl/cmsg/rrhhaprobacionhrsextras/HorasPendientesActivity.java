@@ -43,33 +43,102 @@ public class HorasPendientesActivity extends AppCompatActivity {
         Bundle bundle= getIntent().getExtras();
         listViewPendientes = (ListView) findViewById(R.id.lstHorasPendientes);
         miDbHelper = MiDbHelper.getInstance(this);
-        /*miDbHelper.insertarSolicitud("11111111-1","Persona Mcperson","2014-02-02",6,100000,
-                "Porque si!","Informatica","Informatica",0);
-        miDbHelper.insertarSolicitud("22222222-1","Persona Mcperson Jr","2014-01-05",6,100000,
-                "Porque si!","Informatica","Informatica",0);
-        miDbHelper.insertarSolicitud("11114441-1","Persona Mcperson Senior","2015-03-30",6,100000,
-                "Porque si!","Informatica","Informatica",0);
-        miDbHelper.insertarSolicitud("11111121-3","Persona Mcpersona","2014-01-04",6,100000,
-                "Porque si!","Informatica","Informatica",0);
-        miDbHelper.insertarSolicitud("11111121-3","Persona Mcpersona","2014-01-03",6,100000,
-                "Porque si!","Informatica","Informatica",1);*/
-        Cursor cursor =   miDbHelper.getDatoSolicitudAll();
+
+
+
+        // Solicitud lvl 3 Pendiente --------------------------------------------------
+        miDbHelper.insertarSolicitud("11111111-1","Persona Mcperson","2014-01-02",8,1222000,
+                "Retraso","Atraso en avance de proyecto que era para ayer"
+                ,"Informatica","Informatica","Horas Extra"
+                ,"A","12312312-1","A","123412341-1","P","16841244-4");
+        miDbHelper.insertarSolicitud("11111111-1"
+                ,"Persona Mcperson"
+                ,"2014-01-10"
+                ,6
+                ,100300
+                ,"Retraso"
+                ,"Atraso en avance de proyecto que era para ayer"
+                ,"Informatica"
+                ,"Informatica"
+                ,"Festivo"
+                ,"A"
+                ,"12312312-1"
+                ,"A"
+                ,"123412341-1"
+                ,"P"
+                ,"16841244-4");
+        miDbHelper.insertarSolicitud("11111111-1","Persona Mcperson","2014-01-11",6,100300,
+                "Retraso","Atraso en avance de proyecto que era para ayer"
+                ,"Informatica","Informatica","Horas Extra"
+                ,"A","12312312-1","A","123412341-1","P","16841244-4");
+        miDbHelper.insertarSolicitud("14444111-1","Persona Mcperson","2014-01-10",6,100300,
+                "Retraso","Atraso en avance de proyecto que era para ayer"
+                ,"Informatica","Informatica","Horas Extra"
+                ,"A","12312312-1","A","123412341-1","P","16841244-4");
+
+            // Solicitud para otro lvl 3
+        miDbHelper.insertarSolicitud("11111111-1","Persona Mcperson","2014-01-05",6,105000,
+                "Retraso","Atraso en avance de proyecto que era para ayer"
+                ,"Informatica","Informatica","Horas Extra"
+                ,"A","12312312-1","A","123412341-1","P","12222244-4");
+
+        // Solicitud lvl 2 Pendiente --------------------------------------------------
+        miDbHelper.insertarSolicitud("11111111-1","Persona Mcperson","2014-01-07",6,106600,
+                "Retraso","Atraso en avance de proyecto que era para ayer"
+                ,"Informatica","Informatica","Horas Extra"
+                ,"A","12312312-1","P","123412341-1",null,null);
+        miDbHelper.insertarSolicitud("11111111-1","Persona Mcperson","2014-01-03",6,100000,
+                "Retraso","Atraso en avance de proyecto que era para ayer"
+                ,"Informatica","Informatica","Horas Extra"
+                ,"A","12312312-1","A","123412341-1",null,null);
+        miDbHelper.insertarSolicitud("11111111-1","Persona Mcperson","2014-01-30",6,100000,
+                "Retraso","Atraso en avance de proyecto que era para ayer"
+                ,"Informatica","Informatica","Horas Extra"
+                ,"A","12312312-1","A","16841244-4",null,null);
+
+        // Solicitud lvl 1 pendiente --------------------------------------------------
+        miDbHelper.insertarSolicitud("11222111-1","Persona Mcperson","2014-01-10",6,100000,
+                "Retraso","Atraso en avance de proyecto que era para ayer"
+                ,"Informatica","Informatica","Horas Extra"
+                ,"A","12312312-1",null,null,null,null);
+
+        String rut_user=miDbHelper.getRutUsuario();
+        Cursor cursor =   miDbHelper.getDatoSolicitudLVL(rut_user);
+        Toast.makeText(getApplicationContext(), rut_user, Toast.LENGTH_SHORT).show();
         String rut;
         String nombre;
         String fecha;
 
         while(cursor.moveToNext()){
-            rut= cursor.getString(cursor.getColumnIndex("rut"));
-            //lblRut.setText(lblRut.getText().toString() + " " +rut);
 
-            nombre= cursor.getString(cursor.getColumnIndex("nombre"));
-            //lblNombre.setText(lblNombre.getText().toString() + " " +nombre);
+            int lvl = 0;
 
-            fecha= cursor.getString(cursor.getColumnIndex("fecha"));
-           // lblFecha.setText(lblFecha.getText().toString() + " " +fecha);
+            String E1 = cursor.getString(cursor.getColumnIndex("estado1"));
+            String E2 = cursor.getString(cursor.getColumnIndex("estado2"));
+            String E3 = cursor.getString(cursor.getColumnIndex("estado3"));
 
-            horasExtras = new HorasExtras(rut,nombre,fecha);
-            arrayListHorasExtra.add(horasExtras);
+            if(E1.equals("P")){
+                lvl=1;
+            }else if(E2!=null && E2.equals("P")){
+                lvl=2;
+            }else if(E3!=null && E3.equals("P")){
+                lvl=3;
+            }
+            //Toast.makeText(getApplicationContext(), String.valueOf(lvl), Toast.LENGTH_SHORT).show();
+            if(lvl!=0){
+                rut= "Rut : "+cursor.getString(cursor.getColumnIndex("Rut"));
+                //lblRut.setText(lblRut.getText().toString() + " " +Rut);
+
+                nombre="Nombre : "+ cursor.getString(cursor.getColumnIndex("nombre"));
+                //lblNombre.setText(lblNombre.getText().toString() + " " +nombre);
+
+                fecha="Fecha : "+ cursor.getString(cursor.getColumnIndex("fecha"));
+                // lblFecha.setText(lblFecha.getText().toString() + " " +fecha);
+
+                horasExtras = new HorasExtras(rut,nombre,fecha);
+                arrayListHorasExtra.add(horasExtras);
+            }
+
 
 
         }
@@ -89,16 +158,16 @@ public class HorasPendientesActivity extends AppCompatActivity {
         listViewPendientes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-               // switch (arrayListHorasExtra.indexOf(position)){
-                 //   case 1:
+
                         Intent intent = new Intent(getApplicationContext(),DetalleActivity.class);
                         HorasExtras horasExtras=arrayListHorasExtra.get(position);
 
-                        intent.putExtra("rut",horasExtras.getRut());
+                        intent.putExtra("Rut",horasExtras.getRut());
                         intent.putExtra("fecha",horasExtras.getFecha());
+
+                //Toast.makeText(getApplicationContext(), horasExtras.getRut() +" "+ horasExtras.getFecha(), Toast.LENGTH_SHORT).show();
                         startActivity(intent);
-                   //     break;
-                //}
+
             }
         });
     }

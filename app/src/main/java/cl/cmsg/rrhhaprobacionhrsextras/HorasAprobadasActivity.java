@@ -34,7 +34,7 @@ public class HorasAprobadasActivity extends AppCompatActivity {
     TextView lblRut;
     TextView lblNombre;
     TextView lblFecha;
-
+    int lvl=1;
 
     String SetFecha;
     Button btnPeriodoSelect;
@@ -75,7 +75,7 @@ public class HorasAprobadasActivity extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(),DetalleActivity.class);
                 HorasExtras horasExtras=arrayListHorasExtra.get(position);
 
-                intent.putExtra("rut",horasExtras.getRut());
+                intent.putExtra("Rut",horasExtras.getRut());
                 intent.putExtra("fecha",horasExtras.getFecha());
                 startActivity(intent);
                 //     break;
@@ -106,18 +106,36 @@ public class HorasAprobadasActivity extends AppCompatActivity {
                         String nombre;
                         String fecha;
                         //Toast.makeText(getApplicationContext(),String.valueOf(cursor.getColumnCount()), Toast.LENGTH_SHORT).show();
+
                         while(cursor.moveToNext()){
-                            rut= cursor.getString(cursor.getColumnIndex("rut"));
-                            //lblRut.setText(lblRut.getText().toString() + " " +rut);
 
-                            nombre= cursor.getString(cursor.getColumnIndex("nombre"));
-                            //lblNombre.setText(lblNombre.getText().toString() + " " +nombre);
+                            lvl=0;
+                            String E1=cursor.getString(cursor.getColumnIndex("estado1"));
+                            String E2=cursor.getString(cursor.getColumnIndex("estado2"));
+                            String E3=cursor.getString(cursor.getColumnIndex("estado3"));
 
-                            fecha= cursor.getString(cursor.getColumnIndex("fecha"));
-                            // lblFecha.setText(lblFecha.getText().toString() + " " +fecha);
+                            if(E1.equals("A")){
+                                lvl=1;
+                            }else if(E2!=null && E2.equals("A")){
+                                lvl=2;
+                            }else if(E3!=null && E3.equals("A")){
+                                lvl=3;
+                            }
+                            //Toast.makeText(getApplicationContext(), String.valueOf(lvl), Toast.LENGTH_SHORT).show();
+                            if(lvl!=0){
+                                rut= "Rut : "+cursor.getString(cursor.getColumnIndex("Rut"));
+                                //lblRut.setText(lblRut.getText().toString() + " " +Rut);
 
-                            horasExtras = new HorasExtras(rut,nombre,fecha);
-                            arrayListHorasExtra.add(horasExtras);
+                                nombre="Nombre : "+ cursor.getString(cursor.getColumnIndex("nombre"));
+                                //lblNombre.setText(lblNombre.getText().toString() + " " +nombre);
+
+                                fecha="Fecha : "+ cursor.getString(cursor.getColumnIndex("fecha"));
+                                // lblFecha.setText(lblFecha.getText().toString() + " " +fecha);
+
+                                horasExtras = new HorasExtras(rut,nombre,fecha);
+                                arrayListHorasExtra.add(horasExtras);
+                            }
+
                         }
                         /*if(1==1){
                             return;
