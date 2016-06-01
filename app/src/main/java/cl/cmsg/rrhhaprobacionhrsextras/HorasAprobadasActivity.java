@@ -34,9 +34,10 @@ public class HorasAprobadasActivity extends AppCompatActivity {
     TextView lblRut;
     TextView lblNombre;
     TextView lblFecha;
+    TextView lblCostoTotal;
     int lvl=1;
 
-    String SetFecha;
+
     Button btnPeriodoSelect;
     private SimpleDateFormat dateFormatter;
 
@@ -93,7 +94,7 @@ public class HorasAprobadasActivity extends AppCompatActivity {
                         // Guardar fecha
                         Calendar newDate = Calendar.getInstance();
                         newDate.set(year, monthOfYear, dayOfMonth);
-                        SetFecha=(dateFormatter.format(newDate.getTime()));
+
 
                         //Toast.makeText(getApplicationContext(),SetFecha, Toast.LENGTH_SHORT).show();
                         //Cargar lista
@@ -101,10 +102,27 @@ public class HorasAprobadasActivity extends AppCompatActivity {
                         lblRut = (TextView) findViewById(R.id.lblRut);
                         lblNombre = (TextView) findViewById(R.id.lblNombre);
                         lblFecha = (TextView) findViewById(R.id.lblFecha);
-                        Cursor cursor =   miDbHelper.getDatoSolicitudPorFecha(SetFecha);
+                        lblCostoTotal = (TextView) findViewById(R.id.lblCostoTotal);
+
+                        String fecha1;
+                        String fecha2;
+
+                        if(monthOfYear==0){
+                            fecha1 = String.valueOf(year-1)+"-12-22";
+                            fecha2 = String.valueOf(year)+"-"+String.format("%02d",monthOfYear+1)+"-22";
+                        }else {
+                            fecha1 = String.valueOf(year)+"-"+String.format("%02d",monthOfYear)+"-22";
+                            fecha2 = String.valueOf(year)+"-"+String.format("%02d",monthOfYear+1)+"-22";
+                        }
+                        /*Log.e("Omar",String.valueOf(monthOfYear+1));
+                        Log.e("Omar","1: "+fecha1+" , 2: "+fecha2);*/
+
+                        Cursor cursor =   miDbHelper.getDatoSolicitudPorFecha(fecha1,fecha2);
                         String rut;
                         String nombre;
                         String fecha;
+                        int costo=0;
+
                         //Toast.makeText(getApplicationContext(),String.valueOf(cursor.getColumnCount()), Toast.LENGTH_SHORT).show();
 
                         while(cursor.moveToNext()){
@@ -135,12 +153,19 @@ public class HorasAprobadasActivity extends AppCompatActivity {
 
                                 horasExtras = new HorasExtras(rut,nombre,fecha);
                                 arrayListHorasExtra.add(horasExtras);
+
+                                costo = costo+cursor.getInt(cursor.getColumnIndex("monto_pagar"));
+
                             }
 
                         }
-                        /*if(1==1){
-                            return;
-                        }*/
+
+                        if(costo>0){
+                            lblCostoTotal.setText("Costo total del periodo : $" +costo);
+                            lblCostoTotal.setVisibility(View.VISIBLE);
+                        }else{
+                            lblCostoTotal.setVisibility(View.INVISIBLE);
+                        }
                         horasExtrasAdapter = new HorasExtrasAdapter(arrayListHorasExtra,getApplicationContext());
 
                             listViewPendientes.setAdapter(horasExtrasAdapter);

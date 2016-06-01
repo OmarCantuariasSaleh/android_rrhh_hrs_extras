@@ -10,7 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay"
-        android:id="@+id/view2">
+        android:id="@+id/view2"
+        android:layout_marginBottom="10dp">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
@@ -26,8 +27,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:layout_below="@+id/view2"
-        android:padding="15dp">
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:padding="10dp"
+        android:layout_below="@+id/view2">
 
         <Button
             style="?android:attr/buttonStyleSmall"
@@ -38,7 +41,21 @@
             android:layout_centerHorizontal="true"
             android:layout_below="@+id/textView10"
             android:gravity="center"
-            android:textSize="18dp" />
+            android:textSize="18dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Costo total del periodo : "
+            android:id="@+id/lblCostoTotal"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:textSize="20dp"
+            android:visibility="invisible" />
 
         <ListView
             android:layout_width="fill_parent"
@@ -49,7 +66,6 @@
             android:layout_alignParentStart="true"
             android:layout_marginTop="10dp"
             android:divider="#000000" />
-
     </LinearLayout>
 
 </RelativeLayout>

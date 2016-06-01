@@ -172,11 +172,11 @@ public class MiDbHelper extends SQLiteOpenHelper{
     }
 
     // Muestra las solicitudes aprobadas del mes seleccionado
-    public Cursor getDatoSolicitudPorFecha(String fecha){
+    public Cursor getDatoSolicitudPorFecha(String fecha1,String fecha2){
 
         SQLiteDatabase db = getReadableDatabase();
 
-        Cursor cursor = db.query(tablaSolicitud, new String[]{"*"},"fecha like ?",new String[]{fecha+"%"}, null, null, null);
+       Cursor cursor = db.query(tablaSolicitud, new String[]{"*"},"fecha between ? and ?",new String[]{fecha1,fecha2}, null,null,null);
         //Cursor cursor = db.query(tablaSolicitud, new String[]{"Rut,nombre,fecha"},null,null , null, null, null);
 
         return cursor;
