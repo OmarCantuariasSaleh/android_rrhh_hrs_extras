@@ -13,13 +13,8 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Locale;
-
 import cl.cmsg.rrhhaprobacionhrsextras.clases.MiDbHelper;
 import cl.cmsg.rrhhaprobacionhrsextras.horasextras.HorasExtras;
 import cl.cmsg.rrhhaprobacionhrsextras.horasextras.HorasExtrasAdapter;
@@ -35,11 +30,9 @@ public class HorasAprobadasActivity extends AppCompatActivity {
     TextView lblNombre;
     TextView lblFecha;
     TextView lblCostoTotal;
+    TextView lblPeriodo;
     int lvl=1;
-
-
     Button btnPeriodoSelect;
-    private SimpleDateFormat dateFormatter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,33 +47,26 @@ public class HorasAprobadasActivity extends AppCompatActivity {
 
         miDbHelper = MiDbHelper.getInstance(this);
 
-        dateFormatter = new SimpleDateFormat("yyyy-MM-", Locale.US);
-
         btnPeriodoSelect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DatePickerDialog createDialog = createDialog();
 
+                createDialog.getDatePicker().setMaxDate(Calendar.getInstance().getTimeInMillis());
+
                 createDialog().show();
             }
         });
 
-
-
-
         listViewPendientes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // switch (arrayListHorasExtra.indexOf(position)){
-                //   case 1:
+
                 Intent intent = new Intent(getApplicationContext(),DetalleActivity.class);
                 HorasExtras horasExtras=arrayListHorasExtra.get(position);
-
                 intent.putExtra("Rut",horasExtras.getRut());
                 intent.putExtra("fecha",horasExtras.getFecha());
                 startActivity(intent);
-                //     break;
-                //}
             }
         });
 
@@ -95,14 +81,14 @@ public class HorasAprobadasActivity extends AppCompatActivity {
                         Calendar newDate = Calendar.getInstance();
                         newDate.set(year, monthOfYear, dayOfMonth);
 
-
-                        //Toast.makeText(getApplicationContext(),SetFecha, Toast.LENGTH_SHORT).show();
                         //Cargar lista
+
                         arrayListHorasExtra.clear();
                         lblRut = (TextView) findViewById(R.id.lblRut);
                         lblNombre = (TextView) findViewById(R.id.lblNombre);
                         lblFecha = (TextView) findViewById(R.id.lblFecha);
                         lblCostoTotal = (TextView) findViewById(R.id.lblCostoTotal);
+                        lblPeriodo = (TextView) findViewById(R.id.lblPeriodo);
 
                         String fecha1;
                         String fecha2;
@@ -114,16 +100,55 @@ public class HorasAprobadasActivity extends AppCompatActivity {
                             fecha1 = String.valueOf(year)+"-"+String.format("%02d",monthOfYear)+"-22";
                             fecha2 = String.valueOf(year)+"-"+String.format("%02d",monthOfYear+1)+"-22";
                         }
-                        /*Log.e("Omar",String.valueOf(monthOfYear+1));
-                        Log.e("Omar","1: "+fecha1+" , 2: "+fecha2);*/
 
                         Cursor cursor =   miDbHelper.getDatoSolicitudPorFecha(fecha1,fecha2);
                         String rut;
                         String nombre;
                         String fecha;
                         int costo=0;
+                        String periodo="";
 
-                        //Toast.makeText(getApplicationContext(),String.valueOf(cursor.getColumnCount()), Toast.LENGTH_SHORT).show();
+                        switch (monthOfYear){
+                            case 0 :
+                                periodo="Enero "+String.valueOf(year);
+                                break;
+                            case 1 :
+                                periodo="Febrero "+String.valueOf(year);
+                                break;
+                            case 2 :
+                                periodo="Marzo "+String.valueOf(year);
+                                break;
+                            case 3 :
+                                periodo="Abril "+String.valueOf(year);
+                                break;
+                            case 4 :
+                                periodo="Mayo "+String.valueOf(year);
+                                break;
+                            case 5 :
+                                periodo="Junio "+String.valueOf(year);
+                                break;
+                            case 6 :
+                                periodo="Julio "+String.valueOf(year);
+                                break;
+                            case 7 :
+                                periodo="Agosto "+String.valueOf(year);
+                                break;
+                            case 8 :
+                                periodo="Septiembre "+String.valueOf(year);
+                                break;
+                            case 9 :
+                                periodo="Octubre "+String.valueOf(year);
+                                break;
+                            case 10 :
+                                periodo="Noviembre "+String.valueOf(year);
+                                break;
+                            case 11 :
+                                periodo="Diciembre "+String.valueOf(year);
+                                break;
+                        }
+
+                        lblPeriodo.setText(periodo);
+                        lblPeriodo.setVisibility(View.VISIBLE);
 
                         while(cursor.moveToNext()){
 
@@ -139,25 +164,20 @@ public class HorasAprobadasActivity extends AppCompatActivity {
                             }else if(E3!=null && E3.equals("A")){
                                 lvl=3;
                             }
-                            //Toast.makeText(getApplicationContext()
-                            //        ,"Lvl "+String.valueOf(lvl)+" Estados "+E1+", "+E2+", "+E3, Toast.LENGTH_SHORT).show();
                             if(lvl!=0){
+
                                 rut= cursor.getString(cursor.getColumnIndex("Rut"));
-                                //lblRut.setText(lblRut.getText().toString() + " " +Rut);
 
                                 nombre=cursor.getString(cursor.getColumnIndex("nombre"));
-                                //lblNombre.setText(lblNombre.getText().toString() + " " +nombre);
 
                                 fecha=cursor.getString(cursor.getColumnIndex("fecha"));
-                                // lblFecha.setText(lblFecha.getText().toString() + " " +fecha);
 
                                 horasExtras = new HorasExtras(rut,nombre,fecha);
                                 arrayListHorasExtra.add(horasExtras);
 
-                                costo = costo+cursor.getInt(cursor.getColumnIndex("monto_pagar"));
+                                costo += cursor.getInt(cursor.getColumnIndex("monto_pagar"));
 
                             }
-
                         }
 
                         if(costo>0){
@@ -170,11 +190,11 @@ public class HorasAprobadasActivity extends AppCompatActivity {
 
                             listViewPendientes.setAdapter(horasExtrasAdapter);
 
-
-
                     }
                 }
-                , 2014, 1, 24);
+                , Calendar.getInstance().get(Calendar.YEAR)
+                , Calendar.getInstance().get(Calendar.MONTH)
+                ,Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
         try {
             java.lang.reflect.Field[] datePickerDialogFields = dpd.getClass().getDeclaredFields();
             for (java.lang.reflect.Field datePickerDialogField : datePickerDialogFields) {

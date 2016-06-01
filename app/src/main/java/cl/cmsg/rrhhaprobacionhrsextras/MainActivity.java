@@ -18,19 +18,14 @@ public class MainActivity extends AppCompatActivity{
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		//Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-		//setSupportActionBar(toolbar);
-
 		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
-		//getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 		lista = (ListView) findViewById(R.id.Lista);
 		final String[] opciones = new String[] {
 				"Horas extras pendientes",
 				"Horas extras aprobadas",
 				"Version: 0.2"
-
 		};
 
 		lista.setOnItemClickListener(new AdapterView.OnItemClickListener(){
@@ -38,26 +33,17 @@ public class MainActivity extends AppCompatActivity{
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id){
 				switch (opciones[position]){
 					case "Horas extras pendientes":
-						//Toast.makeText(getApplicationContext(),"0.1", Toast.LENGTH_SHORT).show();
 						Intent intent = new Intent(MainActivity.this,HorasPendientesActivity.class);
 						startActivity(intent);
-
-
 						break;
 					case "Horas extras aprobadas":
 						Intent intent2 = new Intent(getApplicationContext(),HorasAprobadasActivity.class);
 						startActivity(intent2);
 						break;
 					case "Version: 0.2":
-						Toast.makeText(getApplicationContext(),"0.1", Toast.LENGTH_SHORT).show();
+						Toast.makeText(getApplicationContext(),"0.2", Toast.LENGTH_SHORT).show();
 						break;
 				}
-
-				// if (opciones[position].equals("Crear Reporte")){
-//     startActivity(new Intent(getApplicationContext(), CrearReporteActivity.class));
-				//} else if (opciones[position].contains("Reportes Pendientes")){
-
-				//}
 			}
 		});
 

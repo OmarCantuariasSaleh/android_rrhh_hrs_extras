@@ -5,16 +5,11 @@ import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.text.Layout;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import cl.cmsg.rrhhaprobacionhrsextras.clases.MiDbHelper;
 
 public class DetalleActivity extends AppCompatActivity {
@@ -50,7 +45,6 @@ public class DetalleActivity extends AppCompatActivity {
         lblCentroCosto = (TextView) findViewById(R.id.lblCentroCosto);
         lblArea = (TextView) findViewById(R.id.lblArea);
         lblTipoPacto = (TextView) findViewById(R.id.lblTipoPacto);
-
         layoutBotones = (LinearLayout) findViewById(R.id.layoutBotones);
         btnAprobar = (Button) findViewById(R.id.btnAprobar);
         btnRechazar = (Button) findViewById(R.id.btnRechazar);
@@ -61,12 +55,8 @@ public class DetalleActivity extends AppCompatActivity {
 
         Bundle bundle= getIntent().getExtras();
         miDbHelper = MiDbHelper.getInstance(this);
-        //Toast.makeText(getApplicationContext(), bundle.getString("Rut","")+" "+bundle.getString("fecha",""), Toast.LENGTH_SHORT).show();
         final Cursor cursor =   miDbHelper.getDatoSolicitudDetalle(bundle.getString("Rut",""),bundle.getString("fecha",""));
         String rut;
-        String rut_admin1;
-        String rut_admin2;
-        String rut_admin3;
         String nombre;
         String fecha;
         int cant_horas;
@@ -80,9 +70,7 @@ public class DetalleActivity extends AppCompatActivity {
         String estado2;
         String estado3;
 
-      //  Toast.makeText(getApplicationContext(), String.valueOf(cursor.getString()) , Toast.LENGTH_SHORT).show();
         while(cursor.moveToNext()){
-            Toast.makeText(getApplicationContext(), String.valueOf(cursor.getPosition()), Toast.LENGTH_SHORT).show();
             rut = cursor.getString(cursor.getColumnIndex("Rut"));
             lblRut.setText(lblRut.getText().toString() + " " +rut);
 
@@ -140,8 +128,6 @@ public class DetalleActivity extends AppCompatActivity {
                     layoutBotones.setVisibility(View.VISIBLE);
                 }
             }
-            Toast.makeText(getApplicationContext()
-                    ,"Lvl "+lvl+" Estados "+estado1+", "+estado2+", "+estado3, Toast.LENGTH_SHORT).show();
             break;
         }
 
@@ -176,10 +162,6 @@ public class DetalleActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-
-        //lblRut.setText(lblRut.getText().toString() + "" + );
-        //lblRut.setText(lblRut.getText().toString() + "" + bundle.getString("fecha",""));
 
     }
 

@@ -10,15 +10,10 @@ package cl.cmsg.rrhhaprobacionhrsextras.clases;
         import android.database.Cursor;
         import android.database.sqlite.SQLiteDatabase;
         import android.database.sqlite.SQLiteOpenHelper;
-        import android.util.Log;
-        import android.widget.Toast;
-
         import java.text.DateFormat;
         import java.text.SimpleDateFormat;
         import java.util.Date;
         import java.util.Locale;
-        import java.util.StringTokenizer;
-
         import cl.cmsg.rrhhaprobacionhrsextras.R;
 
 /**
@@ -107,8 +102,6 @@ public class MiDbHelper extends SQLiteOpenHelper{
         db.execSQL(crearTablaLogErrores);
         db.execSQL(crearTablaSolicitud);
         db.execSQL(crearTablaUsuario);
-
-
     }
 
     @Override
@@ -129,7 +122,6 @@ public class MiDbHelper extends SQLiteOpenHelper{
 ######## Seccion de consultas ######
 ####################################
   */
-
     // Devuelve todos los registros en una variable tipo Cursor
     public Cursor getLogErrores(){
         SQLiteDatabase db = getReadableDatabase();
@@ -139,20 +131,18 @@ public class MiDbHelper extends SQLiteOpenHelper{
     public String getRutUsuario(){
 
         SQLiteDatabase db = getReadableDatabase();
-
         Cursor cursor = db.query(tablaUsuario, new String[]{"*"},null, null, null, null, null);
         while(cursor.moveToNext()){
             return cursor.getString(cursor.getColumnIndex("rut_u"));
         }
 
         return "";
-
     }
 
+    //Obtiene nombre de usuario
     public String getNombreUsuario(){
 
         SQLiteDatabase db = getReadableDatabase();
-
         Cursor cursor = db.query(tablaUsuario, new String[]{"*"},null, null, null, null, null);
         while(cursor.moveToNext()){
             return cursor.getString(cursor.getColumnIndex("nombre_u"));
@@ -177,18 +167,13 @@ public class MiDbHelper extends SQLiteOpenHelper{
         SQLiteDatabase db = getReadableDatabase();
 
        Cursor cursor = db.query(tablaSolicitud, new String[]{"*"},"fecha between ? and ?",new String[]{fecha1,fecha2}, null,null,null);
-        //Cursor cursor = db.query(tablaSolicitud, new String[]{"Rut,nombre,fecha"},null,null , null, null, null);
 
         return cursor;
     }
 
     public Cursor getDatoSolicitudDetalle(String rut, String fecha){ //Muestra detalle
-       //Log.e("omar",rut);
-       //Log.e("omar",fecha);
         SQLiteDatabase db = getReadableDatabase();
-        //Cursor cursor = db.rawQuery("SELECT * from "+tablaSolicitud+" WHERE Rut=? AND fecha=?",new String[]{rut,fecha});
         return db.query(tablaSolicitud, new String[]{"*"},"Rut=? AND fecha=?",new String[]{rut,fecha} , null, null, null);
-        //Log.e("omar",String.valueOf(cursor.getCount()));
     }
 
     // Borra todos los registros con sus respectivos where

@@ -1,17 +1,13 @@
 package cl.cmsg.rrhhaprobacionhrsextras;
 
 import android.content.Intent;
-import android.renderscript.Sampler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Toast;
-
 import cl.cmsg.rrhhaprobacionhrsextras.clases.MiDbHelper;
 import cl.cmsg.rrhhaprobacionhrsextras.clases.Rut;
 
@@ -25,15 +21,13 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         button = (Button) findViewById(R.id.buttonOk);
         editText = (EditText) findViewById(R.id.editText);
         miDbHelper = MiDbHelper.getInstance(this);
-        //miDbHelper.insertarUsuario("16841244-4","Omar Cantuarias");
 
+// TODO Borrar cuando entre a produccion
         // Borrar solicitudes guardadas para agregar/actualizar
         miDbHelper.deleteSolicitudALL();
 
@@ -65,7 +59,7 @@ public class LoginActivity extends AppCompatActivity {
         miDbHelper.insertarSolicitud("14444111-1","Persona Mcperson","2014-01-10",6,100300,
                 "Retraso","Atraso en avance de proyecto que era para ayer"
                 ,"Informatica","Informatica","Horas Extra"
-                ,"A","12312312-1","A","123412341-1","P","16841244-4");
+                ,"A","16841244-4",null,null,null,null);
 
         // Solicitud para otro lvl 3
         miDbHelper.insertarSolicitud("11111111-1","Persona Mcperson","2014-01-05",6,105000,
@@ -85,17 +79,17 @@ public class LoginActivity extends AppCompatActivity {
         miDbHelper.insertarSolicitud("11111111-1","Persona Mcperson","2014-01-30",6,100000,
                 "Retraso","Atraso en avance de proyecto que era para ayer"
                 ,"Informatica","Informatica","Horas Extra"
-                ,"A","12312312-1","A","16841244-4",null,null);
+                ,"A","12312312-1","P","16841244-4",null,null);
 
         // Solicitud lvl 1 pendiente --------------------------------------------------
         miDbHelper.insertarSolicitud("11222111-1","Persona Mcperson","2014-01-10",6,100000,
                 "Retraso","Atraso en avance de proyecto que era para ayer"
                 ,"Informatica","Informatica","Horas Extra"
                 ,"A","12312312-1",null,null,null,null);
+//TODO Borrar cuando entre a produccion
 
 
         if(!miDbHelper.getRutUsuario().equals("")){
-            Toast.makeText(getApplicationContext(),"Registrado", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(getApplicationContext(),MainActivity.class);
             startActivity(intent);
         }

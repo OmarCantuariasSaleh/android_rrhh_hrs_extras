@@ -49,12 +49,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="textview"
+            android:id="@+id/lblPeriodo"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="5dp"
+            android:visibility="invisible" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Costo total del periodo : "
             android:id="@+id/lblCostoTotal"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"
-            android:textSize="20dp"
+            android:layout_marginBottom="15dp"
+            android:textSize="15dp"
             android:visibility="invisible" />
 
         <ListView
