@@ -61,7 +61,7 @@ public class DetalleActivity extends AppCompatActivity {
 
         Bundle bundle= getIntent().getExtras();
         miDbHelper = MiDbHelper.getInstance(this);
-        Toast.makeText(getApplicationContext(), bundle.getString("Rut","")+" "+bundle.getString("fecha",""), Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(), bundle.getString("Rut","")+" "+bundle.getString("fecha",""), Toast.LENGTH_SHORT).show();
         final Cursor cursor =   miDbHelper.getDatoSolicitudDetalle(bundle.getString("Rut",""),bundle.getString("fecha",""));
         String rut;
         String rut_admin1;
@@ -80,8 +80,9 @@ public class DetalleActivity extends AppCompatActivity {
         String estado2;
         String estado3;
 
+      //  Toast.makeText(getApplicationContext(), String.valueOf(cursor.getString()) , Toast.LENGTH_SHORT).show();
         while(cursor.moveToNext()){
-
+            Toast.makeText(getApplicationContext(), String.valueOf(cursor.getPosition()), Toast.LENGTH_SHORT).show();
             rut = cursor.getString(cursor.getColumnIndex("Rut"));
             lblRut.setText(lblRut.getText().toString() + " " +rut);
 
@@ -139,7 +140,8 @@ public class DetalleActivity extends AppCompatActivity {
                     layoutBotones.setVisibility(View.VISIBLE);
                 }
             }
-
+            Toast.makeText(getApplicationContext()
+                    ,"Lvl "+lvl+" Estados "+estado1+", "+estado2+", "+estado3, Toast.LENGTH_SHORT).show();
             break;
         }
 
@@ -154,6 +156,7 @@ public class DetalleActivity extends AppCompatActivity {
                 miDbHelper.actualizarEstado(rutA,fechaA,estadoA,lvl);
 
                 Intent intent = new Intent(getApplicationContext(),HorasPendientesActivity.class);
+                cursor.close();
                 startActivity(intent);
             }
         });
@@ -169,11 +172,12 @@ public class DetalleActivity extends AppCompatActivity {
                 miDbHelper.actualizarEstado(rutR,fechaR,estadoR,lvl);
 
                 Intent intent = new Intent(getApplicationContext(),HorasPendientesActivity.class);
+                cursor.close();
                 startActivity(intent);
             }
         });
 
-        cursor.close();
+
         //lblRut.setText(lblRut.getText().toString() + "" + );
         //lblRut.setText(lblRut.getText().toString() + "" + bundle.getString("fecha",""));
 

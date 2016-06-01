@@ -46,61 +46,7 @@ public class HorasPendientesActivity extends AppCompatActivity {
 
 
 
-        // Solicitud lvl 3 Pendiente --------------------------------------------------
-        miDbHelper.insertarSolicitud("11111111-1","Persona Mcperson","2014-01-02",8,1222000,
-                "Retraso","Atraso en avance de proyecto que era para ayer"
-                ,"Informatica","Informatica","Horas Extra"
-                ,"A","12312312-1","A","123412341-1","P","16841244-4");
-        miDbHelper.insertarSolicitud("11111111-1"
-                ,"Persona Mcperson"
-                ,"2014-01-10"
-                ,6
-                ,100300
-                ,"Retraso"
-                ,"Atraso en avance de proyecto que era para ayer"
-                ,"Informatica"
-                ,"Informatica"
-                ,"Festivo"
-                ,"A"
-                ,"12312312-1"
-                ,"A"
-                ,"123412341-1"
-                ,"P"
-                ,"16841244-4");
-        miDbHelper.insertarSolicitud("11111111-1","Persona Mcperson","2014-01-11",6,100300,
-                "Retraso","Atraso en avance de proyecto que era para ayer"
-                ,"Informatica","Informatica","Horas Extra"
-                ,"A","12312312-1","A","123412341-1","P","16841244-4");
-        miDbHelper.insertarSolicitud("14444111-1","Persona Mcperson","2014-01-10",6,100300,
-                "Retraso","Atraso en avance de proyecto que era para ayer"
-                ,"Informatica","Informatica","Horas Extra"
-                ,"A","12312312-1","A","123412341-1","P","16841244-4");
 
-            // Solicitud para otro lvl 3
-        miDbHelper.insertarSolicitud("11111111-1","Persona Mcperson","2014-01-05",6,105000,
-                "Retraso","Atraso en avance de proyecto que era para ayer"
-                ,"Informatica","Informatica","Horas Extra"
-                ,"A","12312312-1","A","123412341-1","P","12222244-4");
-
-        // Solicitud lvl 2 Pendiente --------------------------------------------------
-        miDbHelper.insertarSolicitud("11111111-1","Persona Mcperson","2014-01-07",6,106600,
-                "Retraso","Atraso en avance de proyecto que era para ayer"
-                ,"Informatica","Informatica","Horas Extra"
-                ,"A","12312312-1","P","123412341-1",null,null);
-        miDbHelper.insertarSolicitud("11111111-1","Persona Mcperson","2014-01-03",6,100000,
-                "Retraso","Atraso en avance de proyecto que era para ayer"
-                ,"Informatica","Informatica","Horas Extra"
-                ,"A","12312312-1","A","123412341-1",null,null);
-        miDbHelper.insertarSolicitud("11111111-1","Persona Mcperson","2014-01-30",6,100000,
-                "Retraso","Atraso en avance de proyecto que era para ayer"
-                ,"Informatica","Informatica","Horas Extra"
-                ,"A","12312312-1","A","16841244-4",null,null);
-
-        // Solicitud lvl 1 pendiente --------------------------------------------------
-        miDbHelper.insertarSolicitud("11222111-1","Persona Mcperson","2014-01-10",6,100000,
-                "Retraso","Atraso en avance de proyecto que era para ayer"
-                ,"Informatica","Informatica","Horas Extra"
-                ,"A","12312312-1",null,null,null,null);
 
         String rut_user=miDbHelper.getRutUsuario();
         Cursor cursor =   miDbHelper.getDatoSolicitudLVL(rut_user);
@@ -126,13 +72,13 @@ public class HorasPendientesActivity extends AppCompatActivity {
             }
             //Toast.makeText(getApplicationContext(), String.valueOf(lvl), Toast.LENGTH_SHORT).show();
             if(lvl!=0){
-                rut= "Rut : "+cursor.getString(cursor.getColumnIndex("Rut"));
+                rut= cursor.getString(cursor.getColumnIndex("Rut"));
                 //lblRut.setText(lblRut.getText().toString() + " " +Rut);
 
-                nombre="Nombre : "+ cursor.getString(cursor.getColumnIndex("nombre"));
+                nombre=cursor.getString(cursor.getColumnIndex("nombre"));
                 //lblNombre.setText(lblNombre.getText().toString() + " " +nombre);
 
-                fecha="Fecha : "+ cursor.getString(cursor.getColumnIndex("fecha"));
+                fecha=cursor.getString(cursor.getColumnIndex("fecha"));
                 // lblFecha.setText(lblFecha.getText().toString() + " " +fecha);
 
                 horasExtras = new HorasExtras(rut,nombre,fecha);

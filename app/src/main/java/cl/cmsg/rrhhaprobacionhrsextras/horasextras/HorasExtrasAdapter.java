@@ -52,13 +52,13 @@ public class HorasExtrasAdapter extends BaseAdapter{
         HorasExtras horasExtras = arrayListHorasExtras.get(position);
 
         TextView rut = (TextView) convertView.findViewById(R.id.lblRut);
-        rut.setText(horasExtras.getRut());
+        rut.setText("Rut : "+horasExtras.getRut());
 
         TextView nombre = (TextView) convertView.findViewById(R.id.lblNombre);
-        nombre.setText(horasExtras.getNombre());
+        nombre.setText("Nombre : "+horasExtras.getNombre());
 
         TextView fecha = (TextView) convertView.findViewById(R.id.lblFecha);
-        fecha.setText(horasExtras.getFecha());
+        fecha.setText("Fecha : "+horasExtras.getFecha());
 
         return convertView;
 

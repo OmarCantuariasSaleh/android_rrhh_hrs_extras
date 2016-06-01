@@ -114,22 +114,23 @@ public class HorasAprobadasActivity extends AppCompatActivity {
                             String E2=cursor.getString(cursor.getColumnIndex("estado2"));
                             String E3=cursor.getString(cursor.getColumnIndex("estado3"));
 
-                            if(E1.equals("A")){
+                            if(E1.equals("A") && E2==null && E3==null){
                                 lvl=1;
-                            }else if(E2!=null && E2.equals("A")){
+                            }else if(E2!=null && E2.equals("A") && E3==null){
                                 lvl=2;
                             }else if(E3!=null && E3.equals("A")){
                                 lvl=3;
                             }
-                            //Toast.makeText(getApplicationContext(), String.valueOf(lvl), Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(getApplicationContext()
+                            //        ,"Lvl "+String.valueOf(lvl)+" Estados "+E1+", "+E2+", "+E3, Toast.LENGTH_SHORT).show();
                             if(lvl!=0){
-                                rut= "Rut : "+cursor.getString(cursor.getColumnIndex("Rut"));
+                                rut= cursor.getString(cursor.getColumnIndex("Rut"));
                                 //lblRut.setText(lblRut.getText().toString() + " " +Rut);
 
-                                nombre="Nombre : "+ cursor.getString(cursor.getColumnIndex("nombre"));
+                                nombre=cursor.getString(cursor.getColumnIndex("nombre"));
                                 //lblNombre.setText(lblNombre.getText().toString() + " " +nombre);
 
-                                fecha="Fecha : "+ cursor.getString(cursor.getColumnIndex("fecha"));
+                                fecha=cursor.getString(cursor.getColumnIndex("fecha"));
                                 // lblFecha.setText(lblFecha.getText().toString() + " " +fecha);
 
                                 horasExtras = new HorasExtras(rut,nombre,fecha);
@@ -175,6 +176,7 @@ public class HorasAprobadasActivity extends AppCompatActivity {
 
         }
         catch (Exception ex) {
+            Log.e("Exception",String.valueOf(ex));
         }
         return dpd;
     }

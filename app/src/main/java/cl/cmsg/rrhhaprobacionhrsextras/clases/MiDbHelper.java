@@ -183,16 +183,12 @@ public class MiDbHelper extends SQLiteOpenHelper{
     }
 
     public Cursor getDatoSolicitudDetalle(String rut, String fecha){ //Muestra detalle
-       Log.e("omar",rut);
-       Log.e("omar",fecha);
+       //Log.e("omar",rut);
+       //Log.e("omar",fecha);
         SQLiteDatabase db = getReadableDatabase();
-
-        Cursor cursor = db.query(tablaSolicitud, new String[]{"*"},"Rut=? and fecha=?",new String[]{rut,fecha} , null, null, null);
-        //Cursor cursor = db.query(tablaSolicitud, new String[]{"*"},null,null , null, null, null);
-
-        return cursor;
-
-
+        //Cursor cursor = db.rawQuery("SELECT * from "+tablaSolicitud+" WHERE Rut=? AND fecha=?",new String[]{rut,fecha});
+        return db.query(tablaSolicitud, new String[]{"*"},"Rut=? AND fecha=?",new String[]{rut,fecha} , null, null, null);
+        //Log.e("omar",String.valueOf(cursor.getCount()));
     }
 
     // Borra todos los registros con sus respectivos where
