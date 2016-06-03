@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -29,9 +30,10 @@ public class LoginActivity extends AppCompatActivity {
 
 // TODO Borrar cuando entre a produccion
         // Borrar solicitudes guardadas para agregar/actualizar
-        miDbHelper.deleteSolicitudALL();
-
-        // Solicitud lvl 3 Pendiente --------------------------------------------------
+        //miDbHelper.deleteSolicitudALL();
+        miDbHelper.deleteUser();
+        miDbHelper.insertarUsuario("6774875","Omar Cantuarias Saleh");
+        /*// Solicitud lvl 3 Pendiente --------------------------------------------------
         miDbHelper.insertarSolicitud("11111111-1","Persona Mcperson","2014-02-02",8,1222000,
                 "Retraso","Atraso en avance de proyecto que era para ayer"
                 ,"Informatica","Informatica","Horas Extra"
@@ -85,29 +87,37 @@ public class LoginActivity extends AppCompatActivity {
         miDbHelper.insertarSolicitud("11222111-1","Persona Mcperson","2014-01-10",6,100000,
                 "Retraso","Atraso en avance de proyecto que era para ayer"
                 ,"Informatica","Informatica","Horas Extra"
-                ,"A","12312312-1",null,null,null,null);
+                ,"A","12312312-1",null,null,null,null);*/
 //TODO Borrar cuando entre a produccion
 
-
+//TODO cambiar para que pregunte si el rut en el servidor es igual al de la BD del CeL --
         if(!miDbHelper.getRutUsuario().equals("")){
             Intent intent = new Intent(getApplicationContext(),MainActivity.class);
             startActivity(intent);
         }
-
+//TODO end
         button.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
-                Toast.makeText(getApplicationContext(),"Button ok", Toast.LENGTH_SHORT).show();
                 String rut = editText.getText().toString();
 
                 if (Rut.isRutValido(rut)){
                     Toast.makeText(getApplicationContext(),"Rut valido", Toast.LENGTH_SHORT).show();
+
+                    rut= rut.replace(".","");
+                    rut= rut.replace("-","");
+                    rut= rut.trim();
+                    rut= rut.substring(0,rut.length()-1);
+                    Log.e("Omar",rut);
                     if(miDbHelper.getRutUsuario().equals(rut)){
                         Toast.makeText(getApplicationContext(),"Registrado", Toast.LENGTH_SHORT).show();
+
                         Intent intent = new Intent(getApplicationContext(),MainActivity.class);
                         startActivity(intent);
 
+                    }else{
+                        Toast.makeText(getApplicationContext(),"Rut no registrado", Toast.LENGTH_SHORT).show();
                     }
 
                 }else{

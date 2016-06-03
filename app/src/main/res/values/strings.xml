@@ -6,4 +6,5 @@
     <string name="action_settings">Settings</string>
     <string name="ok">Ok</string>
     <string name="version">0.0.1</string>
+    <string name="URL_PendienteAprobacion">http://200.111.157.141:8080/android/hrsextras/pendientes.php</string>
 </resources>

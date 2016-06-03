@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -28,7 +29,7 @@ public class DetalleActivity extends AppCompatActivity {
     LinearLayout layoutBotones;
     Button btnAprobar;
     Button btnRechazar;
-    String lvl="1";
+    String lvl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,9 +67,9 @@ public class DetalleActivity extends AppCompatActivity {
         String centro_costo;
         String area;
         String tipo_pacto;
-        String estado1;
-        String estado2;
-        String estado3;
+        String E1;
+        String E2;
+        String E3;
 
         while(cursor.moveToNext()){
             rut = cursor.getString(cursor.getColumnIndex("Rut"));
@@ -101,33 +102,33 @@ public class DetalleActivity extends AppCompatActivity {
             tipo_pacto = cursor.getString(cursor.getColumnIndex("tipo_pacto"));
             lblTipoPacto.setText(lblTipoPacto.getText().toString() + " " +tipo_pacto);
 
-            estado1= cursor.getString(cursor.getColumnIndex("estado1"));
-            estado2= cursor.getString(cursor.getColumnIndex("estado2"));
-            estado3= cursor.getString(cursor.getColumnIndex("estado3"));
+            E1= cursor.getString(cursor.getColumnIndex("estado1"));
+            E2= cursor.getString(cursor.getColumnIndex("estado2"));
+            E3= cursor.getString(cursor.getColumnIndex("estado3"));
 
             // Verificar si detalle es de solicitud aprobada o pendiente, separadas por nivel
-            lvl="1";
-            if(estado2==null){      //Si estado2 esta vacio es lvl 1
-                if(estado1.equals("A")){
-                    layoutBotones.setVisibility(View.INVISIBLE);
-                }else if (estado1.equals("P")){
-                    layoutBotones.setVisibility(View.VISIBLE);
-                }
-            }else if(estado3==null){ //Si estado3 esta vacio es lvl 2
-                lvl="2";
-                if(estado2.equals("A")){
-                    layoutBotones.setVisibility(View.INVISIBLE);
-                }else if (estado2.equals("P")){
-                    layoutBotones.setVisibility(View.VISIBLE);
-                }
-            }else{  //Si estado3 no es vacio es lvl 3
-                lvl="3";
-                if(estado3.equals("A")){
-                    layoutBotones.setVisibility(View.INVISIBLE);
-                }else if (estado3.equals("P")){
-                    layoutBotones.setVisibility(View.VISIBLE);
-                }
+            String rut1 = cursor.getString(cursor.getColumnIndex("rut_admin1"));
+            String rut2 = cursor.getString(cursor.getColumnIndex("rut_admin2"));
+            String rut3 = cursor.getString(cursor.getColumnIndex("rut_admin3"));
+
+            lvl="0";
+
+            if(E1.equals("A") && rut1.equals(miDbHelper.getRutUsuario())){
+                layoutBotones.setVisibility(View.INVISIBLE);
+            }else if(E2.equals("A") && rut2.equals(miDbHelper.getRutUsuario()) ){
+                layoutBotones.setVisibility(View.INVISIBLE);
+            }else if(E3.equals("A") && rut3.equals(miDbHelper.getRutUsuario()) ){
+                layoutBotones.setVisibility(View.INVISIBLE);
             }
+
+            if(E1.equals("P") && rut1.equals(miDbHelper.getRutUsuario())){
+                lvl="1";
+            }else if(E2.equals("P") && rut2.equals(miDbHelper.getRutUsuario()) && E3.equals("A") && E1.equals("A")){
+                lvl="2";
+            }else if(E3.equals("P") && rut3.equals(miDbHelper.getRutUsuario()) && E1.equals("A") && E2.equals("A")){
+                lvl="3";
+            }
+
             break;
         }
 

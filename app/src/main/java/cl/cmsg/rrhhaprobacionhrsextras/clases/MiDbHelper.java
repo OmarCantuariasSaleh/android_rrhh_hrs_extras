@@ -24,7 +24,7 @@ public class MiDbHelper extends SQLiteOpenHelper{
 
     private static MiDbHelper mInstance = null;
 
-    private static int DATABASE_VERSION = 4;
+    private static int DATABASE_VERSION = 6;
     private static String DATABASE_NAME = "nombre_base_de_datos" ;
 
     private Context context;
@@ -53,7 +53,7 @@ public class MiDbHelper extends SQLiteOpenHelper{
                     + " (Rut varchar(11) not null"
                     + ",fecha date not null"
                     + ",nombre varchar(50) not null"
-                    + ",cant_horas integer not null"
+                    + ",cant_horas double not null"
                     + ",monto_pagar integer not null"
                     + ",motivo varchar(50) not null"
                     + ",comentario varchar(250) not null"
@@ -107,7 +107,7 @@ public class MiDbHelper extends SQLiteOpenHelper{
     @Override
 // Cuando se actualiza
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion){
-        if(newVersion==4){
+        if(newVersion==6){
             db.execSQL("drop table "+tablaSolicitud);
             db.execSQL(crearTablaSolicitud);
         }
@@ -157,6 +157,7 @@ public class MiDbHelper extends SQLiteOpenHelper{
         SQLiteDatabase db = getReadableDatabase();
 
         Cursor cursor = db.query(tablaSolicitud, new String[]{"*"},"rut_admin1=? or rut_admin2=? or rut_admin3=?",new String[]{rut_user,rut_user,rut_user} , null, null, null);
+        //Cursor cursor = db.query(tablaSolicitud, new String[]{"*"},null,null , null, null, null);
 
         return cursor;
     }
@@ -185,6 +186,7 @@ public class MiDbHelper extends SQLiteOpenHelper{
     }
 
     // Borra solicitud por Rut+fecha
+
     public boolean deleteSolicitud(String rut, String fecha){
         SQLiteDatabase db = getReadableDatabase();
         long resultado = -1;
@@ -197,6 +199,14 @@ public class MiDbHelper extends SQLiteOpenHelper{
         SQLiteDatabase db = getReadableDatabase();
         long resultado = -1;
         resultado = db.delete(tablaSolicitud,null,null);
+        return (resultado >= 1);
+    }
+
+    // Borra Usuario
+    public boolean deleteUser(){
+        SQLiteDatabase db = getReadableDatabase();
+        long resultado = -1;
+        resultado = db.delete(tablaUsuario,null,null);
         return (resultado >= 1);
     }
 
@@ -229,7 +239,7 @@ public class MiDbHelper extends SQLiteOpenHelper{
     }
 
     public boolean insertarSolicitud(String rut, String nombre, String fecha
-            , Integer cant_horas, Integer monto_pagar, String motivo, String comentario
+            , Double cant_horas, Integer monto_pagar, String motivo, String comentario
             , String centro_costo, String area, String tipo_pacto, String estado1,String rut_admin1
             , String estado2,String rut_admin2, String estado3,String rut_admin3
     ){

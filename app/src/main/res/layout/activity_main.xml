@@ -31,10 +31,33 @@
 
         <ListView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:id="@+id/Lista"
             android:choiceMode="singleChoice"
-            style="@android:style/Widget.DeviceDefault.ListView" />
+            style="@android:style/Widget.DeviceDefault.ListView.DropDown"
+            android:layout_marginBottom="10dp"
+            android:background="#0881d8"
+            android:paddingBottom="2dp"
+            android:paddingTop="2dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Actualizar base de datos"
+            android:id="@+id/textView11"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="30dp" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btnActualizar"
+            android:src="@android:drawable/ic_menu_rotate"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="5dp"
+            android:background="#a394f55f"
+            android:adjustViewBounds="true" />
     </LinearLayout>
 
 </RelativeLayout>

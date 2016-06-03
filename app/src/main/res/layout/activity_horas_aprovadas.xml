@@ -10,8 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay"
-        android:id="@+id/view2"
-        android:layout_marginBottom="10dp">
+        android:id="@+id/view2">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
@@ -22,61 +21,74 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:padding="10dp"
-        android:layout_below="@+id/view2">
 
-        <Button
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="219dp"
-            android:layout_height="50dp"
-            android:text="Seleccione periodo"
-            android:id="@+id/btnPeriodoSelect"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@+id/textView10"
-            android:gravity="center"
-            android:textSize="18dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="20dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="textview"
-            android:id="@+id/lblPeriodo"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="15dp"
-            android:layout_marginBottom="5dp"
-            android:visibility="invisible" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Costo total del periodo : "
-            android:id="@+id/lblCostoTotal"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="15dp"
-            android:textSize="15dp"
-            android:visibility="invisible" />
-
-        <ListView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/lstHorasPendientes"
-            android:layout_below="@+id/btnPeriodoSelect"
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:padding="16dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_marginTop="10dp"
-            android:divider="#000000" />
-    </LinearLayout>
+            android:weightSum="1"
+            android:layout_below="@+id/view2"
+            android:gravity="center_horizontal">
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="219dp"
+                android:layout_height="50dp"
+                android:text="Seleccione periodo"
+                android:id="@+id/btnPeriodoSelect"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/textView10"
+                android:gravity="center"
+                android:textSize="18dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:id="@+id/lblPeriodo"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:visibility="invisible"
+                android:singleLine="false"
+                android:textSize="15dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:id="@+id/lblCostoTotal"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:textSize="15dp"
+                android:visibility="invisible" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:id="@+id/lblCantAprov"
+                android:layout_gravity="center_horizontal"
+                android:textSize="15dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp" />
+
+            <ListView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/lstHorasPendientes"
+                android:layout_below="@+id/btnPeriodoSelect"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="10dp"
+                android:divider="#000000"
+                android:layout_gravity="bottom"
+                android:padding="5dp" />
+        </LinearLayout>
+
 
 </RelativeLayout>

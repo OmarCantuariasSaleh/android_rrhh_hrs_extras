@@ -30,6 +30,7 @@ public class HorasAprobadasActivity extends AppCompatActivity {
     TextView lblNombre;
     TextView lblFecha;
     TextView lblCostoTotal;
+    TextView lblCantAprov;
     TextView lblPeriodo;
     int lvl=1;
     Button btnPeriodoSelect;
@@ -89,6 +90,7 @@ public class HorasAprobadasActivity extends AppCompatActivity {
                         lblFecha = (TextView) findViewById(R.id.lblFecha);
                         lblCostoTotal = (TextView) findViewById(R.id.lblCostoTotal);
                         lblPeriodo = (TextView) findViewById(R.id.lblPeriodo);
+                        lblCantAprov = (TextView) findViewById(R.id.lblCantAprov);
 
                         String fecha1;
                         String fecha2;
@@ -106,6 +108,7 @@ public class HorasAprobadasActivity extends AppCompatActivity {
                         String nombre;
                         String fecha;
                         int costo=0;
+                        int cantidad=0;
                         String periodo="";
 
                         switch (monthOfYear){
@@ -156,16 +159,19 @@ public class HorasAprobadasActivity extends AppCompatActivity {
                             String E1=cursor.getString(cursor.getColumnIndex("estado1"));
                             String E2=cursor.getString(cursor.getColumnIndex("estado2"));
                             String E3=cursor.getString(cursor.getColumnIndex("estado3"));
+                            String rut1 = cursor.getString(cursor.getColumnIndex("rut_admin1"));
+                            String rut2 = cursor.getString(cursor.getColumnIndex("rut_admin2"));
+                            String rut3 = cursor.getString(cursor.getColumnIndex("rut_admin3"));
 
-                            if(E1.equals("A") && E2==null && E3==null){
+                            if(E1.equals("A") && rut1.equals(miDbHelper.getRutUsuario())){
                                 lvl=1;
-                            }else if(E2!=null && E2.equals("A") && E3==null){
+                            }else if(E2.equals("A") && rut2.equals(miDbHelper.getRutUsuario()) ){
                                 lvl=2;
-                            }else if(E3!=null && E3.equals("A")){
+                            }else if(E3.equals("A") && rut3.equals(miDbHelper.getRutUsuario()) ){
                                 lvl=3;
                             }
                             if(lvl!=0){
-
+                                cantidad++;
                                 rut= cursor.getString(cursor.getColumnIndex("Rut"));
 
                                 nombre=cursor.getString(cursor.getColumnIndex("nombre"));
@@ -175,14 +181,17 @@ public class HorasAprobadasActivity extends AppCompatActivity {
                                 horasExtras = new HorasExtras(rut,nombre,fecha);
                                 arrayListHorasExtra.add(horasExtras);
 
-                                costo += cursor.getInt(cursor.getColumnIndex("monto_pagar"));
-
+                                costo+= cursor.getInt(cursor.getColumnIndex("monto_pagar"));
+                                //Log.e("Omar1","Lvl:"+ lvl+ " Estado 1: "+E1+" Estado 2: "+E2+" Estado 3: "+E3+" costo : "+String.valueOf(cursor.getInt(cursor.getColumnIndex("monto_pagar"))));
                             }
+
                         }
 
                         if(costo>0){
                             lblCostoTotal.setText("Costo total del periodo : $" +costo);
                             lblCostoTotal.setVisibility(View.VISIBLE);
+                            lblCantAprov.setText("Cantidad : "+String.valueOf(cantidad));
+                            lblCantAprov.setVisibility(View.VISIBLE);
                         }else{
                             lblCostoTotal.setVisibility(View.INVISIBLE);
                         }

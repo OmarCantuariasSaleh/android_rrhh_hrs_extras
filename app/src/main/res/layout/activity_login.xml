@@ -36,19 +36,24 @@
             android:text="Dispositivo sin registrar"
             android:id="@+id/textView2"
             android:layout_marginBottom="50dp"
-            android:layout_gravity="top|center_horizontal" />
+            android:layout_gravity="top|center_horizontal"
+            android:padding="5dp"
+            android:background="#abe20000"
+            android:textColor="#ffffff"
+            android:textStyle="bold" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Ingrese su Rut"
+            android:text="Ingrese su Rut sin codigo verificador"
             android:id="@+id/textView"
             android:layout_below="@+id/textView2"
             android:layout_centerHorizontal="true"
             android:layout_gravity="center"
             android:layout_marginTop="15dp"
-            android:layout_marginBottom="10dp" />
+            android:layout_marginBottom="10dp"
+            android:gravity="center" />
 
         <EditText
             android:layout_width="250dp"
@@ -59,7 +64,8 @@
             android:inputType="text"
             android:layout_marginBottom="20dp"
             android:layout_marginTop="10dp"
-            android:enabled="true" />
+            android:enabled="true"
+            android:maxLength="12" />
 
         <Button
             android:layout_width="wrap_content"
