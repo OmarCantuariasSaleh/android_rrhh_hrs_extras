@@ -55,7 +55,7 @@ public class DetalleActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Bundle bundle= getIntent().getExtras();
-        miDbHelper = MiDbHelper.getInstance(this);
+        miDbHelper = MiDbHelper.getInstance(this,DetalleActivity.this);
         final Cursor cursor =   miDbHelper.getDatoSolicitudDetalle(bundle.getString("Rut",""),bundle.getString("fecha",""));
         String rut;
         String nombre;
@@ -70,6 +70,7 @@ public class DetalleActivity extends AppCompatActivity {
         String E1;
         String E2;
         String E3;
+
 
         while(cursor.moveToNext()){
             rut = cursor.getString(cursor.getColumnIndex("Rut"));
@@ -139,7 +140,7 @@ public class DetalleActivity extends AppCompatActivity {
                 String fechaA= cursor.getString(cursor.getColumnIndex("fecha"));
                 String estadoA= "A";
 
-                MiDbHelper.getInstance(getApplicationContext());
+
                 miDbHelper.actualizarEstado(rutA,fechaA,estadoA,lvl);
 
                 Intent intent = new Intent(getApplicationContext(),HorasPendientesActivity.class);
@@ -155,7 +156,7 @@ public class DetalleActivity extends AppCompatActivity {
                 String fechaR= cursor.getString(cursor.getColumnIndex("fecha"));
                 String estadoR= "R";
 
-                MiDbHelper.getInstance(getApplicationContext());
+
                 miDbHelper.actualizarEstado(rutR,fechaR,estadoR,lvl);
 
                 Intent intent = new Intent(getApplicationContext(),HorasPendientesActivity.class);

@@ -34,7 +34,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/Lista"
             android:choiceMode="singleChoice"
-            style="@android:style/Widget.DeviceDefault.ListView.DropDown"
+            style="@android:style/Widget.ListView.Menu"
             android:layout_marginBottom="10dp"
             android:background="#0881d8"
             android:paddingBottom="2dp"

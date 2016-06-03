@@ -46,7 +46,7 @@ public class HorasAprobadasActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        miDbHelper = MiDbHelper.getInstance(this);
+        miDbHelper = MiDbHelper.getInstance(this,HorasAprobadasActivity.this);
 
         btnPeriodoSelect.setOnClickListener(new View.OnClickListener() {
             @Override

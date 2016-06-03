@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="cl.cmsg.rrhhaprobacionhrsextras">
 
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -12,11 +13,11 @@
             android:name=".MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
-           <!-- <intent-filter>
+           <!--<intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>-->
+                &lt;!&ndash;<category android:name="android.intent.category.LAUNCHER" />&ndash;&gt;
+            </intent-filter>&ndash;&gt;-->
         </activity>
         <activity android:name=".LoginActivity"
             android:label="@string/app_name">
@@ -34,7 +35,9 @@
             android:parentActivityName=".MainActivity"/>
         <activity android:name=".DetalleActivity"
             android:label="@string/act_detalles"
-            ></activity>
+            >
+
+        </activity>
     </application>
 
 </manifest>

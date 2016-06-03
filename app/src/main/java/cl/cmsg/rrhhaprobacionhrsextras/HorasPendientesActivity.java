@@ -39,7 +39,7 @@ public class HorasPendientesActivity extends AppCompatActivity {
         lblNombre = (TextView) findViewById(R.id.lblNombre);
         lblFecha = (TextView) findViewById(R.id.lblFecha);
         listViewPendientes = (ListView) findViewById(R.id.lstHorasPendientes);
-        miDbHelper = MiDbHelper.getInstance(this);
+        miDbHelper = MiDbHelper.getInstance(this,HorasPendientesActivity.this);
 
         String rut_user=miDbHelper.getRutUsuario();
         Cursor cursor =   miDbHelper.getDatoSolicitudLVL(rut_user);

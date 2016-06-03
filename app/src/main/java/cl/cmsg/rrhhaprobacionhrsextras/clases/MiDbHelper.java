@@ -5,11 +5,15 @@ package cl.cmsg.rrhhaprobacionhrsextras.clases;
  */
 
 
+        import android.app.Activity;
         import android.content.ContentValues;
         import android.content.Context;
         import android.database.Cursor;
         import android.database.sqlite.SQLiteDatabase;
         import android.database.sqlite.SQLiteOpenHelper;
+        import android.net.wifi.WifiInfo;
+        import android.net.wifi.WifiManager;
+
         import java.text.DateFormat;
         import java.text.SimpleDateFormat;
         import java.util.Date;
@@ -28,7 +32,7 @@ public class MiDbHelper extends SQLiteOpenHelper{
     private static String DATABASE_NAME = "nombre_base_de_datos" ;
 
     private Context context;
-
+    private Activity activity;
     // Identificacion de tablas
 
 
@@ -74,7 +78,7 @@ public class MiDbHelper extends SQLiteOpenHelper{
                     +",nombre_u varchar(50)  not null)";
 
 
-    public static MiDbHelper getInstance(Context ctx) {
+    public static MiDbHelper getInstance(Context ctx, Activity activity) {
         /**
          * use the application context as suggested by CommonsWare.
          * this will ensure that you dont accidentally leak an Activitys
@@ -82,7 +86,7 @@ public class MiDbHelper extends SQLiteOpenHelper{
          * http://android-developers.blogspot.nl/2009/01/avoiding-memory-leaks.html)
          */
         if (mInstance == null) {
-            mInstance = new MiDbHelper(ctx.getApplicationContext());
+            mInstance = new MiDbHelper(ctx.getApplicationContext(),activity);
         }
         return mInstance;
     }
@@ -91,9 +95,10 @@ public class MiDbHelper extends SQLiteOpenHelper{
      * constructor should be private to prevent direct instantiation.
      * make call to static factory method "getInstance()" instead.
      */
-    private MiDbHelper(Context ctx) {
+    private MiDbHelper(Context ctx, Activity activity) {
         super(ctx, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = ctx;
+        this.activity = activity;
     }
 
     @Override
@@ -213,7 +218,7 @@ public class MiDbHelper extends SQLiteOpenHelper{
     // Inserta un registro en la tabla
     public boolean insertarLogError(String descripcion){
         db = getWritableDatabase();
-
+     //   String mac= ValidacionConexion.getDireccionMAC();
         ContentValues campoValor = new ContentValues();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US);
         Date date = new Date();
@@ -221,6 +226,7 @@ public class MiDbHelper extends SQLiteOpenHelper{
         campoValor.put("fecha_hora", dateFormat.format(date));
         campoValor.put("descripcion", descripcion);
         campoValor.put("version_app", context.getString(R.string.version));
+        campoValor.put("mac",ValidacionConexion.getDireccionMAC(this.activity));
 
         long resultado = db.insertOrThrow(tablaLogErrores, null, campoValor);
         return resultado >= 1;
@@ -275,10 +281,5 @@ public class MiDbHelper extends SQLiteOpenHelper{
         long resultado = db.update(tablaSolicitud, campoValor, "Rut=? and fecha=? ", new String[]{rut,fecha});
         return resultado >= 1;
     }
-
-
-
-
-
 
 }

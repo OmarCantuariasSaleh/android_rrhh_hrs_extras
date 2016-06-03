@@ -26,13 +26,13 @@ public class LoginActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         button = (Button) findViewById(R.id.buttonOk);
         editText = (EditText) findViewById(R.id.editText);
-        miDbHelper = MiDbHelper.getInstance(this);
+        miDbHelper = MiDbHelper.getInstance(this,LoginActivity.this);
 
 // TODO Borrar cuando entre a produccion
         // Borrar solicitudes guardadas para agregar/actualizar
         //miDbHelper.deleteSolicitudALL();
-        miDbHelper.deleteUser();
-        miDbHelper.insertarUsuario("6774875","Omar Cantuarias Saleh");
+        //miDbHelper.deleteUser();
+        //miDbHelper.insertarUsuario("6774875","Omar Cantuarias Saleh");
         /*// Solicitud lvl 3 Pendiente --------------------------------------------------
         miDbHelper.insertarSolicitud("11111111-1","Persona Mcperson","2014-02-02",8,1222000,
                 "Retraso","Atraso en avance de proyecto que era para ayer"
@@ -94,6 +94,7 @@ public class LoginActivity extends AppCompatActivity {
         if(!miDbHelper.getRutUsuario().equals("")){
             Intent intent = new Intent(getApplicationContext(),MainActivity.class);
             startActivity(intent);
+            finish();
         }
 //TODO end
         button.setOnClickListener(new View.OnClickListener() {
@@ -114,6 +115,7 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(),"Registrado", Toast.LENGTH_SHORT).show();
 
                         Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                        finish();
                         startActivity(intent);
 
                     }else{
