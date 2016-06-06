@@ -130,7 +130,7 @@ public class DetalleActivity extends AppCompatActivity {
                 lvl="3";
             }
 
-            break;
+           // break;
         }
 
         btnAprobar.setOnClickListener(new View.OnClickListener() {

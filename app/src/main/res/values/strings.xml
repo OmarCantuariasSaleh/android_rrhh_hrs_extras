@@ -7,4 +7,6 @@
     <string name="ok">Ok</string>
     <string name="version">0.2</string>
     <string name="URL_PendienteAprobacion">http://200.111.157.141:8080/android/hrsextras/pendientes.php</string>
+    <string name="URL_RegistrarUsuario">http://200.111.157.141:8080/android/hrsextras/registrar.php</string>
+    <string name="gcm_Token">token</string>
 </resources>

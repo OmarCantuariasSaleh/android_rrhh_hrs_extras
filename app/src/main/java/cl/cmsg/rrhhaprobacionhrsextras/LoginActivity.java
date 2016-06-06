@@ -1,5 +1,6 @@
 package cl.cmsg.rrhhaprobacionhrsextras;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,15 +10,32 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import cl.cmsg.rrhhaprobacionhrsextras.clases.Alertas;
 import cl.cmsg.rrhhaprobacionhrsextras.clases.MiDbHelper;
 import cl.cmsg.rrhhaprobacionhrsextras.clases.Rut;
+import cl.cmsg.rrhhaprobacionhrsextras.clases.ValidacionConexion;
+import cl.cmsg.rrhhaprobacionhrsextras.clases.VolleyS;
 
 public class LoginActivity extends AppCompatActivity {
 
     Button button;
     MiDbHelper miDbHelper;
     EditText editText;
-
+    ProgressDialog progressDialog;
+    String mensaje;
+    String titulo;
+    Alertas alertas;
+String rut;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,6 +45,11 @@ public class LoginActivity extends AppCompatActivity {
         button = (Button) findViewById(R.id.buttonOk);
         editText = (EditText) findViewById(R.id.editText);
         miDbHelper = MiDbHelper.getInstance(this,LoginActivity.this);
+        final VolleyS volleyS = VolleyS.getInstance(this);
+
+
+
+
 
 // TODO Borrar cuando entre a produccion
         // Borrar solicitudes guardadas para agregar/actualizar
@@ -101,30 +124,126 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-                String rut = editText.getText().toString();
+                progressDialog = new ProgressDialog(LoginActivity.this);
+                progressDialog.setTitle("Actualizando");
+                progressDialog.setMessage("Espere un momento");
+                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                progressDialog.setCancelable(false);
+                progressDialog.show();
 
-                if (Rut.isRutValido(rut)){
-                    Toast.makeText(getApplicationContext(),"Rut valido", Toast.LENGTH_SHORT).show();
+                rut = editText.getText().toString();
+                if (!Rut.isRutValido(rut)){
 
-                    rut= rut.replace(".","");
-                    rut= rut.replace("-","");
-                    rut= rut.trim();
-                    rut= rut.substring(0,rut.length()-1);
-                    Log.e("Omar",rut);
-                    if(miDbHelper.getRutUsuario().equals(rut)){
-                        Toast.makeText(getApplicationContext(),"Registrado", Toast.LENGTH_SHORT).show();
-
-                        Intent intent = new Intent(getApplicationContext(),MainActivity.class);
-                        finish();
-                        startActivity(intent);
-
-                    }else{
-                        Toast.makeText(getApplicationContext(),"Rut no registrado", Toast.LENGTH_SHORT).show();
-                    }
-
-                }else{
                     Toast.makeText(getApplicationContext(),"rut invalido", Toast.LENGTH_SHORT).show();
+                    progressDialog.dismiss();
+                    return;
                 }
+                rut= rut.replace(".","");
+                rut= rut.replace("-","");
+                rut= rut.trim();
+                rut= rut.substring(0,rut.length()-1);
+
+                String mac= ValidacionConexion.getDireccionMAC(LoginActivity.this);
+                    final StringRequest jsonObjectRequest = new StringRequest(
+
+                            Request.Method.GET // FORMA QUE LLAMAREMOS, O SEA GET
+                            , getString(R.string.URL_RegistrarUsuario) +"?run="+rut+"&mac="+mac+"&numero_proyecto=14&token="+getString(R.string.gcm_Token)// URL QUE LLAMAREMOS
+                            , new Response.Listener<String>(){ // OBJETO QUE USAREMOS PARA LA ESCUCHA DE LA RESPUESTA
+                        @Override
+                        public void onResponse(String response){
+                            progressDialog.dismiss();
+                            JSONObject jsonObject=null;
+                            Boolean error=true;
+                            String mensajesrv= null;
+
+                            String nombre;
+
+                            if(response.equals(null) || response.isEmpty()){
+
+                                titulo = "ERROR \n";
+                                mensaje = "Comuniquese con informatica, el servidor responde con formato incorrecto";
+                                alertas.alertaSimple(titulo,mensaje,LoginActivity.this);
+
+                                miDbHelper.insertarLogError("Variable response es Nulo o Vacio");
+                                return;
+                            }
+
+                            try {
+                                //Log.e("Omar","entro a try");
+                                jsonObject= new JSONObject(response);
+                                //Log.e("Respuesta",response);
+                            } catch (JSONException e) {
+
+                                titulo = "ERROR \n";
+                                mensaje = "Comuniquese con informatica, el servidor responde con formato incorrecto y el siguiente error:\n\n"+String.valueOf(e);
+                                alertas.alertaSimple(titulo,mensaje,LoginActivity.this);
+
+                                miDbHelper.insertarLogError("Error de formato en variable 'response', no parece ser tipo JSON. Mensaje de error : "+e.getMessage());
+                                return;
+                            }
+
+                            try{
+                                error = jsonObject.getBoolean("error");
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                titulo = "ERROR \n";
+                                mensaje = "Comuniquese con informatica, el servidor responde con formato incorrecto";
+                                alertas.alertaSimple(titulo,mensaje,LoginActivity.this);
+
+                                miDbHelper.insertarLogError("Error de formato en variable 'error', No existe o es un formato incorrecto. Mensaje de error : "+e.getMessage());
+                                return;
+                            }
+                            if(error){
+                                //Log.e("Omar","entro a error");
+
+                                try {
+                                    mensajesrv = jsonObject.getString("mensaje");
+                                } catch (JSONException e) {
+                                    titulo = "ERROR \n";
+                                    mensaje = "Comuniquese con informatica, el servidor responde con formato incorrecto";
+                                    alertas.alertaSimple(titulo,mensaje,LoginActivity.this);
+
+                                    miDbHelper.insertarLogError("Error de formato en variable 'mensaje', No existe o es un formato incorrecto. Mensaje de error : "+e.getMessage());
+                                    return;
+                                }
+                                titulo = "Servidor responde con el siguiente error:";
+
+                                alertas.alertaSimple(titulo,mensajesrv,LoginActivity.this);
+                                return;
+                            }
+                                miDbHelper.deleteUser();
+                                miDbHelper.insertarUsuario(rut,mensajesrv);
+                                Toast.makeText(getApplicationContext(),"Registrado", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                                finish();
+                                startActivity(intent);
+
+                        }
+                    }
+                            , new Response.ErrorListener(){ // QUE HACER EN CASO DE ERROR
+                        @Override
+                        public void onErrorResponse(VolleyError error){
+                            progressDialog.dismiss();
+                            volleyS.cancelAll();
+
+                            titulo = "Error";
+                            mensaje = "Servidor no responde \n" +
+                                    " Asegurese de estar conectado a internet o intentelo mas tarde";
+                            alertas.alertaSimple(titulo,mensaje,LoginActivity.this);
+
+                            miDbHelper.insertarLogError("Ocurrio un error al comunicarse con el servidor a travez de Volley. Mensaje : "+error);
+                        }
+
+
+
+                    }
+                    );
+                    volleyS.addToQueue(jsonObjectRequest, LoginActivity.this);
+
+
+
+
             }
         });
 

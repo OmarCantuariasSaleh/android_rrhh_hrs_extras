@@ -169,14 +169,9 @@ public class MainActivity extends AppCompatActivity{
 								miDbHelper.insertarLogError("Error de formato en variable 'mensaje', No existe o es un formato incorrecto. Mensaje de error : "+e.getMessage());
 								return;
 							}
-
-							new AlertDialog.Builder(MainActivity.this)
-									.setIcon(android.R.drawable.ic_dialog_info)
-									.setTitle("Servidor responde con el siguiente error: ")
-									.setMessage(mensajesrv)
-									.setNeutralButton("Ok",null)
-									.show()
-							;
+							titulo = "Servidor responde con el siguiente error:";
+							mensaje = mensajesrv;
+							alertas.alertaSimple(titulo,mensaje,MainActivity.this);
 							return;
 						}
 						//Log.e("Respuesta",response);
@@ -186,13 +181,10 @@ public class MainActivity extends AppCompatActivity{
 						try {
 							jsonArray = jsonObject.getJSONArray("filas");
 						} catch (JSONException e) {
-							new AlertDialog.Builder(MainActivity.this)
-									.setIcon(android.R.drawable.ic_dialog_info)
-									.setTitle("ERROR \n")
-									.setMessage("Comuniquese con informatica, el servidor responde con formato incorrecto")
-									.setNeutralButton("Ok",null)
-									.show()
-							;
+							titulo = "ERROR \n";
+							mensaje = "Comuniquese con informatica, el servidor responde con formato incorrecto";
+							alertas.alertaSimple(titulo,mensaje,MainActivity.this);
+
 							miDbHelper.insertarLogError("Error de formato en variable 'filas', No existe o es un formato incorrecto. Mensaje de error : "+e.getMessage());
 							return;
 						}
@@ -206,13 +198,10 @@ public class MainActivity extends AppCompatActivity{
 								try {
 									jsonData = jsonArray.getJSONObject(i);
 								} catch (JSONException e) {
-									new AlertDialog.Builder(MainActivity.this)
-											.setIcon(android.R.drawable.ic_dialog_info)
-											.setTitle("ERROR \n")
-											.setMessage("Comuniquese con informatica, el servidor no retorna filas")
-											.setNeutralButton("Ok",null)
-											.show()
-									;
+									titulo = "ERROR \n";
+									mensaje = "Comuniquese con informatica, el servidor no retorna filas";
+									alertas.alertaSimple(titulo,mensaje,MainActivity.this);
+
 									miDbHelper.insertarLogError("Error de formato en variable 'filas',datos del arreglo no son JSONObject o no tienen formato correcto. Mensaje de error : "+e.getMessage());
 									return;
 								}
@@ -238,13 +227,10 @@ public class MainActivity extends AppCompatActivity{
 
 								} catch (JSONException e) {
 									e.printStackTrace();
-									new AlertDialog.Builder(MainActivity.this)
-											.setIcon(android.R.drawable.ic_dialog_info)
-											.setTitle("ERROR \n")
-											.setMessage("Comuniquese con informatica, el servidor retorna filas incorrectas")
-											.setNeutralButton("Ok",null)
-											.show()
-									;
+									titulo = "ERROR \n";
+									mensaje = "Comuniquese con informatica, el servidor retorna filas incorrectas";
+									alertas.alertaSimple(titulo,mensaje,MainActivity.this);
+
 									miDbHelper.insertarLogError("Filas del arreglo no tienen formato correcto o estan vacias. Mensaje de error : "+e.getMessage());
 									return;
 								}
@@ -269,25 +255,19 @@ public class MainActivity extends AppCompatActivity{
 												,estado3
 												,rut_admin3)){
 									Log.e("Omar","No Exitoso");
-									new AlertDialog.Builder(MainActivity.this)
-											.setIcon(android.R.drawable.ic_dialog_info)
-											.setTitle("Error")
-											.setMessage("Error de base de datos \n Comuniquese con informatica inmediatamente")
-											.setNeutralButton("Ok",null)
-											.show()
-									;
+									titulo = "ERROR \n";
+									mensaje = "Error de base de datos \n" +
+											" Comuniquese con informatica inmediatamente";
+									alertas.alertaSimple(titulo,mensaje,MainActivity.this);
+
 									miDbHelper.insertarLogError("Una o mas filas del arreglo contienen datos que no coinciden con la tabla en la fila "+String.valueOf(i));
 									return;
 								}
 						}
+						titulo = "Exito";
+						mensaje = "Actualizacion exitosa";
+						alertas.alertaSimple(titulo,mensaje,MainActivity.this);
 
-						new AlertDialog.Builder(MainActivity.this)
-								.setIcon(android.R.drawable.ic_dialog_info)
-								.setTitle("Exito")
-								.setMessage("Actualizacion exitosa")
-								.setNeutralButton("Ok",null)
-								.show()
-						;
 					}
 				}
 						, new Response.ErrorListener(){ // QUE HACER EN CASO DE ERROR
@@ -296,16 +276,12 @@ public class MainActivity extends AppCompatActivity{
 						progressDialog.dismiss();
 						volleyS.cancelAll();
 
+						titulo = "Error";
+						mensaje = "Servidor no responde \n" +
+								" Asegurese de estar conectado a internet o intentelo mas tarde";
+						alertas.alertaSimple(titulo,mensaje,MainActivity.this);
 
-						new AlertDialog.Builder(MainActivity.this)
-								.setIcon(android.R.drawable.ic_dialog_info)
-								.setTitle("Error")
-								.setMessage("Servidor no responde \n Asegurese de estar conectado a internet o intentelo mas tarde")
-								.setNeutralButton("Ok",null)
-								.show()
-						;
 						miDbHelper.insertarLogError("Ocurrio un error al comunicarse con el servidor a travez de Volley. Mensaje : "+error);
-
 					}
 				}
 				);
