@@ -1,10 +1,8 @@
 package cl.cmsg.rrhhaprobacionhrsextras;
 
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -13,7 +11,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -21,7 +18,6 @@ import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 
 import org.json.JSONArray;
@@ -35,7 +31,7 @@ import cl.cmsg.rrhhaprobacionhrsextras.clases.VolleyS;
 
 public class MainActivity extends AppCompatActivity{
 
-	Alertas alertas;
+
 	MiDbHelper miDbHelper;
 	ImageButton btnActualizar;
 	ListView lista;
@@ -91,7 +87,11 @@ public class MainActivity extends AppCompatActivity{
 				progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 				progressDialog.setCancelable(false);
 				progressDialog.show();
-
+				if(!ValidacionConexion.isExisteConexion(MainActivity.this)){
+					progressDialog.dismiss();
+					Alertas.alertaConexion(MainActivity.this);
+					return;
+				}
 				final StringRequest jsonObjectRequest = new StringRequest(
 
 						Request.Method.GET // FORMA QUE LLAMAREMOS, O SEA GET
@@ -100,12 +100,12 @@ public class MainActivity extends AppCompatActivity{
 					@Override
 					public void onResponse(String response){
 						progressDialog.dismiss();
-						JSONObject jsonObject=null;
-						Boolean error=true;
-						String fecha="";
-						int run=0;
-						String nombre="";
-						int valor=0;
+						JSONObject jsonObject;
+						Boolean error;
+						String fecha;
+						int run;
+						String nombre;
+						int valor;
 						double cantidad = 0;
 						String motivo="";
 						String comentario="";
@@ -120,12 +120,12 @@ public class MainActivity extends AppCompatActivity{
 						String rut_admin3 = "";
 						String mensajesrv= null;
 
-
-						if(response.equals(null) || response.isEmpty()){
-
-							titulo = "ERROR \n";
+						//Log.e("omar",response);
+						if(response==null || response.isEmpty()){
+							progressDialog.dismiss();
+							titulo = "ERROR";
 							mensaje = "Comuniquese con informatica, el servidor responde con formato incorrecto";
-							alertas.alertaSimple(titulo,mensaje,MainActivity.this);
+							Alertas.alertaSimple(titulo,mensaje,MainActivity.this);
 
 							miDbHelper.insertarLogError("Variable response es Nulo o Vacio");
 							return;
@@ -138,7 +138,7 @@ public class MainActivity extends AppCompatActivity{
 
 							titulo = "ERROR \n";
 							mensaje = "Comuniquese con informatica, el servidor responde con formato incorrecto y el siguiente error:\n\n"+String.valueOf(e);
-							alertas.alertaSimple(titulo,mensaje,MainActivity.this);
+							Alertas.alertaSimple(titulo,mensaje,MainActivity.this);
 
 							miDbHelper.insertarLogError("Error de formato en variable 'response', no parece ser tipo JSON. Mensaje de error : "+e.getMessage());
 							return;
@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity{
 							e.printStackTrace();
 							titulo = "ERROR \n";
 							mensaje = "Comuniquese con informatica, el servidor responde con formato incorrecto";
-							alertas.alertaSimple(titulo,mensaje,MainActivity.this);
+							Alertas.alertaSimple(titulo,mensaje,MainActivity.this);
 
 							miDbHelper.insertarLogError("Error de formato en variable 'error', No existe o es un formato incorrecto. Mensaje de error : "+e.getMessage());
 							return;
@@ -164,14 +164,14 @@ public class MainActivity extends AppCompatActivity{
 							} catch (JSONException e) {
 								titulo = "ERROR \n";
 								mensaje = "Comuniquese con informatica, el servidor responde con formato incorrecto";
-								alertas.alertaSimple(titulo,mensaje,MainActivity.this);
+								Alertas.alertaSimple(titulo,mensaje,MainActivity.this);
 
 								miDbHelper.insertarLogError("Error de formato en variable 'mensaje', No existe o es un formato incorrecto. Mensaje de error : "+e.getMessage());
 								return;
 							}
 							titulo = "Servidor responde con el siguiente error:";
 							mensaje = mensajesrv;
-							alertas.alertaSimple(titulo,mensaje,MainActivity.this);
+							Alertas.alertaSimple(titulo,mensaje,MainActivity.this);
 							return;
 						}
 						//Log.e("Respuesta",response);
@@ -183,12 +183,11 @@ public class MainActivity extends AppCompatActivity{
 						} catch (JSONException e) {
 							titulo = "ERROR \n";
 							mensaje = "Comuniquese con informatica, el servidor responde con formato incorrecto";
-							alertas.alertaSimple(titulo,mensaje,MainActivity.this);
+							Alertas.alertaSimple(titulo,mensaje,MainActivity.this);
 
 							miDbHelper.insertarLogError("Error de formato en variable 'filas', No existe o es un formato incorrecto. Mensaje de error : "+e.getMessage());
 							return;
 						}
-						int switchBD=0;
 							// Borrar solicitudes antiguas
 							miDbHelper.deleteSolicitudALL();
 							Log.e("Omar","entro a else");
@@ -200,7 +199,7 @@ public class MainActivity extends AppCompatActivity{
 								} catch (JSONException e) {
 									titulo = "ERROR \n";
 									mensaje = "Comuniquese con informatica, el servidor no retorna filas";
-									alertas.alertaSimple(titulo,mensaje,MainActivity.this);
+									Alertas.alertaSimple(titulo,mensaje,MainActivity.this);
 
 									miDbHelper.insertarLogError("Error de formato en variable 'filas',datos del arreglo no son JSONObject o no tienen formato correcto. Mensaje de error : "+e.getMessage());
 									return;
@@ -229,7 +228,7 @@ public class MainActivity extends AppCompatActivity{
 									e.printStackTrace();
 									titulo = "ERROR \n";
 									mensaje = "Comuniquese con informatica, el servidor retorna filas incorrectas";
-									alertas.alertaSimple(titulo,mensaje,MainActivity.this);
+									Alertas.alertaSimple(titulo,mensaje,MainActivity.this);
 
 									miDbHelper.insertarLogError("Filas del arreglo no tienen formato correcto o estan vacias. Mensaje de error : "+e.getMessage());
 									return;
@@ -258,7 +257,7 @@ public class MainActivity extends AppCompatActivity{
 									titulo = "ERROR \n";
 									mensaje = "Error de base de datos \n" +
 											" Comuniquese con informatica inmediatamente";
-									alertas.alertaSimple(titulo,mensaje,MainActivity.this);
+									Alertas.alertaSimple(titulo,mensaje,MainActivity.this);
 
 									miDbHelper.insertarLogError("Una o mas filas del arreglo contienen datos que no coinciden con la tabla en la fila "+String.valueOf(i));
 									return;
@@ -266,7 +265,7 @@ public class MainActivity extends AppCompatActivity{
 						}
 						titulo = "Exito";
 						mensaje = "Actualizacion exitosa";
-						alertas.alertaSimple(titulo,mensaje,MainActivity.this);
+						Alertas.alertaSimple(titulo,mensaje,MainActivity.this);
 
 					}
 				}
@@ -279,7 +278,7 @@ public class MainActivity extends AppCompatActivity{
 						titulo = "Error";
 						mensaje = "Servidor no responde \n" +
 								" Asegurese de estar conectado a internet o intentelo mas tarde";
-						alertas.alertaSimple(titulo,mensaje,MainActivity.this);
+						Alertas.alertaSimple(titulo,mensaje,MainActivity.this);
 
 						miDbHelper.insertarLogError("Ocurrio un error al comunicarse con el servidor a travez de Volley. Mensaje : "+error);
 					}
