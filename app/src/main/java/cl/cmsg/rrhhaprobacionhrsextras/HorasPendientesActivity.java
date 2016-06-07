@@ -46,7 +46,7 @@ public class HorasPendientesActivity extends AppCompatActivity {
         String rut;
         String nombre;
         String fecha;
-
+        Log.e("Omar", "Rut usuario"+rut_user +" // "+ String.valueOf(cursor.getCount()));
         while(cursor.moveToNext()){
 
             int lvl = 0;
@@ -57,7 +57,7 @@ public class HorasPendientesActivity extends AppCompatActivity {
             String rut1 = cursor.getString(cursor.getColumnIndex("rut_admin1"));
             String rut2 = cursor.getString(cursor.getColumnIndex("rut_admin2"));
             String rut3 = cursor.getString(cursor.getColumnIndex("rut_admin3"));
-
+            //Log.e("Omar", "E1: "+E1+"E2: "+E2+"E3: "+E3);
 
            if(E1.equals("P") && rut1.equals(miDbHelper.getRutUsuario())){
                 lvl=1;
@@ -66,7 +66,7 @@ public class HorasPendientesActivity extends AppCompatActivity {
             }else if(E3.equals("P") && rut3.equals(miDbHelper.getRutUsuario()) && E1.equals("A") && E2.equals("A")){
                 lvl=3;
             }
-            Log.e("Omar","Lvl:"+ lvl+ " Estado 1: "+E1+" Estado 2: "+E2+" Estado 3: "+E3);
+            //Log.e("Omar","Lvl:"+ lvl+ " Estado 1: "+E1+" Estado 2: "+E2+" Estado 3: "+E3);
             if(lvl!=0){
                 rut= cursor.getString(cursor.getColumnIndex("Rut"));
 

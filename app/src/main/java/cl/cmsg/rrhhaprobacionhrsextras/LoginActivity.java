@@ -71,11 +71,9 @@ public class LoginActivity extends AppCompatActivity {
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progressDialog.setCancelable(false);
 
-        //TODO cambiar para que pregunte si el rut en el servidor es igual al de la BD del CeL --
         if (!miDbHelper.getRutUsuario().trim().isEmpty()) {
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            startActivity(intent);
-            //finish();
+            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            finish();
             return;
         }
 
@@ -98,9 +96,9 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
                 rut = rut.replace(".", "");
-                rut = rut.replace("-", "");
+                //rut = rut.replace("-", "");
                 rut = rut.trim();
-                rut = rut.substring(0, rut.length() - 1);
+                /*rut = rut.substring(0, rut.length() - 1);*/
 
                 if (!ValidacionConexion.isExisteConexion(LoginActivity.this)) {
                     Alertas.alertaConexion(LoginActivity.this);
@@ -108,15 +106,6 @@ public class LoginActivity extends AppCompatActivity {
                 }
 
                 progressDialog.show();
-
-                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
-                tokenRecibido = sharedPreferences.getString(ConstantesGlobales.TOKEN, "");
-
-                if (!tokenRecibido.trim().isEmpty()){
-                    Log.e("jlas", "ya existe el token en shared preferences");
-                    enviarAlServidorCMSG();
-                    return;
-                }
 
                 registerReceiver();
 
@@ -156,7 +145,7 @@ public class LoginActivity extends AppCompatActivity {
                         .show();
             } else {
                 Log.e("jlas", "Este dispositivo no es compatible con la aplicación.");
-                //finish();
+                finish();
             }
             return false;
         }
@@ -165,6 +154,9 @@ public class LoginActivity extends AppCompatActivity {
 
 
     void enviarAlServidorCMSG() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
+        tokenRecibido = sharedPreferences.getString(ConstantesGlobales.TOKEN, "");
+
         if (tokenRecibido.isEmpty()) {
             //     No tenemos token, algo pasó y debemos intentarlo nuevamente.
             progressDialog.dismiss();
@@ -183,7 +175,7 @@ public class LoginActivity extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
 
-                            //finish();
+                            finish();
                         }
                     })
                     .show()
@@ -193,7 +185,7 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        //     Ya está registrado y guardado el token
+        //     Ya está registrado y guardado el token en shared preferences
 
         bloquearInterfazUsuario();
         String mac = ValidacionConexion.getDireccionMAC(LoginActivity.this);
@@ -273,11 +265,14 @@ public class LoginActivity extends AppCompatActivity {
                         }
                         Log.e("jlas", "LLEGUE HASTA AQUI MIRAME");
                         miDbHelper.deleteUser();
+                        rut = rut.replace("-", "");
+                        rut = rut.trim();
+                        rut = rut.substring(0, rut.length() - 1);
+
                         miDbHelper.insertarUsuario(rut, mensajesrv);
                         Toast.makeText(LoginActivity.this, "Registrado", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                        //finish();
-                        startActivity(intent);
+                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                        finish();
                     }
                 }
                 ,

@@ -128,6 +128,7 @@ public class MainActivity extends AppCompatActivity{
 							Alertas.alertaSimple(titulo,mensaje,MainActivity.this);
 
 							miDbHelper.insertarLogError("Variable response es Nulo o Vacio");
+							Log.e("Omar", "Variable response es Nulo o Vacio");
 							return;
 						}
 						try {
@@ -141,6 +142,7 @@ public class MainActivity extends AppCompatActivity{
 							Alertas.alertaSimple(titulo,mensaje,MainActivity.this);
 
 							miDbHelper.insertarLogError("Error de formato en variable 'response', no parece ser tipo JSON. Mensaje de error : "+e.getMessage());
+							Log.e("Omar","Error de formato en variable 'response', no parece ser tipo JSON. Mensaje de error : "+e.getMessage() );
 							return;
 						}
 						try{
@@ -153,6 +155,7 @@ public class MainActivity extends AppCompatActivity{
 							Alertas.alertaSimple(titulo,mensaje,MainActivity.this);
 
 							miDbHelper.insertarLogError("Error de formato en variable 'error', No existe o es un formato incorrecto. Mensaje de error : "+e.getMessage());
+							Log.e("Omar","Error de formato en variable 'mensaje', No existe o es un formato incorrecto. Mensaje de error : "+e.getMessage());
 							return;
 						}
 						if(error){
@@ -167,6 +170,7 @@ public class MainActivity extends AppCompatActivity{
 								Alertas.alertaSimple(titulo,mensaje,MainActivity.this);
 
 								miDbHelper.insertarLogError("Error de formato en variable 'mensaje', No existe o es un formato incorrecto. Mensaje de error : "+e.getMessage());
+								Log.e("Omar","Error de formato en variable 'mensaje', No existe o es un formato incorrecto. Mensaje de error : "+e.getMessage() );
 								return;
 							}
 							titulo = "Servidor responde con el siguiente error:";
@@ -186,13 +190,14 @@ public class MainActivity extends AppCompatActivity{
 							Alertas.alertaSimple(titulo,mensaje,MainActivity.this);
 
 							miDbHelper.insertarLogError("Error de formato en variable 'filas', No existe o es un formato incorrecto. Mensaje de error : "+e.getMessage());
+							Log.e("Omar", "Error de formato en variable 'filas', No existe o es un formato incorrecto. Mensaje de error : "+e.getMessage());
 							return;
 						}
 							// Borrar solicitudes antiguas
 							miDbHelper.deleteSolicitudALL();
 							Log.e("Omar","entro a else");
 							for(int i=0;i<jsonArray.length();i++){
-
+								//Log.e("Omar","entro a for");
 								JSONObject jsonData= null;
 								try {
 									jsonData = jsonArray.getJSONObject(i);
@@ -202,6 +207,7 @@ public class MainActivity extends AppCompatActivity{
 									Alertas.alertaSimple(titulo,mensaje,MainActivity.this);
 
 									miDbHelper.insertarLogError("Error de formato en variable 'filas',datos del arreglo no son JSONObject o no tienen formato correcto. Mensaje de error : "+e.getMessage());
+									Log.e("Omar", "Error de formato en variable 'filas',datos del arreglo no son JSONObject o no tienen formato correcto. Mensaje de error : "+e.getMessage());
 									return;
 								}
 
@@ -223,7 +229,10 @@ public class MainActivity extends AppCompatActivity{
 									rut_admin2 = jsonData.getString("run2");
 									estado3 = jsonData.getString("estado3");
 									rut_admin3 = jsonData.getString("run3");
-
+									Log.e("Omar", "Rut "+String.valueOf(run)+" // Nombre: "+nombre+" // fecha: "+fecha+" // horas: "+cantidad
+											+" // Valor: $"+valor+" // Motivo: "+motivo+" // Coment: "+comentario+" // Cent.Costo: "+centro_costo+" // Area: "+area
+											+" // Tipo Pacto: "+tipo_pacto+" // E1: "+estado1+" // R1: "+rut_admin1+" // E2: "+estado2+" // RU2: "+rut_admin2
+											+" // E3: "+estado3+" // R3: "+rut_admin3);
 								} catch (JSONException e) {
 									e.printStackTrace();
 									titulo = "ERROR \n";
@@ -231,11 +240,39 @@ public class MainActivity extends AppCompatActivity{
 									Alertas.alertaSimple(titulo,mensaje,MainActivity.this);
 
 									miDbHelper.insertarLogError("Filas del arreglo no tienen formato correcto o estan vacias. Mensaje de error : "+e.getMessage());
+									Log.e("Omar", "Filas del arreglo no tienen formato correcto o estan vacias. Mensaje de error : "+e.getMessage());
 									return;
 								}
 
-
-								//Insertar solicitud nueva
+								try{
+									miDbHelper.insertarSolicitud(
+											String.valueOf(run)
+											,nombre
+											,fecha
+											,cantidad
+											,valor
+											,motivo
+											,comentario
+											,centro_costo
+											,area
+											,tipo_pacto
+											,estado1
+											,rut_admin1
+											,estado2
+											,rut_admin2
+											,estado3
+											,rut_admin3);
+								}catch (Exception e){
+									Log.e("Omar","No Exitoso");
+									titulo = "ERROR \n";
+									mensaje = "Error de base de datos \n" +
+											" Comuniquese con informatica inmediatamente";
+									Alertas.alertaSimple(titulo,mensaje,MainActivity.this);
+									miDbHelper.insertarLogError("Una o mas filas del arreglo contienen datos que no coinciden con la tabla en la fila "+String.valueOf(i));
+									Log.e("Omar","Una o mas filas del arreglo contienen datos que no coinciden con la tabla en la fila, datos : "+e.getMessage());
+									return;
+								}
+								/*//Insertar solicitud nueva
 								if(!miDbHelper.insertarSolicitud(
 												String.valueOf(run)
 												,nombre
@@ -258,10 +295,10 @@ public class MainActivity extends AppCompatActivity{
 									mensaje = "Error de base de datos \n" +
 											" Comuniquese con informatica inmediatamente";
 									Alertas.alertaSimple(titulo,mensaje,MainActivity.this);
-
 									miDbHelper.insertarLogError("Una o mas filas del arreglo contienen datos que no coinciden con la tabla en la fila "+String.valueOf(i));
+									Log.e("Omar","Una o mas filas del arreglo contienen datos que no coinciden con la tabla en la fila ");
 									return;
-								}
+								}*/
 						}
 						titulo = "Exito";
 						mensaje = "Actualizacion exitosa";
@@ -281,6 +318,7 @@ public class MainActivity extends AppCompatActivity{
 						Alertas.alertaSimple(titulo,mensaje,MainActivity.this);
 
 						miDbHelper.insertarLogError("Ocurrio un error al comunicarse con el servidor a travez de Volley. Mensaje : "+error);
+						Log.e("Omar","Ocurrio un error al comunicarse con el servidor a travez de Volley. Mensaje : "+error );
 					}
 				}
 				);

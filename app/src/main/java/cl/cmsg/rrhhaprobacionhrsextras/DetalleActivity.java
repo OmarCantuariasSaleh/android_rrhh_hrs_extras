@@ -1,5 +1,7 @@
 package cl.cmsg.rrhhaprobacionhrsextras;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
@@ -11,7 +13,24 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import cl.cmsg.rrhhaprobacionhrsextras.clases.MiDbHelper;
+import cl.cmsg.rrhhaprobacionhrsextras.clases.Alertas;
+import cl.cmsg.rrhhaprobacionhrsextras.clases.MiDbHelper;
+import cl.cmsg.rrhhaprobacionhrsextras.clases.Rut;
+import cl.cmsg.rrhhaprobacionhrsextras.clases.ValidacionConexion;
+import cl.cmsg.rrhhaprobacionhrsextras.clases.VolleyS;
+import cl.cmsg.rrhhaprobacionhrsextras.gcm.ConstantesGlobales;
+import cl.cmsg.rrhhaprobacionhrsextras.gcm.RegistrationIntentService;
 
 public class DetalleActivity extends AppCompatActivity {
 
@@ -30,6 +49,24 @@ public class DetalleActivity extends AppCompatActivity {
     Button btnAprobar;
     Button btnRechazar;
     String lvl;
+    ProgressDialog progressDialog;
+    String mensaje;
+    String titulo;
+    String rut;
+    String nombre;
+    String fecha;
+    int cant_horas;
+    int monto_pagar;
+    String motivo;
+    String comentario;
+    String centro_costo;
+    String area;
+    String tipo_pacto;
+    String E1;
+    String E2;
+    String E3;
+    String estado_Final;
+    VolleyS volleyS;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +87,7 @@ public class DetalleActivity extends AppCompatActivity {
         btnAprobar = (Button) findViewById(R.id.btnAprobar);
         btnRechazar = (Button) findViewById(R.id.btnRechazar);
 
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -57,19 +95,7 @@ public class DetalleActivity extends AppCompatActivity {
         Bundle bundle= getIntent().getExtras();
         miDbHelper = MiDbHelper.getInstance(this,DetalleActivity.this);
         final Cursor cursor =   miDbHelper.getDatoSolicitudDetalle(bundle.getString("Rut",""),bundle.getString("fecha",""));
-        String rut;
-        String nombre;
-        String fecha;
-        int cant_horas;
-        int monto_pagar;
-        String motivo;
-        String comentario;
-        String centro_costo;
-        String area;
-        String tipo_pacto;
-        String E1;
-        String E2;
-        String E3;
+
 
 
         while(cursor.moveToNext()){
@@ -136,32 +162,42 @@ public class DetalleActivity extends AppCompatActivity {
         btnAprobar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String rutA= cursor.getString(cursor.getColumnIndex("Rut"));
-                String fechaA= cursor.getString(cursor.getColumnIndex("fecha"));
-                String estadoA= "A";
 
+                progressDialog = new ProgressDialog(DetalleActivity.this);
+                progressDialog.setTitle("Actualizando datos");
+                progressDialog.setMessage("Espere un momento");
+                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                progressDialog.setCancelable(false);
+                progressDialog.show();
+                if(!ValidacionConexion.isExisteConexion(DetalleActivity.this)){
+                    progressDialog.dismiss();
+                    Alertas.alertaConexion(DetalleActivity.this);
+                    return;
+                }
 
-                miDbHelper.actualizarEstado(rutA,fechaA,estadoA,lvl);
+                estado_Final= "A";
 
-                Intent intent = new Intent(getApplicationContext(),HorasPendientesActivity.class);
-                cursor.close();
-                startActivity(intent);
+                //TODO Usar actualizaEstado para enviar los cambios al server y validar, luego se aplican a DB local
+
+                actualizaEstado(rut,fecha,estado_Final,lvl);
+
             }
         });
 
         btnRechazar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String rutR= cursor.getString(cursor.getColumnIndex("Rut"));
-                String fechaR= cursor.getString(cursor.getColumnIndex("fecha"));
-                String estadoR= "R";
+                rut= cursor.getString(cursor.getColumnIndex("Rut"));
+                fecha= cursor.getString(cursor.getColumnIndex("fecha"));
+                estado_Final= "R";
 
-
-                miDbHelper.actualizarEstado(rutR,fechaR,estadoR,lvl);
-
-                Intent intent = new Intent(getApplicationContext(),HorasPendientesActivity.class);
+                //TODO Usar actualizaEstado para enviar los cambios al server y validar, luego se aplican a DB local
+                actualizaEstado(rut,fecha,estado_Final,lvl);
                 cursor.close();
-                startActivity(intent);
+                //TODO Aplicar nuevo intent cuando actualizaEstado funciona
+                //Intent intent = new Intent(getApplicationContext(),HorasPendientesActivity.class);
+                //startActivity(intent);
+                //TODO end
             }
         });
 
@@ -176,6 +212,126 @@ public class DetalleActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void actualizaEstado(final String rut_S,final String fecha_S, final String estado_Final,final String lvl_S){
+        final VolleyS volleyS = VolleyS.getInstance(this);
+        progressDialog = new ProgressDialog(DetalleActivity.this);
+        progressDialog.setTitle("Actualizando");
+        progressDialog.setMessage("Espere un momento");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+        if(!ValidacionConexion.isExisteConexion(DetalleActivity.this)){
+            progressDialog.dismiss();
+            Alertas.alertaConexion(DetalleActivity.this );
+            return;
+        }
+        final StringRequest jsonObjectRequest = new StringRequest(
+
+                Request.Method.GET // FORMA QUE LLAMAREMOS, O SEA GET
+                , getString(R.string.URL_ActualizarEstado)
+                +"?run="+ rut_S
+                +"&fecha="+fecha_S
+                +"estado="+estado_Final
+                +"&lvl="+lvl_S
+                +"&apk_key="+getString(R.string.APK_KEY)
+                // URL QUE LLAMAREMOS, TODO reemplazar por URL nueva
+                , new Response.Listener<String>(){ // OBJETO QUE USAREMOS PARA LA ESCUCHA DE LA RESPUESTA
+            @Override
+            public void onResponse(String response){
+                progressDialog.dismiss();
+                JSONObject jsonObject;
+                Boolean error;
+                int run;
+                String mensajesrv;
+
+                Log.e("omar",response);
+                if(response==null || response.isEmpty()){
+                    progressDialog.dismiss();
+                    titulo = "ERROR";
+                    mensaje = "Comuniquese con informatica, el servidor responde con formato incorrecto";
+                    Alertas.alertaSimple(titulo,mensaje,DetalleActivity.this);
+
+                    miDbHelper.insertarLogError("Variable response es Nulo o Vacio");
+                    Log.e("Omar", "Variable response es Nulo o Vacio");
+                    return;
+                }
+                try {
+                    //Log.e("Omar","entro a try");
+                    jsonObject= new JSONObject(response);
+                    //Log.e("Respuesta",response);
+                } catch (JSONException e) {
+
+                    titulo = "ERROR \n";
+                    mensaje = "Comuniquese con informatica, el servidor responde con formato incorrecto y el siguiente error:\n\n"+String.valueOf(e);
+                    Alertas.alertaSimple(titulo,mensaje,DetalleActivity.this);
+
+                    miDbHelper.insertarLogError("Error de formato en variable 'response', no parece ser tipo JSON. Mensaje de error : "+e.getMessage());
+                    Log.e("Omar","Error de formato en variable 'response', no parece ser tipo JSON. Mensaje de error : "+e.getMessage() );
+                    return;
+                }
+                try{
+                    error = jsonObject.getBoolean("error");
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    titulo = "ERROR \n";
+                    mensaje = "Comuniquese con informatica, el servidor responde con formato incorrecto";
+                    Alertas.alertaSimple(titulo,mensaje,DetalleActivity.this);
+
+                    miDbHelper.insertarLogError("Error de formato en variable 'error', No existe o es un formato incorrecto. Mensaje de error : "+e.getMessage());
+                    Log.e("Omar","Error de formato en variable 'mensaje', No existe o es un formato incorrecto. Mensaje de error : "+e.getMessage());
+                    return;
+                }
+                if(error){
+                    //Log.e("Omar","entro a error");
+
+                    try {
+                        mensajesrv = jsonObject.getString("mensaje");
+                    } catch (JSONException e) {
+                        titulo = "ERROR \n";
+                        mensaje = "Comuniquese con informatica, el servidor responde con formato incorrecto";
+                        Alertas.alertaSimple(titulo,mensaje,DetalleActivity.this);
+
+                        miDbHelper.insertarLogError("Error de formato en variable 'mensaje', No existe o es un formato incorrecto. Mensaje de error : "+e.getMessage());
+                        Log.e("Omar","Error de formato en variable 'mensaje', No existe o es un formato incorrecto. Mensaje de error : "+e.getMessage() );
+                        return;
+                    }
+                    titulo = "Servidor responde con el siguiente error:";
+                    mensaje = mensajesrv;
+                    Alertas.alertaSimple(titulo,mensaje,DetalleActivity.this);
+                    return;
+                }
+                //Log.e("Respuesta",response);
+
+                miDbHelper.actualizarEstado(rut,fecha,estado_Final,lvl);
+                titulo = "Exito";
+                mensaje = "Actualizacion exitosa";
+                Alertas.alertaSimple(titulo,mensaje,DetalleActivity.this);
+
+            }
+        }
+                , new Response.ErrorListener(){ // QUE HACER EN CASO DE ERROR
+            @Override
+            public void onErrorResponse(VolleyError error){
+                progressDialog.dismiss();
+                volleyS.cancelAll();
+
+                titulo = "Error";
+                mensaje = "Servidor no responde \n" +
+                        " Asegurese de estar conectado a internet o intentelo mas tarde";
+                Alertas.alertaSimple(titulo,mensaje,DetalleActivity.this);
+
+                miDbHelper.insertarLogError("Ocurrio un error al comunicarse con el servidor a travez de Volley. Mensaje : "+error);
+                Log.e("Omar","Ocurrio un error al comunicarse con el servidor a travez de Volley. Mensaje : "+error );
+
+            }
+        }
+        );
+        volleyS.addToQueue(jsonObjectRequest, DetalleActivity.this);
+        return;
+
     }
 
 }

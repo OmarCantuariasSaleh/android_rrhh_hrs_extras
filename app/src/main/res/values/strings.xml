@@ -5,9 +5,10 @@
     <string name="act_detalles">Detalles de Solicitud</string>
     <string name="action_settings">Settings</string>
     <string name="ok">Ok</string>
-    <string name="version">0.2</string>
+    <string name="version">0.2.2</string>
     <string name="URL_PendienteAprobacion">http://200.111.157.141:8080/android/hrsextras/pendientes.php</string>
     <string name="URL_RegistrarUsuario">http://200.111.157.141:8080/android/hrsextras/registrar.php</string>
+    <string name="URL_ActualizarEstado">http://200.111.157.141:8080/android/hrsextras/registrar_decision.php</string>
 
     <string name="APK_KEY">odfopk4590savk945lkaja89309f9i3sdf</string>
     <string name="num_proyecto">14</string>
