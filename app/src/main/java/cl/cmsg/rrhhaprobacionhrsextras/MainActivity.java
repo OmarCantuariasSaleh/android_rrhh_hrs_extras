@@ -1,18 +1,24 @@
 package cl.cmsg.rrhhaprobacionhrsextras;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.webkit.URLUtil;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -24,6 +30,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 import cl.cmsg.rrhhaprobacionhrsextras.clases.Alertas;
 import cl.cmsg.rrhhaprobacionhrsextras.clases.MiDbHelper;
 import cl.cmsg.rrhhaprobacionhrsextras.clases.ValidacionConexion;
@@ -31,14 +40,20 @@ import cl.cmsg.rrhhaprobacionhrsextras.clases.VolleyS;
 
 public class MainActivity extends AppCompatActivity{
 
-
 	MiDbHelper miDbHelper;
 	ImageButton btnActualizar;
 	ListView lista;
 	ProgressDialog progressDialog;
 	String mensaje;
 	String titulo;
-
+	String[] opciones;
+	int errorSwitch=0;
+    Cursor cursor;
+	int error1=0;
+	int error2=0;
+	int error3=0;
+	TextView lblBienvenido;
+	int filas=0;
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
 
@@ -48,30 +63,229 @@ public class MainActivity extends AppCompatActivity{
 		setSupportActionBar(toolbar);
 		miDbHelper = MiDbHelper.getInstance(this,MainActivity.this);
 		btnActualizar = (ImageButton) findViewById(R.id.btnActualizar);
-
+		miDbHelper.deleteErrorLogALL();
 		final VolleyS volleyS = VolleyS.getInstance(this);
+		lblBienvenido = (TextView) findViewById(R.id.lblBienvenido);
+		//lblBienvenido.setText("Bienvenido "+ String.get);
 
 		lista = (ListView) findViewById(R.id.Lista);
-		final String[] opciones = new String[] {
+		opciones = new String[] {
 				"Horas extras pendientes",
 				"Horas extras aprobadas",
-				"Version: 0.2"
+				"Enviar Errrores [ "+String.valueOf(miDbHelper.CuentaErrores())+" ]",
+				"Version: "+getString(R.string.version)
 		};
+
+		lista.setAdapter(
+				new ArrayAdapter<>(
+						this,
+						android.R.layout.simple_list_item_1,
+						android.R.id.text1,
+						opciones
+				)
+		);
 
 		lista.setOnItemClickListener(new AdapterView.OnItemClickListener(){
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id){
-				switch (opciones[position]){
-					case "Horas extras pendientes":
+
+				switch (position){
+					case 0:
 						Intent intent = new Intent(MainActivity.this,HorasPendientesActivity.class);
 						startActivity(intent);
 						break;
-					case "Horas extras aprobadas":
+					case 1:
 						Intent intent2 = new Intent(getApplicationContext(),HorasAprobadasActivity.class);
 						startActivity(intent2);
 						break;
-					case "Version: 0.2":
-						Toast.makeText(getApplicationContext(),"0.2", Toast.LENGTH_SHORT).show();
+					case 2:
+
+						progressDialog = new ProgressDialog(MainActivity.this);
+						progressDialog.setTitle("Actualizando");
+						progressDialog.setMessage("Espere un momento");
+						progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+						//TODO Agregar carga
+						progressDialog.setCancelable(false);
+						progressDialog.show();
+
+						if(miDbHelper.CuentaErrores()== 0){
+							progressDialog.dismiss();
+							//TODO Borrar errores de prueba ---------------
+							miDbHelper.insertarLogError("hola");
+							miDbHelper.insertarLogError("hola");
+							miDbHelper.insertarLogError("hola");
+							miDbHelper.insertarLogError("hola");
+							miDbHelper.insertarLogError("hola");
+							miDbHelper.insertarLogError("hola");
+							miDbHelper.insertarLogError("hola");
+							miDbHelper.insertarLogError("hola");
+							miDbHelper.insertarLogError("hola");
+							miDbHelper.insertarLogError("hola");
+							miDbHelper.insertarLogError("hola");
+							miDbHelper.insertarLogError("hola");
+							miDbHelper.insertarLogError("hola");
+							miDbHelper.insertarLogError("hola");
+							miDbHelper.insertarLogError("hola");
+							miDbHelper.insertarLogError("hola");
+							miDbHelper.insertarLogError("hola");
+							miDbHelper.insertarLogError("hola");
+							miDbHelper.insertarLogError("hola");
+							miDbHelper.insertarLogError("hola");
+							miDbHelper.insertarLogError("hola");
+							miDbHelper.insertarLogError("hola");
+							miDbHelper.insertarLogError("hola");
+							miDbHelper.insertarLogError("hola");
+							miDbHelper.insertarLogError("hola");
+							miDbHelper.insertarLogError("hola");
+							miDbHelper.insertarLogError("hola");
+							miDbHelper.insertarLogError("hola");
+							miDbHelper.insertarLogError("hola");
+							miDbHelper.insertarLogError("hola");
+							miDbHelper.insertarLogError("hola");
+							miDbHelper.insertarLogError("hola");
+							miDbHelper.insertarLogError("hola");
+							miDbHelper.insertarLogError("hola");
+							miDbHelper.insertarLogError("hola");
+							miDbHelper.insertarLogError("hola");
+							miDbHelper.insertarLogError("hola");
+							miDbHelper.insertarLogError("hola");
+							miDbHelper.insertarLogError("hola");
+							miDbHelper.insertarLogError("hola");
+							miDbHelper.insertarLogError("hola");
+							miDbHelper.insertarLogError("hola");
+							miDbHelper.insertarLogError("hola");
+							miDbHelper.insertarLogError("hola");
+							miDbHelper.insertarLogError("hola");
+							miDbHelper.insertarLogError("hola");
+							miDbHelper.insertarLogError("hola");
+							miDbHelper.insertarLogError("hola");
+							miDbHelper.insertarLogError("hola");
+							//TODO Borrar errores de prueba --------------
+							updateList();
+							break;
+						}
+						if(!ValidacionConexion.isExisteConexion(MainActivity.this)){
+							progressDialog.dismiss();
+							Alertas.alertaConexion(MainActivity.this);
+							break;
+						}
+                        cursor = miDbHelper.getLogErrores();
+						errorSwitch=miDbHelper.CuentaErrores();
+
+						error1=0;
+						error2=0;
+						error3=0;
+
+						while(cursor.moveToNext()){
+							String fechaHora, descripcion, version_app, mac;
+                            try {
+                                fechaHora = URLEncoder.encode(cursor.getString(cursor.getColumnIndex("fecha_hora")),"UTF-8");
+                                descripcion=URLEncoder.encode(cursor.getString(cursor.getColumnIndex("descripcion")),"UTF-8");
+                            } catch (UnsupportedEncodingException e) {
+                                fechaHora="";
+                                descripcion="";
+                            }
+
+							version_app = cursor.getString(cursor.getColumnIndex("version_app"));
+							mac = cursor.getString(cursor.getColumnIndex("mac"));
+
+							final int indexout=cursor.getInt(cursor.getColumnIndex("id_log_errores"));
+
+                            String url=getString(R.string.URL_EnviarErrores)
+                                    +"?fecha_hora="+fechaHora
+                                    +"&version_app="+version_app
+                                    +"&mac="+mac
+                                    +"&descripcion="+descripcion
+                                    +"&apk_key="+getString(R.string.APK_KEY)
+                                    +"&run="+miDbHelper.getRutUsuario();
+                            StringRequest jsonObjectRequest = new StringRequest(
+
+									Request.Method.GET // FORMA QUE LLAMAREMOS, O SEA GET
+									, url
+									// URL QUE LLAMAREMOS
+									, new Response.Listener<String>(){ // OBJETO QUE USAREMOS PARA LA ESCUCHA DE LA RESPUESTA
+								@Override
+								public void onResponse(String response){
+
+									//Log.e("omar",response);
+									if(response==null || response.isEmpty()){
+										progressDialog.dismiss();
+										mensaje = "Comuniquese con informatica, el servidor responde con formato incorrecto";
+										volleyS.cancelAll();
+
+										error1++;
+										if(error1==1){
+											Alertas.alertaSimple("ERROR",mensaje,MainActivity.this);
+											miDbHelper.insertarLogError("Variable response es Nulo o Vacio");
+											updateList();
+											Log.e("Omar", "Variable response es Nulo o Vacio");
+										}
+
+										return;
+									}
+
+									if(!response.toLowerCase().equals("exito")){
+										Log.e("Omar","entro a error2");
+										progressDialog.dismiss();
+										volleyS.cancelAll();
+										error2++;
+										if(error2==1){
+											Alertas.alertaSimple("Error","Comuniquese con informatica, el servidor responde con formato incorrecto",MainActivity.this);
+
+											miDbHelper.insertarLogError("Servidor respondio con error:"+response);
+											updateList();
+											Log.e("Omar","Servidor respondio con error:"+response);
+										}
+
+										return;
+									}
+									// Borrar solicitudes antiguas
+									miDbHelper.deleteLogError(indexout);
+
+									errorSwitch--;
+
+									if(errorSwitch==0){
+										progressDialog.dismiss();
+										Toast.makeText(getApplicationContext(), "Errores enviados exitosamente", Toast.LENGTH_SHORT).show();
+									}
+
+									updateList();
+									//Alertas.alertaSimple(titulo,mensaje,MainActivity.this);
+
+								}
+							}
+									, new Response.ErrorListener(){ // QUE HACER EN CASO DE ERROR
+								@Override
+								public void onErrorResponse(VolleyError error){
+									progressDialog.dismiss();
+
+									volleyS.cancelAll();
+
+									mensaje = "Servidor no responde \n" +
+											" Asegurese de estar conectado a internet o intentelo mas tarde";
+									//cursor.moveToLast();
+
+									error3++;
+									if(error3==1){
+										Alertas.alertaSimple("Error",mensaje,MainActivity.this);
+										miDbHelper.insertarLogError("Ocurrio un error al comunicarse con el servidor a travez de Volley. Mensaje : "+error.getMessage());
+										updateList();
+										Log.e("Omar","Ocurrio un error al comunicarse con el servidor a travez de Volley. Mensaje : "+error.getMessage() );
+									}
+								}
+							}
+							);
+							volleyS.addToQueue(jsonObjectRequest, MainActivity.this);
+						}
+
+
+
+						cursor.close();
+
+						//enviarErrores();
+						break;
+					case 3:
+						Toast.makeText(getApplicationContext(),getString(R.string.version), Toast.LENGTH_SHORT).show();
 						break;
 				}
 			}
@@ -80,6 +294,8 @@ public class MainActivity extends AppCompatActivity{
 		btnActualizar.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
+
+
 
 				progressDialog = new ProgressDialog(MainActivity.this);
 				progressDialog.setTitle("Actualizando");
@@ -128,6 +344,7 @@ public class MainActivity extends AppCompatActivity{
 							Alertas.alertaSimple(titulo,mensaje,MainActivity.this);
 
 							miDbHelper.insertarLogError("Variable response es Nulo o Vacio");
+							updateList();
 							Log.e("Omar", "Variable response es Nulo o Vacio");
 							return;
 						}
@@ -142,6 +359,7 @@ public class MainActivity extends AppCompatActivity{
 							Alertas.alertaSimple(titulo,mensaje,MainActivity.this);
 
 							miDbHelper.insertarLogError("Error de formato en variable 'response', no parece ser tipo JSON. Mensaje de error : "+e.getMessage());
+							updateList();
 							Log.e("Omar","Error de formato en variable 'response', no parece ser tipo JSON. Mensaje de error : "+e.getMessage() );
 							return;
 						}
@@ -155,6 +373,7 @@ public class MainActivity extends AppCompatActivity{
 							Alertas.alertaSimple(titulo,mensaje,MainActivity.this);
 
 							miDbHelper.insertarLogError("Error de formato en variable 'error', No existe o es un formato incorrecto. Mensaje de error : "+e.getMessage());
+							updateList();
 							Log.e("Omar","Error de formato en variable 'mensaje', No existe o es un formato incorrecto. Mensaje de error : "+e.getMessage());
 							return;
 						}
@@ -170,11 +389,15 @@ public class MainActivity extends AppCompatActivity{
 								Alertas.alertaSimple(titulo,mensaje,MainActivity.this);
 
 								miDbHelper.insertarLogError("Error de formato en variable 'mensaje', No existe o es un formato incorrecto. Mensaje de error : "+e.getMessage());
+								updateList();
 								Log.e("Omar","Error de formato en variable 'mensaje', No existe o es un formato incorrecto. Mensaje de error : "+e.getMessage() );
 								return;
 							}
 							titulo = "Servidor responde con el siguiente error:";
+
 							mensaje = mensajesrv;
+							miDbHelper.insertarLogError(titulo+" "+mensaje);
+							updateList();
 							Alertas.alertaSimple(titulo,mensaje,MainActivity.this);
 							return;
 						}
@@ -190,12 +413,14 @@ public class MainActivity extends AppCompatActivity{
 							Alertas.alertaSimple(titulo,mensaje,MainActivity.this);
 
 							miDbHelper.insertarLogError("Error de formato en variable 'filas', No existe o es un formato incorrecto. Mensaje de error : "+e.getMessage());
+							updateList();
 							Log.e("Omar", "Error de formato en variable 'filas', No existe o es un formato incorrecto. Mensaje de error : "+e.getMessage());
 							return;
 						}
 							// Borrar solicitudes antiguas
 							miDbHelper.deleteSolicitudALL();
 							Log.e("Omar","entro a else");
+							filas=0;
 							for(int i=0;i<jsonArray.length();i++){
 								//Log.e("Omar","entro a for");
 								JSONObject jsonData= null;
@@ -207,6 +432,7 @@ public class MainActivity extends AppCompatActivity{
 									Alertas.alertaSimple(titulo,mensaje,MainActivity.this);
 
 									miDbHelper.insertarLogError("Error de formato en variable 'filas',datos del arreglo no son JSONObject o no tienen formato correcto. Mensaje de error : "+e.getMessage());
+									updateList();
 									Log.e("Omar", "Error de formato en variable 'filas',datos del arreglo no son JSONObject o no tienen formato correcto. Mensaje de error : "+e.getMessage());
 									return;
 								}
@@ -233,6 +459,7 @@ public class MainActivity extends AppCompatActivity{
 											+" // Valor: $"+valor+" // Motivo: "+motivo+" // Coment: "+comentario+" // Cent.Costo: "+centro_costo+" // Area: "+area
 											+" // Tipo Pacto: "+tipo_pacto+" // E1: "+estado1+" // R1: "+rut_admin1+" // E2: "+estado2+" // RU2: "+rut_admin2
 											+" // E3: "+estado3+" // R3: "+rut_admin3);
+									filas++;
 								} catch (JSONException e) {
 									e.printStackTrace();
 									titulo = "ERROR \n";
@@ -240,6 +467,7 @@ public class MainActivity extends AppCompatActivity{
 									Alertas.alertaSimple(titulo,mensaje,MainActivity.this);
 
 									miDbHelper.insertarLogError("Filas del arreglo no tienen formato correcto o estan vacias. Mensaje de error : "+e.getMessage());
+									updateList();
 									Log.e("Omar", "Filas del arreglo no tienen formato correcto o estan vacias. Mensaje de error : "+e.getMessage());
 									return;
 								}
@@ -269,39 +497,14 @@ public class MainActivity extends AppCompatActivity{
 											" Comuniquese con informatica inmediatamente";
 									Alertas.alertaSimple(titulo,mensaje,MainActivity.this);
 									miDbHelper.insertarLogError("Una o mas filas del arreglo contienen datos que no coinciden con la tabla en la fila "+String.valueOf(i));
+									updateList();
 									Log.e("Omar","Una o mas filas del arreglo contienen datos que no coinciden con la tabla en la fila, datos : "+e.getMessage());
 									return;
 								}
-								/*//Insertar solicitud nueva
-								if(!miDbHelper.insertarSolicitud(
-												String.valueOf(run)
-												,nombre
-												,fecha
-												,cantidad
-												,valor
-												,motivo
-												,comentario
-												,centro_costo
-												,area
-												,tipo_pacto
-												,estado1
-												,rut_admin1
-												,estado2
-												,rut_admin2
-												,estado3
-												,rut_admin3)){
-									Log.e("Omar","No Exitoso");
-									titulo = "ERROR \n";
-									mensaje = "Error de base de datos \n" +
-											" Comuniquese con informatica inmediatamente";
-									Alertas.alertaSimple(titulo,mensaje,MainActivity.this);
-									miDbHelper.insertarLogError("Una o mas filas del arreglo contienen datos que no coinciden con la tabla en la fila "+String.valueOf(i));
-									Log.e("Omar","Una o mas filas del arreglo contienen datos que no coinciden con la tabla en la fila ");
-									return;
-								}*/
+
 						}
 						titulo = "Exito";
-						mensaje = "Actualizacion exitosa";
+						mensaje = "Actualizacion exitosa, "+String.valueOf(filas)+" filas nuevas ingresadas";
 						Alertas.alertaSimple(titulo,mensaje,MainActivity.this);
 
 					}
@@ -314,10 +517,11 @@ public class MainActivity extends AppCompatActivity{
 
 						titulo = "Error";
 						mensaje = "Servidor no responde \n" +
-								" Asegurese de estar conectado a internet o intentelo mas tarde";
+								"Asegurese de estar conectado a internet o intentelo mas tarde";
 						Alertas.alertaSimple(titulo,mensaje,MainActivity.this);
-
+						//cursor.moveToLast();
 						miDbHelper.insertarLogError("Ocurrio un error al comunicarse con el servidor a travez de Volley. Mensaje : "+error);
+						updateList();
 						Log.e("Omar","Ocurrio un error al comunicarse con el servidor a travez de Volley. Mensaje : "+error );
 					}
 				}
@@ -326,15 +530,26 @@ public class MainActivity extends AppCompatActivity{
 			}
 		});
 
+
+
+	}
+
+
+	public void updateList(){
+		opciones = new String[] {
+				"Horas extras pendientes",
+				"Horas extras aprobadas",
+				"Enviar Errrores [ "+String.valueOf(miDbHelper.CuentaErrores())+" ]",
+				"Version: "+getString(R.string.version)
+		};
 		lista.setAdapter(
 				new ArrayAdapter<>(
-						this,
+						MainActivity.this,
 						android.R.layout.simple_list_item_1,
 						android.R.id.text1,
 						opciones
 				)
 		);
-
 	}
 
 	@Override

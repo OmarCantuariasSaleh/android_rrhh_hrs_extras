@@ -28,7 +28,7 @@ public class MiDbHelper extends SQLiteOpenHelper{
 
     private static MiDbHelper mInstance = null;
 
-    private static int DATABASE_VERSION = 6;
+    private static int DATABASE_VERSION = 7;
     private static String DATABASE_NAME = "nombre_base_de_datos" ;
 
     private Context context;
@@ -70,7 +70,7 @@ public class MiDbHelper extends SQLiteOpenHelper{
                     + ",rut_admin2 char(11)"
                     + ",estado3 char(1)"
                     + ",rut_admin3 char(11)"
-                    +", primary key (Rut, fecha))";
+                    +", primary key (Rut, fecha,tipo_pacto))";
 
     String crearTablaUsuario =
             "create table " + tablaUsuario
@@ -156,6 +156,15 @@ public class MiDbHelper extends SQLiteOpenHelper{
         return "";
 
     }
+    //Obtiene nombre de usuario
+    public int CuentaErrores(){
+        int error = 0;
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.query(tablaLogErrores, new String[]{"*"},null, null, null, null, null);
+        error= cursor.getCount();
+        cursor.close();
+        return error;
+    }
     // Obtiene las solicitudes que el usuario puede ver
     public Cursor getDatoSolicitudLVL(String rut_user){
 
@@ -204,6 +213,13 @@ public class MiDbHelper extends SQLiteOpenHelper{
         SQLiteDatabase db = getReadableDatabase();
         long resultado = -1;
         resultado = db.delete(tablaSolicitud,null,null);
+        return (resultado >= 1);
+    }
+    // Borra todas las solicitudes
+    public boolean deleteErrorLogALL(){
+        SQLiteDatabase db = getReadableDatabase();
+        long resultado = -1;
+        resultado = db.delete(tablaLogErrores,null,null);
         return (resultado >= 1);
     }
 

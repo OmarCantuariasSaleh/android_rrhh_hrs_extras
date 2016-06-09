@@ -2,8 +2,10 @@ package cl.cmsg.rrhhaprobacionhrsextras;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -68,6 +70,8 @@ public class DetalleActivity extends AppCompatActivity {
     String estado_Final;
     VolleyS volleyS;
 
+    Cursor cursor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,8 +98,7 @@ public class DetalleActivity extends AppCompatActivity {
 
         Bundle bundle= getIntent().getExtras();
         miDbHelper = MiDbHelper.getInstance(this,DetalleActivity.this);
-        final Cursor cursor =   miDbHelper.getDatoSolicitudDetalle(bundle.getString("Rut",""),bundle.getString("fecha",""));
-
+        cursor =   miDbHelper.getDatoSolicitudDetalle(bundle.getString("Rut",""),bundle.getString("fecha",""));
 
 
         while(cursor.moveToNext()){
@@ -140,12 +143,16 @@ public class DetalleActivity extends AppCompatActivity {
 
             lvl="0";
 
-            if(E1.equals("A") && rut1.equals(miDbHelper.getRutUsuario())){
+            if(E1.equals("R") || E3.equals("R") || E3.equals("R")) {
                 layoutBotones.setVisibility(View.INVISIBLE);
-            }else if(E2.equals("A") && rut2.equals(miDbHelper.getRutUsuario()) ){
-                layoutBotones.setVisibility(View.INVISIBLE);
-            }else if(E3.equals("A") && rut3.equals(miDbHelper.getRutUsuario()) ){
-                layoutBotones.setVisibility(View.INVISIBLE);
+            }else{
+                if (E1.equals("A") && rut1.equals(miDbHelper.getRutUsuario())) {
+                    layoutBotones.setVisibility(View.INVISIBLE);
+                } else if (E2.equals("A") && rut2.equals(miDbHelper.getRutUsuario())) {
+                    layoutBotones.setVisibility(View.INVISIBLE);
+                } else if (E3.equals("A") && rut3.equals(miDbHelper.getRutUsuario())) {
+                    layoutBotones.setVisibility(View.INVISIBLE);
+                }
             }
 
             if(E1.equals("P") && rut1.equals(miDbHelper.getRutUsuario())){
@@ -156,30 +163,48 @@ public class DetalleActivity extends AppCompatActivity {
                 lvl="3";
             }
 
-           // break;
+
         }
+        cursor.close();
 
         btnAprobar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                progressDialog = new ProgressDialog(DetalleActivity.this);
-                progressDialog.setTitle("Actualizando datos");
-                progressDialog.setMessage("Espere un momento");
-                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                progressDialog.setCancelable(false);
-                progressDialog.show();
-                if(!ValidacionConexion.isExisteConexion(DetalleActivity.this)){
-                    progressDialog.dismiss();
-                    Alertas.alertaConexion(DetalleActivity.this);
-                    return;
-                }
+                new AlertDialog.Builder(DetalleActivity.this)
+                        .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
 
-                estado_Final= "A";
+                                progressDialog = new ProgressDialog(DetalleActivity.this);
+                                progressDialog.setTitle("Actualizando datos");
+                                progressDialog.setMessage("Espere un momento");
+                                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                                progressDialog.setCancelable(false);
+                                progressDialog.show();
+                                if(!ValidacionConexion.isExisteConexion(DetalleActivity.this)){
+                                    progressDialog.dismiss();
+                                    Alertas.alertaConexion(DetalleActivity.this);
+                                    return;
+                                }
 
-                //TODO Usar actualizaEstado para enviar los cambios al server y validar, luego se aplican a DB local
+                                estado_Final= "A";
+                                actualizaEstado(rut,fecha,estado_Final,lvl,tipo_pacto);
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
+                            }
+                        })
+                        .setCancelable(false)
+                        .setTitle("¿Esta seguro?")
+                        .setMessage("Esta accion no se puede deshacer.")
+                        .show()
+                ;
 
-                actualizaEstado(rut,fecha,estado_Final,lvl);
+
 
             }
         });
@@ -187,17 +212,40 @@ public class DetalleActivity extends AppCompatActivity {
         btnRechazar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                rut= cursor.getString(cursor.getColumnIndex("Rut"));
-                fecha= cursor.getString(cursor.getColumnIndex("fecha"));
-                estado_Final= "R";
 
-                //TODO Usar actualizaEstado para enviar los cambios al server y validar, luego se aplican a DB local
-                actualizaEstado(rut,fecha,estado_Final,lvl);
-                cursor.close();
-                //TODO Aplicar nuevo intent cuando actualizaEstado funciona
-                //Intent intent = new Intent(getApplicationContext(),HorasPendientesActivity.class);
-                //startActivity(intent);
-                //TODO end
+                new AlertDialog.Builder(DetalleActivity.this)
+                        .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                                progressDialog = new ProgressDialog(DetalleActivity.this);
+                                progressDialog.setTitle("Actualizando datos");
+                                progressDialog.setMessage("Espere un momento");
+                                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                                progressDialog.setCancelable(false);
+                                progressDialog.show();
+                                if(!ValidacionConexion.isExisteConexion(DetalleActivity.this)){
+                                    progressDialog.dismiss();
+                                    Alertas.alertaConexion(DetalleActivity.this);
+                                    return;
+                                }
+
+                                estado_Final= "R";
+                                actualizaEstado(rut,fecha,estado_Final,lvl,tipo_pacto);
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
+                            }
+                        })
+                        .setCancelable(false)
+                        .setTitle("¿Esta seguro?")
+                        .setMessage("Esta accion no se puede deshacer.")
+                        .show()
+                ;
+
             }
         });
 
@@ -214,28 +262,30 @@ public class DetalleActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void actualizaEstado(final String rut_S,final String fecha_S, final String estado_Final,final String lvl_S){
+    public void actualizaEstado(final String rut_S,final String fecha_S, final String estado_Final,final String lvl_S, final String tipo_pacto_S){
         final VolleyS volleyS = VolleyS.getInstance(this);
-        progressDialog = new ProgressDialog(DetalleActivity.this);
-        progressDialog.setTitle("Actualizando");
-        progressDialog.setMessage("Espere un momento");
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        progressDialog.setCancelable(false);
-        progressDialog.show();
+
         if(!ValidacionConexion.isExisteConexion(DetalleActivity.this)){
             progressDialog.dismiss();
             Alertas.alertaConexion(DetalleActivity.this );
             return;
         }
+
+        String mac = ValidacionConexion.getDireccionMAC(DetalleActivity.this);
+        Log.e("Omar", mac);
         final StringRequest jsonObjectRequest = new StringRequest(
 
                 Request.Method.GET // FORMA QUE LLAMAREMOS, O SEA GET
                 , getString(R.string.URL_ActualizarEstado)
                 +"?run="+ rut_S
                 +"&fecha="+fecha_S
-                +"estado="+estado_Final
+                +"&estado="+estado_Final
                 +"&lvl="+lvl_S
                 +"&apk_key="+getString(R.string.APK_KEY)
+                +"&mac="+mac
+                +"&run_admin="+miDbHelper.getRutUsuario()
+                +"&tipo_pacto="+tipo_pacto_S
+
                 // URL QUE LLAMAREMOS, TODO reemplazar por URL nueva
                 , new Response.Listener<String>(){ // OBJETO QUE USAREMOS PARA LA ESCUCHA DE LA RESPUESTA
             @Override
@@ -308,7 +358,21 @@ public class DetalleActivity extends AppCompatActivity {
                 miDbHelper.actualizarEstado(rut,fecha,estado_Final,lvl);
                 titulo = "Exito";
                 mensaje = "Actualizacion exitosa";
-                Alertas.alertaSimple(titulo,mensaje,DetalleActivity.this);
+                //Alertas.alertaSimple(titulo,mensaje,DetalleActivity.this);
+                new AlertDialog.Builder(DetalleActivity.this)
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                setResult(RESULT_OK);
+                                finish();
+                            }
+                        })
+                        .setCancelable(false)
+                        .setMessage(mensaje)
+                        .setTitle(titulo)
+                        .show()
+                ;
+
 
             }
         }
@@ -330,7 +394,6 @@ public class DetalleActivity extends AppCompatActivity {
         }
         );
         volleyS.addToQueue(jsonObjectRequest, DetalleActivity.this);
-        return;
 
     }
 

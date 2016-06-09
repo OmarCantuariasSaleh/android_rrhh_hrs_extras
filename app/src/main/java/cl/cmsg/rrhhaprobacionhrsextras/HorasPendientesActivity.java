@@ -25,6 +25,10 @@ public class HorasPendientesActivity extends AppCompatActivity {
     TextView lblRut;
     TextView lblNombre;
     TextView lblFecha;
+    String rut;
+    String nombre;
+    String fecha;
+    private static final int pend = 179;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,17 +39,50 @@ public class HorasPendientesActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        llenarLista();
+
+        listViewPendientes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                        Intent intent = new Intent(getApplicationContext(),DetalleActivity.class);
+                        HorasExtras horasExtras=arrayListHorasExtra.get(position);
+                        intent.putExtra("Rut",horasExtras.getRut());
+                        intent.putExtra("fecha",horasExtras.getFecha());
+
+                //intent.putExtra("switch",0);
+                startActivityForResult(intent, pend);
+
+                //startActivity(intent);
+
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+//  super.onActivityResult(requestCode, resultCode, data);
+        Log.e("Omar", "Entro a result");
+        if (requestCode == pend){
+            if (resultCode == RESULT_OK){
+                // Aquí se pone lo que se hará si el resultado fue exitoso
+                Log.e("Omar", "if result");
+                llenarLista();
+            }
+        }
+    }
+
+    void llenarLista (){
+
         lblRut = (TextView) findViewById(R.id.lblRut);
         lblNombre = (TextView) findViewById(R.id.lblNombre);
         lblFecha = (TextView) findViewById(R.id.lblFecha);
         listViewPendientes = (ListView) findViewById(R.id.lstHorasPendientes);
         miDbHelper = MiDbHelper.getInstance(this,HorasPendientesActivity.this);
-
+        arrayListHorasExtra.clear();
         String rut_user=miDbHelper.getRutUsuario();
         Cursor cursor =   miDbHelper.getDatoSolicitudLVL(rut_user);
-        String rut;
-        String nombre;
-        String fecha;
+
         Log.e("Omar", "Rut usuario"+rut_user +" // "+ String.valueOf(cursor.getCount()));
         while(cursor.moveToNext()){
 
@@ -57,15 +94,18 @@ public class HorasPendientesActivity extends AppCompatActivity {
             String rut1 = cursor.getString(cursor.getColumnIndex("rut_admin1"));
             String rut2 = cursor.getString(cursor.getColumnIndex("rut_admin2"));
             String rut3 = cursor.getString(cursor.getColumnIndex("rut_admin3"));
-            //Log.e("Omar", "E1: "+E1+"E2: "+E2+"E3: "+E3);
+           // Log.e("Omar", "E1:"+E1+" E2:"+E2+" E3:"+E3);
 
-           if(E1.equals("P") && rut1.equals(miDbHelper.getRutUsuario())){
-                lvl=1;
-            }else if(E2.equals("P") && rut2.equals(miDbHelper.getRutUsuario()) && E3.equals("A") && E1.equals("A")){
-                lvl=2;
-            }else if(E3.equals("P") && rut3.equals(miDbHelper.getRutUsuario()) && E1.equals("A") && E2.equals("A")){
-                lvl=3;
+            if(!E1.equals("R") || !E2.equals("R") || !E3.equals("R")){
+                if (E1.equals("P") && rut1.equals(miDbHelper.getRutUsuario())) {
+                    lvl = 1;
+                } else if (E2.equals("P") && rut2.equals(miDbHelper.getRutUsuario()) && E3.equals("A") && E1.equals("A")) {
+                    lvl = 2;
+                } else if (E3.equals("P") && rut3.equals(miDbHelper.getRutUsuario()) && E1.equals("A") && E2.equals("A")) {
+                    lvl = 3;
+                }
             }
+            Log.e("Omar", "E1:"+E1+" E2:"+E2+" E3:"+E3+" Lvl:"+lvl);
             //Log.e("Omar","Lvl:"+ lvl+ " Estado 1: "+E1+" Estado 2: "+E2+" Estado 3: "+E3);
             if(lvl!=0){
                 rut= cursor.getString(cursor.getColumnIndex("Rut"));
@@ -82,18 +122,6 @@ public class HorasPendientesActivity extends AppCompatActivity {
 
         horasExtrasAdapter = new HorasExtrasAdapter(arrayListHorasExtra,this);
         listViewPendientes.setAdapter(horasExtrasAdapter);
-
-        listViewPendientes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                        Intent intent = new Intent(getApplicationContext(),DetalleActivity.class);
-                        HorasExtras horasExtras=arrayListHorasExtra.get(position);
-                        intent.putExtra("Rut",horasExtras.getRut());
-                        intent.putExtra("fecha",horasExtras.getFecha());
-
-                        startActivity(intent);
-            }
-        });
     }
+
 }
