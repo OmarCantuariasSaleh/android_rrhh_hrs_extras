@@ -3,6 +3,7 @@
     <string name="act_pendientes">Solicitudes Pendientes</string>
     <string name="act_aprobadas">Solicitudes Aprobadas</string>
     <string name="act_detalles">Detalles de Solicitud</string>
+    <string name="act_rechazadas">Solicitudes Rechazadas</string>
     <string name="action_settings">Settings</string>
     <string name="ok">Ok</string>
     <string name="version">0.2.4</string>

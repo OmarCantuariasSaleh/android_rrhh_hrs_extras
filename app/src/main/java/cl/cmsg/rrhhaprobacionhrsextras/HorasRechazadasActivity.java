@@ -13,13 +13,15 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ListView;
 import android.widget.TextView;
+
 import java.util.ArrayList;
 import java.util.Calendar;
+
 import cl.cmsg.rrhhaprobacionhrsextras.clases.MiDbHelper;
 import cl.cmsg.rrhhaprobacionhrsextras.horasextras.HorasExtras;
 import cl.cmsg.rrhhaprobacionhrsextras.horasextras.HorasExtrasAdapter;
 
-public class HorasAprobadasActivity extends AppCompatActivity {
+public class HorasRechazadasActivity extends AppCompatActivity {
 
     ListView listViewPendientes;
     HorasExtrasAdapter horasExtrasAdapter;
@@ -30,24 +32,24 @@ public class HorasAprobadasActivity extends AppCompatActivity {
     TextView lblNombre;
     TextView lblFecha;
     TextView lblTipoPacto;
-    TextView lblCostoTotal;
-    TextView lblCantAprov;
+
     TextView lblPeriodo;
     int lvl=1;
     Button btnPeriodoSelect;
+    String Rut_user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_horas_aprovadas);
+        setContentView(R.layout.activity_horas_rechazadas);
         btnPeriodoSelect = (Button) findViewById(R.id.btnPeriodoSelect);
-        listViewPendientes = (ListView) findViewById(R.id.lstHorasPendientes);
+        listViewPendientes = (ListView) findViewById(R.id.lstHorasRechazadas);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        miDbHelper = MiDbHelper.getInstance(this,HorasAprobadasActivity.this);
+        miDbHelper = MiDbHelper.getInstance(this,HorasRechazadasActivity.this);
 
         btnPeriodoSelect.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,9 +93,7 @@ public class HorasAprobadasActivity extends AppCompatActivity {
                         lblNombre = (TextView) findViewById(R.id.lblNombre);
                         lblFecha = (TextView) findViewById(R.id.lblFecha);
                         lblTipoPacto = (TextView) findViewById(R.id.lblTipoPacto);
-                        lblCostoTotal = (TextView) findViewById(R.id.lblCostoTotal);
                         lblPeriodo = (TextView) findViewById(R.id.lblPeriodo);
-                        lblCantAprov = (TextView) findViewById(R.id.lblCantAprov);
 
                         String fecha1;
                         String fecha2;
@@ -112,8 +112,6 @@ public class HorasAprobadasActivity extends AppCompatActivity {
                         String fecha;
                         String tipo_pacto;
                         int cant_horas;
-                        int costo=0;
-                        int cantidad=0;
                         String periodo="";
 
                         switch (monthOfYear){
@@ -167,16 +165,17 @@ public class HorasAprobadasActivity extends AppCompatActivity {
                             String rut1 = cursor.getString(cursor.getColumnIndex("rut_admin1"));
                             String rut2 = cursor.getString(cursor.getColumnIndex("rut_admin2"));
                             String rut3 = cursor.getString(cursor.getColumnIndex("rut_admin3"));
+                            Rut_user=miDbHelper.getRutUsuario();
 
-                            if(E1.equals("A") && rut1.equals(miDbHelper.getRutUsuario())){
+                            if(E1.equals("R") && rut1.equals(Rut_user)){
                                 lvl=1;
-                            }else if(E2.equals("A") && rut2.equals(miDbHelper.getRutUsuario()) ){
+                            }else if(E2.equals("R") && rut2.equals(Rut_user) ){
                                 lvl=2;
-                            }else if(E3.equals("A") && rut3.equals(miDbHelper.getRutUsuario()) ){
+                            }else if(E3.equals("R") && rut3.equals(Rut_user) ){
                                 lvl=3;
                             }
                             if(lvl!=0){
-                                cantidad++;
+
                                 rut= cursor.getString(cursor.getColumnIndex("Rut"));
 
                                 nombre=cursor.getString(cursor.getColumnIndex("nombre"));
@@ -184,29 +183,20 @@ public class HorasAprobadasActivity extends AppCompatActivity {
                                 fecha=cursor.getString(cursor.getColumnIndex("fecha"));
 
                                 tipo_pacto=cursor.getString(cursor.getColumnIndex("tipo_pacto"));
-
                                 cant_horas=cursor.getInt(cursor.getColumnIndex("cant_horas"));
 
                                 horasExtras = new HorasExtras(rut,nombre,fecha,tipo_pacto,cant_horas,lvl);
                                 arrayListHorasExtra.add(horasExtras);
 
-                                costo+= cursor.getInt(cursor.getColumnIndex("monto_pagar"));
+
                                 //Log.e("Omar1","Lvl:"+ lvl+ " Estado 1: "+E1+" Estado 2: "+E2+" Estado 3: "+E3+" costo : "+String.valueOf(cursor.getInt(cursor.getColumnIndex("monto_pagar"))));
                             }
 
                         }
 
-                        if(costo>0){
-                            lblCostoTotal.setText("Costo total del periodo : $" +costo);
-                            lblCostoTotal.setVisibility(View.VISIBLE);
-                            lblCantAprov.setText("Cantidad : "+String.valueOf(cantidad));
-                            lblCantAprov.setVisibility(View.VISIBLE);
-                        }else{
-                            lblCostoTotal.setVisibility(View.INVISIBLE);
-                        }
                         horasExtrasAdapter = new HorasExtrasAdapter(arrayListHorasExtra,getApplicationContext());
 
-                            listViewPendientes.setAdapter(horasExtrasAdapter);
+                        listViewPendientes.setAdapter(horasExtrasAdapter);
 
                     }
                 }

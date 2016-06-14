@@ -207,7 +207,7 @@ public class LoginActivity extends AppCompatActivity {
                         JSONObject jsonObject = null;
                         error = true;
                         String mensajesrv = "";
-                        String nombre;
+                        String nombre ="";
 
                         if (response == null || response.equals(null) || response.isEmpty()) {
 
@@ -263,13 +263,24 @@ public class LoginActivity extends AppCompatActivity {
                             Log.e("jlas", "Despues del alerta");
                             return;
                         }
+
+                        try {
+                            nombre = jsonObject.getString("mensaje");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            mensaje = "Comuniquese con informatica, el servidor responde con formato incorrecto";
+                            desbloquearInterfazUsuario();
+                            Alertas.alertaSimple("Error", mensaje, LoginActivity.this);
+                            miDbHelper.insertarLogError("Error de formato en variable 'mensaje', No existe o es un formato incorrecto. Mensaje de error : " + e.getMessage());
+                            return;
+                        }
                         Log.e("jlas", "LLEGUE HASTA AQUI MIRAME");
                         miDbHelper.deleteUser();
                         rut = rut.replace("-", "");
                         rut = rut.trim();
                         rut = rut.substring(0, rut.length() - 1);
 
-                        miDbHelper.insertarUsuario(rut, mensajesrv);
+                        miDbHelper.insertarUsuario(rut, nombre);
                         Toast.makeText(LoginActivity.this, "Registrado", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(LoginActivity.this, MainActivity.class));
                         finish();

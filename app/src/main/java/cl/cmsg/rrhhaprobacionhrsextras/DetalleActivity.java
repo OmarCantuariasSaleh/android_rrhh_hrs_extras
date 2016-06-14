@@ -98,7 +98,7 @@ public class DetalleActivity extends AppCompatActivity {
 
         Bundle bundle= getIntent().getExtras();
         miDbHelper = MiDbHelper.getInstance(this,DetalleActivity.this);
-        cursor =   miDbHelper.getDatoSolicitudDetalle(bundle.getString("Rut",""),bundle.getString("fecha",""));
+        cursor =   miDbHelper.getDatoSolicitudDetalle(bundle.getString("Rut",""),bundle.getString("fecha",""),bundle.getString("tipo_pacto",""));
 
 
         while(cursor.moveToNext()){
@@ -355,7 +355,7 @@ public class DetalleActivity extends AppCompatActivity {
                 }
                 //Log.e("Respuesta",response);
 
-                miDbHelper.actualizarEstado(rut,fecha,estado_Final,lvl);
+                miDbHelper.actualizarEstado(rut_S,fecha_S,estado_Final,lvl_S, tipo_pacto_S);
                 titulo = "Exito";
                 mensaje = "Actualizacion exitosa";
                 //Alertas.alertaSimple(titulo,mensaje,DetalleActivity.this);

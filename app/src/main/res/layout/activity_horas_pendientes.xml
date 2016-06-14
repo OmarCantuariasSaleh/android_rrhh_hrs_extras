@@ -6,7 +6,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
 
     android:orientation="vertical"
-    tools:context=".HorasPendientesActivity">
+    tools:context=".HorasPendientesActivity"
+    android:gravity="center">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -25,26 +26,98 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical|center|center_horizontal"
+        android:layout_marginTop="10dp">
+
+    </LinearLayout>
+
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Horas Extras"
+            android:id="@+id/radioHorasExtras"
+            android:layout_gravity="right"
+            android:checked="true"
+            android:textSize="15dp" />
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Festivos"
+            android:id="@+id/radioFestivos"
+            android:checked="false"
+            android:layout_marginRight="10dp"
+            android:textSize="15dp" />
+
+    </RadioGroup>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="5dp">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Aprobar Todo"
+                android:id="@+id/btnAprobarTodo"
+                android:background="@color/colorPrimaryDark"
+                android:textColor="#ffffff"
+                android:padding="5dp"
+                android:layout_marginRight="20dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Medium Text"
+                android:id="@+id/lblContador" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="16dp">
+        android:padding="5dp"
+        android:gravity="center">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Seleccione solicitud a aprobar :"
-            android:id="@+id/textView3"
+            android:id="@+id/textView12"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_marginBottom="20dp" />
+            android:layout_marginBottom="5dp"
+            android:textSize="20dp" />
 
         <ListView
             android:layout_width="match_parent"
             android:id="@+id/lstHorasPendientes"
             android:layout_height="wrap_content"
             android:padding="5dp"
-            android:divider="#1e1e1e" />
+            android:divider="#1e1e1e"
+            android:choiceMode="multipleChoice"
+             />
+
     </LinearLayout>
 
 </LinearLayout>
