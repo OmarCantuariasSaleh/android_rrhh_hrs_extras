@@ -64,7 +64,6 @@ public class RegistrationIntentService extends IntentService{
 			sharedPreferences.edit().putString(ConstantesGlobales.TOKEN, token).apply();
 			// [END register_for_gcm]
 		} catch (Exception e){
-			Log.e(TAG, "Failed to complete token refresh", e);
 			// If an exception happens while fetching the new token or updating our registration data
 			// on a third-party server, this ensures that we'll attempt the update at a later time.
 			//sharedPreferences.edit().putBoolean(ConstantesGlobales.SENT_TOKEN_TO_SERVER, false).apply();
@@ -79,6 +78,7 @@ public class RegistrationIntentService extends IntentService{
 				subscribeTopics(token);
 			} catch (IOException e){
 				Log.e(TAG, "Error al tratar de suscribir al Topic");
+
 			}
 		}
 

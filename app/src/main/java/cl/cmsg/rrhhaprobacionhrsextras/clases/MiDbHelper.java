@@ -76,10 +76,11 @@ public class MiDbHelper extends SQLiteOpenHelper{
     String crearTablaUsuario =
             "create table " + tablaUsuario
                     + " (rut_u varchar(11) primary key"
-                    +",nombre_u varchar(50)  not null)";
+                    +",nombre_u varchar(50)  not null" +
+                    ",isadmin integer(1) not null)";
 
 
-    public static MiDbHelper getInstance(Context ctx, Activity activity) {
+    public static MiDbHelper getInstance(Context ctx) {
         /**
          * use the application context as suggested by CommonsWare.
          * this will ensure that you dont accidentally leak an Activitys
@@ -87,7 +88,7 @@ public class MiDbHelper extends SQLiteOpenHelper{
          * http://android-developers.blogspot.nl/2009/01/avoiding-memory-leaks.html)
          */
         if (mInstance == null) {
-            mInstance = new MiDbHelper(ctx.getApplicationContext(),activity);
+            mInstance = new MiDbHelper(ctx.getApplicationContext());
         }
         return mInstance;
     }
@@ -96,10 +97,10 @@ public class MiDbHelper extends SQLiteOpenHelper{
      * constructor should be private to prevent direct instantiation.
      * make call to static factory method "getInstance()" instead.
      */
-    private MiDbHelper(Context ctx, Activity activity) {
+    private MiDbHelper(Context ctx) {
         super(ctx, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = ctx;
-        this.activity = activity;
+
     }
 
     @Override
@@ -138,27 +139,28 @@ public class MiDbHelper extends SQLiteOpenHelper{
 
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(tablaUsuario, new String[]{"*"},null, null, null, null, null);
-        while(cursor.moveToNext()){
-            return cursor.getString(cursor.getColumnIndex("rut_u"));
+        String rutU="";
+        if(cursor.moveToNext()){
+            rutU= cursor.getString(cursor.getColumnIndex("rut_u"));
         }
-
-        return "";
+        cursor.close();
+        return rutU;
     }
 
     //Obtiene nombre de usuario
     public String getNombreUsuario(){
-        String nombre;
+        String nombre="Sin nombre";
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(tablaUsuario, new String[]{"*"},null, null, null, null, null);
-        Log.e("Omar", "getnombre");
-        while(cursor.moveToNext()){
+
+        if (cursor.moveToNext()){
+            String[] partes;
             nombre= cursor.getString(cursor.getColumnIndex("nombre_u"));
-            cursor.close();
-            Log.e("Omar", nombre);
-            return nombre;
+            partes=nombre.split(" ");
+            nombre = partes[0]+" "+partes[1];
         }
         cursor.close();
-        return "Sin Nombre";
+        return nombre;
 
     }
     //Cuenta cantidad de errores y retorna un int
@@ -171,14 +173,18 @@ public class MiDbHelper extends SQLiteOpenHelper{
         return error;
     }
     //Cuenta cantidad de solicitudes y retorna un int
-    public int CuentaSolicitudes(){
+    public int CuentaSolicitudes() {
         SQLiteDatabase db = getReadableDatabase();
         String rutUsuario = getRutUsuario();
-        Cursor cursor = db.query(tablaSolicitud, new String[]{"Rut,fecha,tipo_pacto"},"estado1='P' and rut_admin1=?"
-                +" or estado2='P' and rut_admin2=? and estado3='A' and estado1='A'" +
-                " or estado3='P' and rut_admin3=? and estado1='A' and estado2='A'"
-                ,new String[]{rutUsuario,rutUsuario,rutUsuario}, null, null, null);
-
+        Cursor cursor;
+        if (isAdmin()) {
+            cursor = db.query(tablaSolicitud, new String[]{"Rut,fecha,tipo_pacto"},null,null, null, null, null);
+        } else {
+            cursor = db.query(tablaSolicitud, new String[]{"Rut,fecha,tipo_pacto"}, "estado1='P' and rut_admin1=?"
+                            + " or estado2='P' and rut_admin2=? and estado3='A' and estado1='A'" +
+                            " or estado3='P' and rut_admin3=? and estado1='A' and estado2='A'"
+                    , new String[]{rutUsuario, rutUsuario, rutUsuario}, null, null, null);
+        }
         int pendientes = cursor.getCount();
         cursor.close();
         return pendientes;
@@ -188,10 +194,19 @@ public class MiDbHelper extends SQLiteOpenHelper{
 
         SQLiteDatabase db = getReadableDatabase();
 
-        Cursor cursor = db.query(tablaSolicitud, new String[]{"*"},"rut_admin1=? or rut_admin2=? or rut_admin3=?",new String[]{rut_user,rut_user,rut_user} , null, null, null);
+        return db.query(tablaSolicitud, new String[]{"*"},"rut_admin1=? or rut_admin2=? or rut_admin3=?",new String[]{rut_user,rut_user,rut_user} , null, null, null);
         //Cursor cursor = db.query(tablaSolicitud, new String[]{"*"},null,null , null, null, null);
 
-        return cursor;
+    }
+
+    // Obtiene las solicitudes que el usuario puede ver
+    public Cursor getDatoSolicitudADMIN(){
+
+        SQLiteDatabase db = getReadableDatabase();
+
+        return db.query(tablaSolicitud, new String[]{"*"},null,null , null, null, null);
+        //Cursor cursor = db.query(tablaSolicitud, new String[]{"*"},null,null , null, null, null);
+
     }
 
     // Muestra las solicitudes aprobadas del mes seleccionado
@@ -199,14 +214,14 @@ public class MiDbHelper extends SQLiteOpenHelper{
 
         SQLiteDatabase db = getReadableDatabase();
 
-       Cursor cursor = db.query(tablaSolicitud, new String[]{"*"},"fecha between ? and ?",new String[]{fecha1,fecha2}, null,null,null);
+       return db.query(tablaSolicitud, new String[]{"*"},"fecha between ? and ?",new String[]{fecha1,fecha2}, null,null,null);
 
-        return cursor;
     }
 
     public Cursor getDatoSolicitudDetalle(String rut, String fecha, String tipo_pacto){ //Muestra detalle
         SQLiteDatabase db = getReadableDatabase();
         return db.query(tablaSolicitud, new String[]{"*"},"Rut=? AND fecha=? AND tipo_pacto=?",new String[]{rut,fecha,tipo_pacto} , null, null, null);
+
     }
 
     // Borra todos los registros con sus respectivos where
@@ -249,8 +264,8 @@ public class MiDbHelper extends SQLiteOpenHelper{
         return (resultado >= 1);
     }
 
-    // Inserta un registro en la tabla
-    public boolean insertarLogError(String descripcion){
+    // Inserta log de error
+    public boolean insertarLogError(String descripcion,String mac){
         db = getWritableDatabase();
      //   String mac= ValidacionConexion.getDireccionMAC();
         ContentValues campoValor = new ContentValues();
@@ -260,29 +275,30 @@ public class MiDbHelper extends SQLiteOpenHelper{
         campoValor.put("fecha_hora", dateFormat.format(date));
         campoValor.put("descripcion", descripcion);
         campoValor.put("version_app", context.getString(R.string.version));
-        campoValor.put("mac",ValidacionConexion.getDireccionMAC(this.activity));
+        campoValor.put("mac",mac);
 
         long resultado = db.insertOrThrow(tablaLogErrores, null, campoValor);
         return resultado >= 1;
     }
-
-    public boolean insertarUsuario(String rut, String nombre){
+    // Inserta Usuario
+    public boolean insertarUsuario(String rut, String nombre,String mac,int isAdmin){
         db = getWritableDatabase();
 
         ContentValues campoValor = new ContentValues();
 
         campoValor.put("rut_u", rut);
         campoValor.put("nombre_u", nombre);
+        campoValor.put("isadmin", isAdmin);
 
         try{
             long resultado = db.insertOrThrow(tablaUsuario, null, campoValor);
             return resultado >= 1;
         }catch(Exception e){
-            insertarLogError("Insertar usuario arroja error " + e.getMessage());
+            insertarLogError("Insertar usuario arroja error " + e.getMessage(), mac);
         }
         return false;
     }
-
+    //Insertar Solicitud
     public boolean insertarSolicitud(String rut, String nombre, String fecha
             , Double cant_horas, Integer monto_pagar, String motivo, String comentario
             , String centro_costo, String area, String tipo_pacto, String estado1,String rut_admin1
@@ -312,7 +328,7 @@ public class MiDbHelper extends SQLiteOpenHelper{
         long resultado = db.insertOrThrow(tablaSolicitud, null, campoValor);
         return resultado >= 1;
     }
-
+    //Actualizar estado de solicitud
     public boolean actualizarEstado (String rut, String fecha,String estado,String lvl, String tipo_pacto){
         SQLiteDatabase db = getWritableDatabase();
         ContentValues campoValor = new ContentValues();
@@ -320,5 +336,35 @@ public class MiDbHelper extends SQLiteOpenHelper{
         long resultado = db.update(tablaSolicitud, campoValor, "Rut=? and fecha=? and tipo_pacto=?", new String[]{rut,fecha,tipo_pacto});
         return resultado >= 1;
     }
+    //Boleano que confirma si la solicitud existe o no
+    public boolean yaExiste (String rut, String fecha, String tipo_pacto){
 
+        SQLiteDatabase db = getReadableDatabase();
+
+        Cursor cursor = db.query(tablaSolicitud, new String[]{"*"},"Rut=? and fecha=? and tipo_pacto=?",new String[]{rut,fecha,tipo_pacto} , null, null, null);
+
+        if(cursor==null){
+            return false;
+        }
+        if(cursor.getCount()>0){
+            cursor.close();
+            return true;
+        }
+        cursor.close();
+        return false;
+    }
+    //Boleano que verifica si el usuario del celular es un Administrador de RRHH
+    public boolean isAdmin(){
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.query(tablaUsuario, new String[]{"isadmin"},null,null, null, null, null);
+        if(cursor.moveToNext()){
+            int isAdmin = cursor.getInt(cursor.getColumnIndex("isadmin"));
+            if(isAdmin >0){
+                cursor.close();
+                return true;
+            }
+        }
+        cursor.close();
+        return false;
+    }
 }

@@ -21,8 +21,8 @@ public abstract class ValidacionConexion{
         return true;
     }
 
-    public static String getDireccionMAC(Activity activity){
-        WifiManager manager = (WifiManager) activity.getSystemService(Context.WIFI_SERVICE);
+    public static String getDireccionMAC(Context context){
+        WifiManager manager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         WifiInfo info = manager.getConnectionInfo();
         String direccionMAC = info.getMacAddress();
 

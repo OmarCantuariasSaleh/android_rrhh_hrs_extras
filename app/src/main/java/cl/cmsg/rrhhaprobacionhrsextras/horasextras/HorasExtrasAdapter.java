@@ -49,7 +49,6 @@ public class HorasExtrasAdapter extends BaseAdapter{
             LayoutInflater inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.listview_horas_pendientes_bkp, null);
         }
-        //Proveedor proveedorInformacion = proveedor.get(position);
         HorasExtras horasExtras = arrayListHorasExtras.get(position);
 
         TextView rut = (TextView) convertView.findViewById(R.id.lblRut);
@@ -62,7 +61,20 @@ public class HorasExtrasAdapter extends BaseAdapter{
         fecha.setText(horasExtras.getFecha());
 
         TextView tipo_pacto = (TextView) convertView.findViewById(R.id.lblTipoPacto);
-        tipo_pacto.setText(horasExtras.getTipo_pacto());
+
+        switch (horasExtras.getTipo_pacto()){
+            case "H":
+                tipo_pacto.setText(R.string.HORAEXTRA);
+                break;
+            case "T":
+                tipo_pacto.setText(R.string.TRATO);
+                break;
+            case "F":
+                tipo_pacto.setText(R.string.FESTIVO);
+                break;
+        }
+
+
 
         TextView cant_horas = (TextView) convertView.findViewById(R.id.lblCantHoras);
         cant_horas.setText(horasExtras.getCant_horas());
@@ -70,13 +82,9 @@ public class HorasExtrasAdapter extends BaseAdapter{
         LinearLayout linearLayout= (LinearLayout) convertView.findViewById(R.id.layoutFondoLista);
         horasExtras.setLayout(linearLayout);
 
-        /*TextView textView = (TextView) convertView.findViewById(R.id.lblRut);
-        horasExtras.setTextView(textView);*/
 
-        //Log.e("Omar","Tipo de Pacto: "+horasExtras.getTipo_pacto() );
         return convertView;
 
-       // return null;
     }
 
 }

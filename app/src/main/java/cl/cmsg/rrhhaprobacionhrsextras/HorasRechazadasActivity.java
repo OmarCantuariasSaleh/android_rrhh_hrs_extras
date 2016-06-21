@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import cl.cmsg.rrhhaprobacionhrsextras.clases.MiDbHelper;
+import cl.cmsg.rrhhaprobacionhrsextras.clases.ValidacionConexion;
 import cl.cmsg.rrhhaprobacionhrsextras.horasextras.HorasExtras;
 import cl.cmsg.rrhhaprobacionhrsextras.horasextras.HorasExtrasAdapter;
 
@@ -49,8 +50,8 @@ public class HorasRechazadasActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        miDbHelper = MiDbHelper.getInstance(this,HorasRechazadasActivity.this);
-
+        miDbHelper = MiDbHelper.getInstance(this);
+        // Boton de seleccionar fecha, envia al dialogo de datepicker
         btnPeriodoSelect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -62,6 +63,7 @@ public class HorasRechazadasActivity extends AppCompatActivity {
             }
         });
 
+        // Al apretar un item llama a la actividad detalle para mostrar todos los datos de la solicitud
         listViewPendientes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -77,7 +79,10 @@ public class HorasRechazadasActivity extends AppCompatActivity {
 
     }
 
+    //Dialogo de datepicker, intenta esconder dia y mostrar solo meses
     private DatePickerDialog createDialog() {
+        final String mac = ValidacionConexion.getDireccionMAC(HorasRechazadasActivity.this);
+
         DatePickerDialog dpd = new DatePickerDialog(this,
                 new DatePickerDialog.OnDateSetListener() {
                     @Override
@@ -182,18 +187,25 @@ public class HorasRechazadasActivity extends AppCompatActivity {
 
                                 fecha=cursor.getString(cursor.getColumnIndex("fecha"));
 
-                                tipo_pacto=cursor.getString(cursor.getColumnIndex("tipo_pacto"));
+                                tipo_pacto="";
+                                if(cursor.getString(cursor.getColumnIndex("tipo_pacto")).equals("H")){
+                                    tipo_pacto = "Horas Extra";
+                                }
+                                if(cursor.getString(cursor.getColumnIndex("tipo_pacto")).equals("T")){
+                                    tipo_pacto = "Trato";
+                                }
+                                if(cursor.getString(cursor.getColumnIndex("tipo_pacto")).equals("F")){
+                                    tipo_pacto = "Festivo";
+                                }
                                 cant_horas=cursor.getInt(cursor.getColumnIndex("cant_horas"));
 
                                 horasExtras = new HorasExtras(rut,nombre,fecha,tipo_pacto,cant_horas,lvl);
                                 arrayListHorasExtra.add(horasExtras);
 
-
-                                //Log.e("Omar1","Lvl:"+ lvl+ " Estado 1: "+E1+" Estado 2: "+E2+" Estado 3: "+E3+" costo : "+String.valueOf(cursor.getInt(cursor.getColumnIndex("monto_pagar"))));
                             }
 
                         }
-
+                            cursor.close();
                         horasExtrasAdapter = new HorasExtrasAdapter(arrayListHorasExtra,getApplicationContext());
 
                         listViewPendientes.setAdapter(horasExtrasAdapter);
@@ -229,7 +241,7 @@ public class HorasRechazadasActivity extends AppCompatActivity {
 
         }
         catch (Exception ex) {
-            Log.e("Exception",String.valueOf(ex));
+            miDbHelper.insertarLogError("Error : "+ex.getMessage(),mac);
         }
         return dpd;
     }

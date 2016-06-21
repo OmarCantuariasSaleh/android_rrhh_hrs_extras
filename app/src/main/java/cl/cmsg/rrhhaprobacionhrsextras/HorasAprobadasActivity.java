@@ -16,6 +16,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Calendar;
 import cl.cmsg.rrhhaprobacionhrsextras.clases.MiDbHelper;
+import cl.cmsg.rrhhaprobacionhrsextras.clases.ValidacionConexion;
 import cl.cmsg.rrhhaprobacionhrsextras.horasextras.HorasExtras;
 import cl.cmsg.rrhhaprobacionhrsextras.horasextras.HorasExtrasAdapter;
 
@@ -35,6 +36,7 @@ public class HorasAprobadasActivity extends AppCompatActivity {
     TextView lblPeriodo;
     int lvl=1;
     Button btnPeriodoSelect;
+    String mac;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,12 +44,12 @@ public class HorasAprobadasActivity extends AppCompatActivity {
         setContentView(R.layout.activity_horas_aprovadas);
         btnPeriodoSelect = (Button) findViewById(R.id.btnPeriodoSelect);
         listViewPendientes = (ListView) findViewById(R.id.lstHorasPendientes);
-
+        mac = ValidacionConexion.getDireccionMAC(HorasAprobadasActivity.this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        miDbHelper = MiDbHelper.getInstance(this,HorasAprobadasActivity.this);
+        miDbHelper = MiDbHelper.getInstance(this);
 
         btnPeriodoSelect.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -183,7 +185,16 @@ public class HorasAprobadasActivity extends AppCompatActivity {
 
                                 fecha=cursor.getString(cursor.getColumnIndex("fecha"));
 
-                                tipo_pacto=cursor.getString(cursor.getColumnIndex("tipo_pacto"));
+                                tipo_pacto="";
+                                if(cursor.getString(cursor.getColumnIndex("tipo_pacto")).equals("H")){
+                                    tipo_pacto = getString(R.string.HORAEXTRA);
+                                }
+                                if(cursor.getString(cursor.getColumnIndex("tipo_pacto")).equals("T")){
+                                    tipo_pacto = getString(R.string.TRATO);
+                                }
+                                if(cursor.getString(cursor.getColumnIndex("tipo_pacto")).equals("F")){
+                                    tipo_pacto = getString(R.string.FESTIVO);
+                                }
 
                                 cant_horas=cursor.getInt(cursor.getColumnIndex("cant_horas"));
 
@@ -191,11 +202,10 @@ public class HorasAprobadasActivity extends AppCompatActivity {
                                 arrayListHorasExtra.add(horasExtras);
 
                                 costo+= cursor.getInt(cursor.getColumnIndex("monto_pagar"));
-                                //Log.e("Omar1","Lvl:"+ lvl+ " Estado 1: "+E1+" Estado 2: "+E2+" Estado 3: "+E3+" costo : "+String.valueOf(cursor.getInt(cursor.getColumnIndex("monto_pagar"))));
                             }
 
                         }
-
+                            cursor.close();
                         if(costo>0){
                             lblCostoTotal.setText("Costo total del periodo : $" +costo);
                             lblCostoTotal.setVisibility(View.VISIBLE);
@@ -223,7 +233,6 @@ public class HorasAprobadasActivity extends AppCompatActivity {
                     java.lang.reflect.Field[] datePickerFields = datePickerDialogField.getType().getDeclaredFields();
 
                     for (java.lang.reflect.Field datePickerField : datePickerFields) {
-                        Log.i("test", datePickerField.getName());
 
                         if ("mDaySpinner".equals(datePickerField.getName())) {
                             datePickerField.setAccessible(true);
@@ -239,7 +248,7 @@ public class HorasAprobadasActivity extends AppCompatActivity {
 
         }
         catch (Exception ex) {
-            Log.e("Exception",String.valueOf(ex));
+            miDbHelper.insertarLogError("Error : "+ex.getMessage()+". En HorasAprobadasActivity, datepickerdialog",mac);
         }
         return dpd;
     }

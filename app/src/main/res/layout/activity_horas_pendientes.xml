@@ -63,7 +63,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:padding="5dp">
+        android:padding="5dp"
+        android:id="@+id/layBotones">
 
         <LinearLayout
             android:orientation="horizontal"
@@ -74,12 +75,23 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Aprobar Todo"
+                android:text="Aprobar"
                 android:id="@+id/btnAprobarTodo"
                 android:background="@color/colorPrimaryDark"
                 android:textColor="#ffffff"
                 android:padding="5dp"
-                android:layout_marginRight="20dp" />
+                android:layout_marginRight="20dp"
+                android:textSize="13dp" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rechazar"
+                android:id="@+id/btnRechazarTodo"
+                android:background="@color/colorPrimaryDark"
+                android:textColor="#ffffff"
+                android:layout_marginRight="20dp"
+                android:textSize="13dp" />
 
             <TextView
                 android:layout_width="wrap_content"

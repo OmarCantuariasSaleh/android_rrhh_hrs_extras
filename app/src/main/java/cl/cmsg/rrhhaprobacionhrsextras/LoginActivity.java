@@ -13,7 +13,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -40,18 +39,18 @@ import cl.cmsg.rrhhaprobacionhrsextras.gcm.RegistrationIntentService;
 public class LoginActivity extends AppCompatActivity {
 
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 27;
-    Button button;
+    Button buttonOk;
     MiDbHelper miDbHelper;
     EditText editText;
     ProgressDialog progressDialog;
     String mensaje;
-    String titulo;
+    final String tituloError ="ERROR";
     String tokenRecibido = "";
-
     Boolean isReceiverRegistered = false;
     BroadcastReceiver mRegistrationBroadcastReceiver;
     VolleyS volleyS;
     String rut;
+    String mac;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,33 +58,33 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        button = (Button) findViewById(R.id.buttonOk);
+        mac=ValidacionConexion.getDireccionMAC(LoginActivity.this);
+        buttonOk = (Button) findViewById(R.id.buttonOk);
         editText = (EditText) findViewById(R.id.editText);
-        miDbHelper = MiDbHelper.getInstance(this, LoginActivity.this);
-        volleyS = VolleyS.getInstance(this);
+        miDbHelper = MiDbHelper.getInstance(this);
 
+        //Si el usuario existe, envia directamente a MainActivity
+        if (!miDbHelper.getRutUsuario().trim().isEmpty()) {
+            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            finish();
+            return;
+        }
+        volleyS = VolleyS.getInstance(this);
         progressDialog = new ProgressDialog(LoginActivity.this);
         progressDialog.setTitle("Registrando");
         progressDialog.setMessage("Espere un momento");
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progressDialog.setCancelable(false);
 
-        if (!miDbHelper.getRutUsuario().trim().isEmpty()) {
-            startActivity(new Intent(getApplicationContext(), MainActivity.class));
-            finish();
-            return;
-        }
-
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                //Toast.makeText(LoginActivity.this, "Respuesta recibida, procesando...", Toast.LENGTH_SHORT).show();
                 enviarAlServidorCMSG();
             }
         };
 
-        button.setOnClickListener(new View.OnClickListener() {
+        // On Click de boton 'Ok' intenta registrar al usuario
+        buttonOk.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
@@ -96,9 +95,7 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
                 rut = rut.replace(".", "");
-                //rut = rut.replace("-", "");
                 rut = rut.trim();
-                /*rut = rut.substring(0, rut.length() - 1);*/
 
                 if (!ValidacionConexion.isExisteConexion(LoginActivity.this)) {
                     Alertas.alertaConexion(LoginActivity.this);
@@ -144,7 +141,6 @@ public class LoginActivity extends AppCompatActivity {
                 apiAvailability.getErrorDialog(this, resultCode, PLAY_SERVICES_RESOLUTION_REQUEST)
                         .show();
             } else {
-                Log.e("jlas", "Este dispositivo no es compatible con la aplicación.");
                 finish();
             }
             return false;
@@ -156,7 +152,6 @@ public class LoginActivity extends AppCompatActivity {
     void enviarAlServidorCMSG() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
         tokenRecibido = sharedPreferences.getString(ConstantesGlobales.TOKEN, "");
-
         if (tokenRecibido.isEmpty()) {
             //     No tenemos token, algo pasó y debemos intentarlo nuevamente.
             progressDialog.dismiss();
@@ -188,7 +183,7 @@ public class LoginActivity extends AppCompatActivity {
         //     Ya está registrado y guardado el token en shared preferences
 
         bloquearInterfazUsuario();
-        String mac = ValidacionConexion.getDireccionMAC(LoginActivity.this);
+
         String url = getString(R.string.URL_RegistrarUsuario)
                 + "?apk_key=" + getString(R.string.APK_KEY)
                 + "&run=" + rut
@@ -201,31 +196,26 @@ public class LoginActivity extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        String mensaje = "Error";
+                        String mensajeError = "Comuniquese con informatica, el servidor responde con formato incorrecto";
                         Boolean error = true;
                         progressDialog.dismiss();
                         JSONObject jsonObject = null;
-                        error = true;
                         String mensajesrv = "";
                         String nombre ="";
-
+                        int isAdmin=0;
+                        desbloquearInterfazUsuario();
                         if (response == null || response.equals(null) || response.isEmpty()) {
 
-                            mensaje = "Comuniquese con informatica, el servidor responde con formato incorrecto";
-                            desbloquearInterfazUsuario();
-                            Alertas.alertaSimple("Error", mensaje, LoginActivity.this);
-                            miDbHelper.insertarLogError("Variable response es Nulo o Vacio");
+                            Alertas.alertaSimple(tituloError, mensajeError, LoginActivity.this);
+                            miDbHelper.insertarLogError("Variable response es Nulo o Vacio en LoginActivity",mac);
                             return;
                         }
 
                         try {
                             jsonObject = new JSONObject(response);
-                            //Log.e("Respuesta",response);
                         } catch (JSONException e) {
-                            mensaje = "Comuniquese con informatica, el servidor responde con formato incorrecto y el siguiente error:\n\n" + String.valueOf(e);
-                            desbloquearInterfazUsuario();
-                            Alertas.alertaSimple("Error", mensaje, LoginActivity.this);
-                            miDbHelper.insertarLogError("Error de formato en variable 'response', no parece ser tipo JSON. Mensaje de error : " + e.getMessage());
+                            Alertas.alertaSimple(tituloError, mensajeError, LoginActivity.this);
+                            miDbHelper.insertarLogError("Error de formato en variable 'response' en LoginActivity, no parece ser tipo JSON. Mensaje de error : " + e.getMessage(),mac);
                             return;
                         }
 
@@ -233,25 +223,19 @@ public class LoginActivity extends AppCompatActivity {
                             error = jsonObject.getBoolean("error");
 
                         } catch (JSONException e) {
-                            e.printStackTrace();
-                            mensaje = "Comuniquese con informatica, el servidor responde con formato incorrecto";
-                            desbloquearInterfazUsuario();
-                            Alertas.alertaSimple("Error", mensaje, LoginActivity.this);
-                            miDbHelper.insertarLogError("Error de formato en variable 'error', No existe o es un formato incorrecto. Mensaje de error : " + e.getMessage());
+
+                            Alertas.alertaSimple(tituloError, mensajeError, LoginActivity.this);
+                            miDbHelper.insertarLogError("Error de formato en variable 'error' en LoginActivity, No existe o es un formato incorrecto. Mensaje de error : " + e.getMessage(),mac);
                             return;
                         }
                         if (error) {
-                            desbloquearInterfazUsuario();
                             try {
                                 mensajesrv = jsonObject.getString("mensaje");
                             } catch (JSONException e) {
-                                mensaje = "Comuniquese con informatica, el servidor responde con formato incorrecto";
-
-                                Alertas.alertaSimple("Error", mensaje, LoginActivity.this);
-                                miDbHelper.insertarLogError("Error de formato en variable 'mensaje', No existe o es un formato incorrecto. Mensaje de error : " + e.getMessage());
+                                Alertas.alertaSimple(tituloError, mensajeError, LoginActivity.this);
+                                miDbHelper.insertarLogError("Error de formato en variable 'mensaje' en LoginActivity, No existe o es un formato incorrecto. Mensaje de error : " + e.getMessage(),mac);
                                 return;
                             }
-
 
                             new AlertDialog.Builder(LoginActivity.this)
                                     .setPositiveButton("Ok", null)
@@ -260,30 +244,43 @@ public class LoginActivity extends AppCompatActivity {
                                     .setTitle("Servidor responde con error")
                                     .show()
                                     ;
-                            Log.e("jlas", "Despues del alerta");
                             return;
                         }
 
                         try {
                             nombre = jsonObject.getString("mensaje");
                         } catch (JSONException e) {
-                            e.printStackTrace();
-                            mensaje = "Comuniquese con informatica, el servidor responde con formato incorrecto";
-                            desbloquearInterfazUsuario();
-                            Alertas.alertaSimple("Error", mensaje, LoginActivity.this);
-                            miDbHelper.insertarLogError("Error de formato en variable 'mensaje', No existe o es un formato incorrecto. Mensaje de error : " + e.getMessage());
+                            Alertas.alertaSimple(tituloError, mensajeError, LoginActivity.this);
+                            miDbHelper.insertarLogError("Error de formato en variable 'mensaje' en LoginActivity, No existe o es un formato incorrecto. Mensaje de error : " + e.getMessage(),mac);
                             return;
                         }
-                        Log.e("jlas", "LLEGUE HASTA AQUI MIRAME");
+
+                        try {
+                            isAdmin = jsonObject.getInt("isadmin");
+                        } catch (JSONException e) {
+                            Alertas.alertaSimple(tituloError, mensajeError, LoginActivity.this);
+                            miDbHelper.insertarLogError("Error de formato en variable 'isadmin' en LoginActivity, No existe o es un formato incorrecto. Mensaje de error : " + e.getMessage(),mac);
+                            return;
+                        }
+                        if(isAdmin!=0 && isAdmin!=1){
+                            Alertas.alertaSimple(tituloError, mensajeError, LoginActivity.this);
+                            miDbHelper.insertarLogError("Error de formato en variable 'isadmin' en LoginActivity, No es un formato correcto (Solo 0 o 1).",mac);
+                            return;
+                        }
+
                         miDbHelper.deleteUser();
-                        rut = rut.replace("-", "");
-                        rut = rut.trim();
+                        rut = rut.replace("-", "").trim();
                         rut = rut.substring(0, rut.length() - 1);
 
-                        miDbHelper.insertarUsuario(rut, nombre);
-                        Toast.makeText(LoginActivity.this, "Registrado", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                        finish();
+                        if(miDbHelper.insertarUsuario(rut, nombre,mac,isAdmin)){
+                            Toast.makeText(LoginActivity.this, "Registrado", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                            finish();
+                        }else{
+                            Alertas.alertaSimple(tituloError, mensajeError, LoginActivity.this);
+                            miDbHelper.insertarLogError("Error de formato en variable 'mensaje'  en LoginActivity, Fallo al registrar usuario en la base de datos, el usuario ya existe o mensaje retornó valores incorrectos. Mensaje de error : Una o mas atributos son invalidos",mac);
+                        }
+
                     }
                 }
                 ,
@@ -295,9 +292,8 @@ public class LoginActivity extends AppCompatActivity {
                         volleyS.cancelAll();
                         mensaje = "Servidor no responde \n" +
                                 " Asegurese de estar conectado a internet o intentelo mas tarde";
-                        miDbHelper.insertarLogError("Ocurrio un error al comunicarse con el servidor a travez de Volley. Mensaje : " + error);
-                        Alertas.alertaSimple("Error", mensaje, LoginActivity.this);
-
+                        miDbHelper.insertarLogError("Ocurrio un error al comunicarse con el servidor a travez de Volley. Mensaje : " + error.getMessage(),mac);
+                        Alertas.alertaSimple(tituloError, mensaje, LoginActivity.this);
                     }
                 }
         );
@@ -307,12 +303,12 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void bloquearInterfazUsuario() {
-        button.setEnabled(false);
+        buttonOk.setEnabled(false);
         editText.setEnabled(false);
     }
 
     private void desbloquearInterfazUsuario() {
-        button.setEnabled(true);
+        buttonOk.setEnabled(true);
         editText.setEnabled(true);
     }
 
