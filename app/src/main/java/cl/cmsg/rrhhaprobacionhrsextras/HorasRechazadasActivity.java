@@ -116,7 +116,7 @@ public class HorasRechazadasActivity extends AppCompatActivity {
                         String nombre;
                         String fecha;
                         String tipo_pacto;
-                        int cant_horas;
+                        double cant_horas;
                         String periodo="";
 
                         switch (monthOfYear){
@@ -189,15 +189,16 @@ public class HorasRechazadasActivity extends AppCompatActivity {
 
                                 tipo_pacto="";
                                 if(cursor.getString(cursor.getColumnIndex("tipo_pacto")).equals("H")){
-                                    tipo_pacto = "Horas Extra";
+                                    tipo_pacto = getString(R.string.HORAEXTRA);
                                 }
                                 if(cursor.getString(cursor.getColumnIndex("tipo_pacto")).equals("T")){
-                                    tipo_pacto = "Trato";
+                                    tipo_pacto = getString(R.string.TRATO);
                                 }
                                 if(cursor.getString(cursor.getColumnIndex("tipo_pacto")).equals("F")){
-                                    tipo_pacto = "Festivo";
+                                    tipo_pacto = getString(R.string.FESTIVO);
                                 }
-                                cant_horas=cursor.getInt(cursor.getColumnIndex("cant_horas"));
+
+                                cant_horas=cursor.getDouble(cursor.getColumnIndex("cant_horas"));
 
                                 horasExtras = new HorasExtras(rut,nombre,fecha,tipo_pacto,cant_horas,lvl);
                                 arrayListHorasExtra.add(horasExtras);

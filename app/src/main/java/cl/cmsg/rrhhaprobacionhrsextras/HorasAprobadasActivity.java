@@ -113,9 +113,9 @@ public class HorasAprobadasActivity extends AppCompatActivity {
                         String nombre;
                         String fecha;
                         String tipo_pacto;
-                        int cant_horas;
+                        double cant_horas;
                         int costo=0;
-                        int cantidad=0;
+                        double cantidad=0;
                         String periodo="";
 
                         switch (monthOfYear){
@@ -196,7 +196,7 @@ public class HorasAprobadasActivity extends AppCompatActivity {
                                     tipo_pacto = getString(R.string.FESTIVO);
                                 }
 
-                                cant_horas=cursor.getInt(cursor.getColumnIndex("cant_horas"));
+                                cant_horas=cursor.getDouble(cursor.getColumnIndex("cant_horas"));
 
                                 horasExtras = new HorasExtras(rut,nombre,fecha,tipo_pacto,cant_horas,lvl);
                                 arrayListHorasExtra.add(horasExtras);

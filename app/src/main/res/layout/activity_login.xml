@@ -70,7 +70,7 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/ok"
+            android:text="Registrar"
             android:id="@+id/buttonOk"
             android:layout_below="@+id/editText"
             android:layout_centerHorizontal="true"

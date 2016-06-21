@@ -49,13 +49,13 @@ public class HorasPendientesActivity extends AppCompatActivity {
     String tipo_pacto;
     final String mensaje = "Comuniquese con informatica, el servidor responde con formato incorrecto";
     final String tituloERROR="ERROR";
-    int cant_horas;
+    double cant_horas;
     int errorNuloVacio = 0;
     int errorRESPONSE = 0;
     int errorFormatoError = 0;
-    int error4 = 0;
-    int error5 = 0;
-    int error6 = 0;
+    int errorFormatoMensaje = 0;
+    int errorPositivo = 0;
+    int errorConnVolley = 0;
     int errorconn = 0;
     int exito1 = 0;
     long total=0;
@@ -165,9 +165,9 @@ public class HorasPendientesActivity extends AppCompatActivity {
                                         errorNuloVacio = 0;
                                         errorRESPONSE = 0;
                                         errorFormatoError = 0;
-                                        error4 = 0;
-                                        error5 = 0;
-                                        error6 = 0;
+                                        errorFormatoMensaje = 0;
+                                        errorPositivo = 0;
+                                        errorConnVolley = 0;
                                         errorconn = 0;
                                         exito1 = 0;
                                         total = checkedItemPositions.size();
@@ -238,9 +238,9 @@ public class HorasPendientesActivity extends AppCompatActivity {
                                         errorNuloVacio = 0;
                                         errorRESPONSE = 0;
                                         errorFormatoError = 0;
-                                        error4 = 0;
-                                        error5 = 0;
-                                        error6 = 0;
+                                        errorFormatoMensaje = 0;
+                                        errorPositivo = 0;
+                                        errorConnVolley = 0;
                                         errorconn = 0;
                                         exito1 = 0;
                                         total = checkedItemPositions.size();
@@ -380,7 +380,7 @@ public class HorasPendientesActivity extends AppCompatActivity {
 
                 tipo_pacto =cursor.getString(cursor.getColumnIndex("tipo_pacto"));
 
-                cant_horas = cursor.getInt(cursor.getColumnIndex("cant_horas"));
+                cant_horas = cursor.getDouble(cursor.getColumnIndex("cant_horas"));
                 horasExtras = new HorasExtras(rut, nombre, fecha, tipo_pacto, cant_horas,lvl);
 
                 arrayListHorasExtra.add(horasExtras);
@@ -470,7 +470,7 @@ public class HorasPendientesActivity extends AppCompatActivity {
                         mensajesrv = jsonObject.getString("mensaje");
                     } catch (JSONException e) {
                         progressDialog.dismiss();
-                        if(++error4==1) {
+                        if(++errorFormatoMensaje==1) {
                             Alertas.alertaSimple(tituloERROR, mensaje, HorasPendientesActivity.this);
                             miDbHelper.insertarLogError("Error de formato en variable 'mensaje', No existe o es un formato incorrecto. Mensaje de error : " + e.getMessage(),mac);
                             llenarLista();
@@ -478,8 +478,8 @@ public class HorasPendientesActivity extends AppCompatActivity {
                         return;
                     }
                     progressDialog.dismiss();
-                    error5++;
-                    if(error5==1) {
+
+                    if(++errorPositivo ==1) {
                         Alertas.alertaSimple("Servidor responde con el siguiente error:", mensajesrv, HorasPendientesActivity.this);
                         llenarLista();
                     }
@@ -489,7 +489,7 @@ public class HorasPendientesActivity extends AppCompatActivity {
                 llenarLista();
                 progressDialog.dismiss();
                 miDbHelper.actualizarEstado(rut_S,fecha_S,estado_Final,lvl_S, tipo_pacto_S);
-               if(exito1++==1) {
+               if(++exito1==total) {
                    new AlertDialog.Builder(HorasPendientesActivity.this)
                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                @Override
@@ -513,8 +513,8 @@ public class HorasPendientesActivity extends AppCompatActivity {
                 progressDialog.dismiss();
                 volleyS.cancelAll();
 
-                error6++;
-                if(error6==1) {
+                errorConnVolley++;
+                if(errorConnVolley ==1) {
                    Alertas.alertaSimple(tituloERROR, "Servidor no responde, asegurese de estar conectado a internet o intentelo mas tarde", HorasPendientesActivity.this);
                    miDbHelper.insertarLogError("Ocurrio un error al comunicarse con el servidor a travez de Volley. Mensaje : " + error,mac);
                    llenarLista();

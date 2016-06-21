@@ -34,15 +34,4 @@ public class Alertas {
     }
 
 
-
-    /*public void alertaPregunta (String titulo, String mensaje, Context context){
-        new AlertDialog.Builder(context)
-                .setIcon(android.R.drawable.ic_dialog_info)
-                .setTitle(titulo)
-                .setMessage(mensaje)
-                .setNeutralButton("Ok",null)
-                .show()
-        ;
-    }*/
-
 }

@@ -56,7 +56,7 @@ public class Reciever {
             } catch (JSONException e) {
 //                Alertas.alertaSimple("Error", "Comuniquese con informatica, el servidor no retorna filas", context);
 
-                miDbHelper.insertarLogError("Error de formato en variable 'filas',datos del arreglo no son JSONObject o no tienen formato correcto. Mensaje de error : " + e.getMessage(), mac);
+                miDbHelper.insertarLogError("Error de formato en variable 'filas',datos del arreglo no son JSONObject o no tienen formato correcto. Mensaje de error : " + e.getMessage()+" en Reciever, RecibirUna", mac);
 
                 return;
             }
@@ -86,7 +86,7 @@ public class Reciever {
                 mensaje = "Comuniquese con informatica, el servidor retorna filas incorrectas";
 //                Alertas.alertaSimple("Error", mensaje, context);
 
-                miDbHelper.insertarLogError("Filas del arreglo no tienen formato correcto o estan vacias. Mensaje de error : " + e.getMessage(), mac);
+                miDbHelper.insertarLogError("Filas del arreglo no tienen formato correcto o estan vacias en Reciever, RecibirUna. Mensaje de error : " + e.getMessage(), mac);
 
                 return;
             }
@@ -114,7 +114,7 @@ public class Reciever {
             } catch (Exception e) {
                 mensaje = "Error de base de datos \n" +
                         " Comuniquese con informatica inmediatamente";
-                miDbHelper.insertarLogError("Una o mas filas del arreglo contienen datos que no coinciden con la tabla en la fila " + String.valueOf(i), mac);
+                miDbHelper.insertarLogError("Una o mas filas del arreglo contienen datos que no coinciden con la tabla en la fila " + String.valueOf(i)+" en Reciever, RecibirUna", mac);
 
                 return;
             }

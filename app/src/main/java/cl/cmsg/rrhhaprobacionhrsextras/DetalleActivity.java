@@ -1,15 +1,12 @@
 package cl.cmsg.rrhhaprobacionhrsextras;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.database.Cursor;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -21,18 +18,13 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import cl.cmsg.rrhhaprobacionhrsextras.clases.MiDbHelper;
 import cl.cmsg.rrhhaprobacionhrsextras.clases.Alertas;
-import cl.cmsg.rrhhaprobacionhrsextras.clases.MiDbHelper;
-import cl.cmsg.rrhhaprobacionhrsextras.clases.Rut;
 import cl.cmsg.rrhhaprobacionhrsextras.clases.ValidacionConexion;
 import cl.cmsg.rrhhaprobacionhrsextras.clases.VolleyS;
-import cl.cmsg.rrhhaprobacionhrsextras.gcm.ConstantesGlobales;
-import cl.cmsg.rrhhaprobacionhrsextras.gcm.RegistrationIntentService;
 
 public class DetalleActivity extends AppCompatActivity {
 
@@ -52,12 +44,12 @@ public class DetalleActivity extends AppCompatActivity {
     Button btnRechazar;
     String lvl;
     ProgressDialog progressDialog;
-    String mensaje;
-    final String titulo = "ERROR";
+    String mensajeERROR = "Comuniquese con informatica, el servidor responde con formato incorrecto";
+    final String tituloERROR = "ERROR";
     String rut;
     String nombre;
     String fecha;
-    int cant_horas;
+    double cant_horas;
     int monto_pagar;
     String motivo;
     String comentario;
@@ -104,43 +96,43 @@ public class DetalleActivity extends AppCompatActivity {
         //Imprimimos los datos en la interfase
         if(cursor.moveToNext()){
             rut = cursor.getString(cursor.getColumnIndex("Rut"));
-            lblRut.setText(lblRut.getText().toString() + " " +rut);
+            lblRut.setText(rut);
 
             nombre = cursor.getString(cursor.getColumnIndex("nombre"));
-            lblNombre.setText(lblNombre.getText().toString() + " " +nombre);
+            lblNombre.setText(nombre);
 
             fecha = cursor.getString(cursor.getColumnIndex("fecha"));
-            lblFecha.setText(lblFecha.getText().toString() + " " +fecha);
+            lblFecha.setText(fecha);
 
-            cant_horas = (cursor.getInt(cursor.getColumnIndex("cant_horas")));
-            lblCantHoras.setText(lblCantHoras.getText().toString() + " " +cant_horas);
+            cant_horas = (cursor.getDouble(cursor.getColumnIndex("cant_horas")));
+            lblCantHoras.setText(String.valueOf(cant_horas));
 
             monto_pagar = cursor.getInt(cursor.getColumnIndex("monto_pagar"));
-            lblMontoPagar.setText(lblMontoPagar.getText().toString()+monto_pagar);
+            lblMontoPagar.setText(String.valueOf(monto_pagar));
 
             motivo = cursor.getString(cursor.getColumnIndex("motivo"));
-            lblMotivo.setText(lblMotivo.getText().toString() + " " +motivo);
+            lblMotivo.setText(motivo);
 
             comentario = cursor.getString(cursor.getColumnIndex("comentario"));
             lblComentario.setText(comentario);
 
             centro_costo = cursor.getString(cursor.getColumnIndex("centro_costo"));
-            lblCentroCosto.setText(lblCentroCosto.getText().toString() + " " +centro_costo);
+            lblCentroCosto.setText(centro_costo);
 
             area = cursor.getString(cursor.getColumnIndex("area"));
-            lblArea.setText(lblArea.getText().toString() + " " +area);
+            lblArea.setText(area);
 
             tipo_pacto = cursor.getString(cursor.getColumnIndex("tipo_pacto"));
 
             switch (tipo_pacto){
                 case "H":
-                    lblTipoPacto.setText(lblTipoPacto.getText().toString() + " " +R.string.HORAEXTRA);
+                    lblTipoPacto.setText(R.string.HORAEXTRA);
                     break;
                 case "T":
-                    lblTipoPacto.setText(lblTipoPacto.getText().toString() + " " +R.string.TRATO);
+                    lblTipoPacto.setText(R.string.TRATO);
                     break;
                 case "F":
-                    lblTipoPacto.setText(lblTipoPacto.getText().toString() + " " +R.string.FESTIVO);
+                    lblTipoPacto.setText(R.string.FESTIVO);
                     break;
             }
 
@@ -175,7 +167,9 @@ public class DetalleActivity extends AppCompatActivity {
                 lvl="3";
             }
         }else{
+            miDbHelper.insertarLogError("Error al mostrar datos en DetalleActivity, fallo la consulta a la base de datos",mac);
             Alertas.alertaSimple("ERROR","Error de consulta",this);
+            finish();
         }
 
         cursor.close();
@@ -276,7 +270,7 @@ public class DetalleActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    //Actualizar estado, toma los datos clavede la fila, el estado a cambiar y el nivel, y solicita actualizar al servidor
+    //Actualizar estado, toma los datos clave de la fila, el estado a cambiar y el nivel, y solicita actualizar al servidor
     public void actualizaEstado(final String rut_S,final String fecha_S, final String estado_Final,final String lvl_S, final String tipo_pacto_S){
         final VolleyS volleyS = VolleyS.getInstance(this);
 
@@ -308,15 +302,13 @@ public class DetalleActivity extends AppCompatActivity {
 
                 JSONObject jsonObject;
                 Boolean error;
-                int run;
+
                 String mensajesrv;
 
                 if(response==null || response.isEmpty()){
                     progressDialog.dismiss();
-                    mensaje = "Comuniquese con informatica, el servidor responde con formato incorrecto";
-                    Alertas.alertaSimple(titulo,mensaje,DetalleActivity.this);
-
-                    miDbHelper.insertarLogError("Variable response es Nulo o Vacio",mac);
+                    Alertas.alertaSimple(tituloERROR, mensajeERROR,DetalleActivity.this);
+                    miDbHelper.insertarLogError("Variable response es Nulo o Vacio en DetalleActivity, ActualizarEstado",mac);
                     return;
                 }
                 try {
@@ -324,10 +316,9 @@ public class DetalleActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     progressDialog.dismiss();
 
-                    mensaje = "Comuniquese con informatica, el servidor responde con formato incorrecto y el siguiente error:\n\n"+String.valueOf(e);
-                    Alertas.alertaSimple(titulo,mensaje,DetalleActivity.this);
+                    Alertas.alertaSimple(tituloERROR, mensajeERROR,DetalleActivity.this);
 
-                    miDbHelper.insertarLogError("Error de formato en variable 'response', no parece ser tipo JSON. Mensaje de error : "+e.getMessage(),mac);
+                    miDbHelper.insertarLogError("Error de formato en 'response' en DetalleActivity, ActualizarEstado. No parece ser tipo JSON. Mensaje de error : "+e.getMessage(),mac);
                     return;
                 }
                 try{
@@ -337,9 +328,8 @@ public class DetalleActivity extends AppCompatActivity {
                     progressDialog.dismiss();
                     e.printStackTrace();
 
-                    mensaje = "Comuniquese con informatica, el servidor responde con formato incorrecto";
-                    Alertas.alertaSimple(titulo,mensaje,DetalleActivity.this);
-                    miDbHelper.insertarLogError("Error de formato en variable 'error', No existe o es un formato incorrecto. Mensaje de error : "+e.getMessage(),mac);
+                    Alertas.alertaSimple(tituloERROR, mensajeERROR,DetalleActivity.this);
+                    miDbHelper.insertarLogError("Error de formato en variable 'error' en DetalleActivity, ActualizarEstado. No existe o es un formato incorrecto. Mensaje de error : "+e.getMessage(),mac);
                     return;
                 }
                 if(error){
@@ -349,20 +339,19 @@ public class DetalleActivity extends AppCompatActivity {
                     } catch (JSONException e) {
                         progressDialog.dismiss();
 
-                        mensaje = "Comuniquese con informatica, el servidor responde con formato incorrecto";
-                        Alertas.alertaSimple(titulo,mensaje,DetalleActivity.this);
-                        miDbHelper.insertarLogError("Error de formato en variable 'mensaje', No existe o es un formato incorrecto. Mensaje de error : "+e.getMessage(),mac);
+                        Alertas.alertaSimple(tituloERROR, mensajeERROR,DetalleActivity.this);
+                        miDbHelper.insertarLogError("Error de formato en variable 'mensaje' en DetalleActivity, ActualizarEstado. No existe o es un formato incorrecto. Mensaje de error : "+e.getMessage(),mac);
                         return;
                     }
                     progressDialog.dismiss();
-                    mensaje = mensajesrv;
-                    Alertas.alertaSimple("Servidor responde con el siguiente error:",mensaje,DetalleActivity.this);
+
+                    Alertas.alertaSimple("Servidor responde con el siguiente error:",mensajesrv,DetalleActivity.this);
                     return;
                 }
 
                 miDbHelper.actualizarEstado(rut_S,fecha_S,estado_Final,lvl_S, tipo_pacto_S);
 
-                mensaje = "Actualizacion exitosa";
+
                 new AlertDialog.Builder(DetalleActivity.this)
                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             @Override
@@ -372,7 +361,7 @@ public class DetalleActivity extends AppCompatActivity {
                             }
                         })
                         .setCancelable(false)
-                        .setMessage(mensaje)
+                        .setMessage("Actualizacion exitosa")
                         .setTitle("Exito")
                         .show()
                 ;
@@ -385,12 +374,8 @@ public class DetalleActivity extends AppCompatActivity {
             public void onErrorResponse(VolleyError error){
                 progressDialog.dismiss();
                 volleyS.cancelAll();
-
-                mensaje = "Servidor no responde \n" +
-                        " Asegurese de estar conectado a internet o intentelo mas tarde";
-                Alertas.alertaSimple(titulo,mensaje,DetalleActivity.this);
-
-                miDbHelper.insertarLogError("Ocurrio un error al comunicarse con el servidor a travez de Volley. Mensaje : "+error,mac);
+                Alertas.alertaSimple(tituloERROR,"Servidor no responde asegurese de estar conectado a internet o intentelo mas tarde",DetalleActivity.this);
+                miDbHelper.insertarLogError("Ocurrio un error al comunicarse con el servidor a travez de Volley en DetalleActivity, ActualizarEstado. Mensaje : "+error,mac);
 
             }
         }

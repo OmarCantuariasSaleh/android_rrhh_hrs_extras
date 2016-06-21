@@ -89,7 +89,7 @@ public class HorasExtras {
         return lvl;
     }
 
-    public HorasExtras(String rut, String nombre, String fecha, String tipo_pacto, int cant_horas, int lvl) {
+    public HorasExtras(String rut, String nombre, String fecha, String tipo_pacto, double cant_horas, int lvl) {
 
         this.rut = rut;
         this.nombre = nombre;
