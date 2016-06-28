@@ -1,0 +1,35 @@
+{
+  "project_info": {
+    "project_number": "926167177583",
+    "project_id": "cmsg-horas-extras"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:926167177583:android:3bb05dc5df26b0d3",
+        "android_client_info": {
+          "package_name": "cl.cmsg.rrhhaprobacionhrsextras"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBUN8oaZOSaY448nxNcuiuD_J89h0aV5Hk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
