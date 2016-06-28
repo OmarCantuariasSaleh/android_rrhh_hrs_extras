@@ -13,6 +13,7 @@ import android.os.PowerManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -451,7 +452,7 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         // Borrar solicitudes antiguas
-                        miDbHelper.deleteSolicitudALL();
+                        miDbHelper.deleteSolicitudPendientes();
                         filas = 0;
                         total=jsonArray.length();
                         for (int i = 0; i < total; i++) {
@@ -512,9 +513,8 @@ public class MainActivity extends AppCompatActivity {
                                     , rut_admin2
                                     , estado3
                                     , rut_admin3)){
-
+                                Log.e("Omar",String.valueOf(run)+" / "+fecha+" / "+estado1+" / "+rut_admin1+" / "+estado2+" / "+rut_admin2+" / "+estado3+" / "+rut_admin3+" / ");
                                 progressDialog.incrementProgressBy((int) (i * 100 / total));
-
 
                             } else {
                                 progressDialog.dismiss();
@@ -551,6 +551,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void updateList() {
+
        //Actualizar Pendientes
         btnSolPendientes.setText("Solicitudes Pendientes [ " + String.valueOf(miDbHelper.CuentaSolicitudes()) + " ]");
 
@@ -632,7 +633,7 @@ public class MainActivity extends AppCompatActivity {
             if (result != null){
 //    Si es distinto de Null significa que trae un mensajeERROR de error.
                 Alertas.alertaSimple("Error interno", result,MainActivity.this);
-                miDbHelper.insertarLogError(result,mac);
+                miDbHelper.insertarLogError("Error Interno:"+result+" en MainActivity, DownloadTask",mac);
                 return;
             }
 
@@ -734,8 +735,8 @@ public class MainActivity extends AppCompatActivity {
                 miDbHelper.insertarLogError("SocketException  en MainActivity, doInBackground :" + e.getMessage(),mac);
                 return e.getMessage();
             } catch (Exception e) {
-                miDbHelper.insertarLogError("Exception al descargar actualizacion  en MainActivity, doInBackground. Mensaje: " + e.toString(), mac);
-                return e.toString();
+                miDbHelper.insertarLogError("Exception al descargar actualizacion  en MainActivity, doInBackground. Mensaje: " + e.getMessage(), mac);
+                return e.getMessage();
             } finally {
                 try {
                     if (output != null){
