@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.support.design.widget.TabLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -60,11 +61,9 @@ public class HorasPendientesActivity extends AppCompatActivity {
     int errorconn = 0;
     int exito1 = 0;
     long total=0;
-
+    int mTab;
 
     private static final int PEND = 179;
-    RadioButton radioHorasExtra;
-    RadioButton radioFestivos;
     Button btnAprobarTodo;
     Button btnRechazarTodo;
     TextView lblcontador;
@@ -80,14 +79,37 @@ public class HorasPendientesActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        radioHorasExtra = (RadioButton) findViewById(R.id.radioHorasExtras);
-        radioFestivos = (RadioButton) findViewById(R.id.radioFestivos);
+        final TabLayout tabs = (TabLayout) findViewById(R.id.tabs);
+
+        tabs.addTab(tabs.newTab().setText("Trato"));
+        tabs.addTab(tabs.newTab().setText("Hora Extra"));
+        tabs.addTab(tabs.newTab().setText("Festivo"));
+
+
         btnAprobarTodo = (Button) findViewById(R.id.btnAprobarTodo);
         btnRechazarTodo = (Button) findViewById(R.id.btnRechazarTodo);
         lblcontador = (TextView) findViewById(R.id.lblContador);
 
-
+        mTab=0;
         llenarLista();
+
+        tabs.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                mTab= tabs.getSelectedTabPosition();
+                llenarLista();
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
 
         listViewPendientes.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
@@ -285,19 +307,6 @@ public class HorasPendientesActivity extends AppCompatActivity {
         });
 
 
-        radioHorasExtra.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                llenarLista();
-            }
-        });
-
-        radioFestivos.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                llenarLista();
-            }
-        });
 
     }
 
@@ -367,9 +376,13 @@ public class HorasPendientesActivity extends AppCompatActivity {
                 }
             }
 
-            if (radioFestivos.isChecked() && !tipoPacto.equals("F")) {
+            if (mTab==0 && !tipoPacto.equals("T")) {
                 lvl = 0;
-            } else if (radioHorasExtra.isChecked() && tipoPacto.equals("F")) {
+            }
+            if (mTab==1 && !tipoPacto.equals("H")) {
+                lvl = 0;
+            }
+            if (mTab==2 && !tipoPacto.equals("F")) {
                 lvl = 0;
             }
 
