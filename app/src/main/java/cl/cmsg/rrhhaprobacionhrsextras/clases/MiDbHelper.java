@@ -194,7 +194,7 @@ public class MiDbHelper extends SQLiteOpenHelper{
 
         SQLiteDatabase db = getReadableDatabase();
 
-        return db.query(tablaSolicitud, new String[]{"*"},"rut_admin1=? or rut_admin2=? or rut_admin3=?",new String[]{rut_user,rut_user,rut_user} , null, null, "fecha");
+        return db.query(tablaSolicitud, new String[]{"*"},"rut_admin1=? or rut_admin2=? or rut_admin3=?",new String[]{rut_user,rut_user,rut_user} , null, null, null);
         //Cursor cursor = db.query(tablaSolicitud, new String[]{"*"},null,null , null, null, null);
 
     }
@@ -204,7 +204,8 @@ public class MiDbHelper extends SQLiteOpenHelper{
 
         SQLiteDatabase db = getReadableDatabase();
 
-        return db.query(tablaSolicitud, new String[]{"*"},null,null , null, null, "fecha");
+        return db.query(tablaSolicitud, new String[]{"*"},null,null , null, null, null);
+        //Cursor cursor = db.query(tablaSolicitud, new String[]{"*"},null,null , null, null, null);
 
     }
 
@@ -213,13 +214,13 @@ public class MiDbHelper extends SQLiteOpenHelper{
 
         SQLiteDatabase db = getReadableDatabase();
 
-       return db.query(tablaSolicitud, new String[]{"*"},"fecha between ? and ?",new String[]{fecha1,fecha2}, null,null,"fecha");
+       return db.query(tablaSolicitud, new String[]{"*"},"fecha between ? and ?",new String[]{fecha1,fecha2}, null,null,null);
 
     }
 
     public Cursor getDatoSolicitudDetalle(String rut, String fecha, String tipo_pacto){ //Muestra detalle
         SQLiteDatabase db = getReadableDatabase();
-        return db.query(tablaSolicitud, new String[]{"*"},"Rut=? AND fecha=? AND tipo_pacto=?",new String[]{rut,fecha,tipo_pacto} , null, null, "fecha");
+        return db.query(tablaSolicitud, new String[]{"*"},"Rut=? AND fecha=? AND tipo_pacto=?",new String[]{rut,fecha,tipo_pacto} , null, null, null);
 
     }
 
@@ -231,32 +232,23 @@ public class MiDbHelper extends SQLiteOpenHelper{
         return (resultado >= 1);
     }
 
-    // Borra TODAS las solicitudesa
-//TODO BORRAR CUANDO SE APRUEBE!!! -----------------------------------------------------------------
-    public boolean deleteSolicitudPendientes(){
+    // Borra solicitud por Rut+fecha
+
+    public boolean deleteSolicitud(String rut, String fecha, String tipo_pacto){
+        SQLiteDatabase db = getReadableDatabase();
+        long resultado = -1;
+        resultado = db.delete(tablaSolicitud,"Rut=? and fecha=?  AND tipo_pacto=?",new String[]{rut,fecha,tipo_pacto});
+        return (resultado >= 1);
+    }
+
+    // Borra todas las solicitudes
+    public boolean deleteSolicitudALL(){
         SQLiteDatabase db = getReadableDatabase();
         long resultado = -1;
         resultado = db.delete(tablaSolicitud,null,null);
         return (resultado >= 1);
     }
-//TODO FIN BORRAR ----------------------------------------------------------------------------------
-
-    //TODO QUITAR COMENTARIO CUANDO SE APRUEBE------------------------------------------------------
-    /*// Borra todas las solicitudes pendientes y deja las aprobadas
-    public boolean deleteSolicitudPendientes(){
-        SQLiteDatabase db = getReadableDatabase();
-        String rutUsuario = getRutUsuario();
-        long resultado = -1;
-        resultado = db.delete(tablaSolicitud, "estado1='P' and rut_admin1=?"
-                        + " or estado2='P' and rut_admin2=? and estado3='A' and estado1='A'" +
-                        " or estado3='P' and rut_admin3=? and estado1='A' and estado2='A'"
-                , new String[]{rutUsuario, rutUsuario, rutUsuario});
-        return (resultado >= 1);
-    }*/
-    //TODO FIN QUITAR COMENTARIO -------------------------------------------------------------------
-
-
-    // Borra todos los Logs de error
+    // Borra todas las solicitudes
     public boolean deleteErrorLogALL(){
         SQLiteDatabase db = getReadableDatabase();
         long resultado = -1;
@@ -302,7 +294,7 @@ public class MiDbHelper extends SQLiteOpenHelper{
             long resultado = db.insertOrThrow(tablaUsuario, null, campoValor);
             return resultado >= 1;
         }catch(Exception e){
-            insertarLogError("Insertar usuario arroja error " + e.getMessage()+" en MidbHelper, InsertarUsuario", mac);
+            insertarLogError("Insertar usuario arroja error " + e.getMessage(), mac);
         }
         return false;
     }

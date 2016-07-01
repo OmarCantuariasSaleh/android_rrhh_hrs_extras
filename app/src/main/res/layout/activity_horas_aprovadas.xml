@@ -4,8 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".HorasAprobadasActivity"
-    android:background="@color/colorPrimaryDark">
+    tools:context=".HorasAprobadasActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -35,6 +34,7 @@
             android:gravity="center_horizontal">
 
             <Button
+                style="?android:attr/buttonStyleSmall"
                 android:layout_width="219dp"
                 android:layout_height="50dp"
                 android:text="Seleccione periodo"
@@ -42,12 +42,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_below="@+id/textView10"
                 android:gravity="center"
-                android:textSize="18dp"
-                android:background="@drawable/buttonshape"
-                android:shadowColor="#5711A8"
-                android:shadowDx="0"
-                android:shadowDy="0"
-                android:shadowRadius="5" />
+                android:textSize="18dp" />
 
             <TextView
                 android:layout_width="wrap_content"

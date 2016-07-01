@@ -292,7 +292,7 @@ public class LoginActivity extends AppCompatActivity {
                         volleyS.cancelAll();
                         mensaje = "Servidor no responde \n" +
                                 " Asegurese de estar conectado a internet o intentelo mas tarde";
-                        miDbHelper.insertarLogError("Ocurrio un error al comunicarse con el servidor a travez de Volley en LoginActivity, EnviarAlServidorCMSG. Mensaje : " + error.getMessage(),mac);
+                        miDbHelper.insertarLogError("Ocurrio un error al comunicarse con el servidor a travez de Volley. Mensaje : " + error.getMessage(),mac);
                         Alertas.alertaSimple(tituloError, mensaje, LoginActivity.this);
                     }
                 }

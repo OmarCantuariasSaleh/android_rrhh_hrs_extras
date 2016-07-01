@@ -38,7 +38,7 @@
             android:layout_marginBottom="50dp"
             android:layout_gravity="top|center_horizontal"
             android:padding="5dp"
-            android:background="@color/colorAccent"
+            android:background="#abe20000"
             android:textColor="#ffffff"
             android:textStyle="bold" />
 
@@ -48,6 +48,8 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Ingrese su Rut sin codigo verificador"
             android:id="@+id/textView"
+            android:layout_below="@+id/textView2"
+            android:layout_centerHorizontal="true"
             android:layout_gravity="center"
             android:layout_marginTop="15dp"
             android:layout_marginBottom="10dp"
@@ -57,12 +59,13 @@
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:id="@+id/editText"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
             android:inputType="text"
             android:layout_marginBottom="20dp"
             android:layout_marginTop="10dp"
             android:enabled="true"
-            android:maxLength="12"
-            android:background="#ffffff" />
+            android:maxLength="12" />
 
         <Button
             android:layout_width="wrap_content"
@@ -72,9 +75,7 @@
             android:layout_below="@+id/editText"
             android:layout_centerHorizontal="true"
             android:textSize="20dp"
-            android:layout_gravity="center_horizontal"
-            android:background="@drawable/buttonshape"
-            android:padding="10dp" />
+            android:layout_gravity="center_horizontal" />
     </LinearLayout>
 
 </RelativeLayout>
