@@ -3,6 +3,7 @@ package cl.cmsg.rrhhaprobacionhrsextras;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.database.Cursor;
+import android.renderscript.Sampler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -12,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -72,7 +74,21 @@ public class HorasRechazadasActivity extends AppCompatActivity {
                 HorasExtras horasExtras=arrayListHorasExtra.get(position);
                 intent.putExtra("Rut",horasExtras.getRut());
                 intent.putExtra("fecha",horasExtras.getFecha());
-                intent.putExtra("tipo_pacto",horasExtras.getTipo_pacto());
+
+                String tp=horasExtras.getTipo_pacto();
+                switch (tp){
+                    case "Hora Extra":
+                        intent.putExtra("tipo_pacto","H");
+                    break;
+                    case "Festivo":
+                        intent.putExtra("tipo_pacto","F");
+                    break;
+                    case "Trato":
+                        intent.putExtra("tipo_pacto","T");
+                    break;
+                }
+
+
                 startActivity(intent);
             }
         });
@@ -242,7 +258,7 @@ public class HorasRechazadasActivity extends AppCompatActivity {
 
         }
         catch (Exception ex) {
-            miDbHelper.insertarLogError("Error : "+ex.getMessage(),mac);
+            miDbHelper.insertarLogError("Error : "+ex.getMessage()+" en HorasRechazadasActivity, DatepickerDialog",mac);
         }
         return dpd;
     }
