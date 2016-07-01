@@ -2,14 +2,14 @@
 
     <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle" >
     <corners
-        android:radius="10dp"
+        android:radius="5dp"
         />
     <gradient
         android:angle="90"
         android:centerX="67%"
-        android:centerColor="#ed0eba"
-        android:startColor="#710063"
-        android:endColor="#FFFFFF"
+        android:centerColor="#4502cc"
+        android:startColor="#160069"
+        android:endColor="#919dfa"
         android:type="linear"
         />
     <padding
@@ -22,8 +22,8 @@
 
 
     <stroke
-        android:width="2dp"
-        android:color="#4726C9"
+        android:width="1dp"
+        android:color="#f1f1f1"
         />
 
 
