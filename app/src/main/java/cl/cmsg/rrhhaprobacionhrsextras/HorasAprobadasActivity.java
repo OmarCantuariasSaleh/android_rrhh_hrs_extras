@@ -65,23 +65,12 @@ public class HorasAprobadasActivity extends AppCompatActivity {
         listViewPendientes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.e("Omar", "entro1");
+
                 Intent intent = new Intent(getApplicationContext(),DetalleActivity.class);
                 HorasExtras horasExtras=arrayListHorasExtra.get(position);
                 intent.putExtra("Rut",horasExtras.getRut());
                 intent.putExtra("fecha",horasExtras.getFecha());
-                String tp=horasExtras.getTipo_pacto();
-                switch (tp){
-                    case "Hora Extra":
-                        intent.putExtra("tipo_pacto","H");
-                        break;
-                    case "Festivo":
-                        intent.putExtra("tipo_pacto","F");
-                        break;
-                    case "Trato":
-                        intent.putExtra("tipo_pacto","T");
-                        break;
-                }
+                intent.putExtra("tipo_pacto",horasExtras.getTipo_pacto());
                 startActivity(intent);
             }
         });

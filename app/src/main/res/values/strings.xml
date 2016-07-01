@@ -6,7 +6,7 @@
     <string name="act_rechazadas">Solicitudes Rechazadas</string>
     <string name="action_settings">Settings</string>
     <string name="ok">Ok</string>
-    <string name="version">0.3.3</string>
+    <string name="version">0.3.2</string>
     <string name="URL_DOWNLOAD_APP">http://200.111.157.141:8080/android/hrsextras/app.apk</string>
     <string name="URL_VERSION">http://200.111.157.141:8080/android/hrsextras/version.php</string>
     <string name="URL_PendienteAprobacion">http://200.111.157.141:8080/android/hrsextras/pendientes.php</string>

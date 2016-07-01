@@ -4,12 +4,10 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.support.design.widget.TabLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.View;
 import android.widget.AdapterView;
@@ -49,7 +47,7 @@ public class HorasPendientesActivity extends AppCompatActivity {
     String nombre;
     String fecha;
     String tipo_pacto;
-    final String mensajeERROR = "Comuniquese con informatica, el servidor responde con formato incorrecto";
+    final String mensaje = "Comuniquese con informatica, el servidor responde con formato incorrecto";
     final String tituloERROR="ERROR";
     double cant_horas;
     int errorNuloVacio = 0;
@@ -61,9 +59,11 @@ public class HorasPendientesActivity extends AppCompatActivity {
     int errorconn = 0;
     int exito1 = 0;
     long total=0;
-    int mTab;
+
 
     private static final int PEND = 179;
+    RadioButton radioHorasExtra;
+    RadioButton radioFestivos;
     Button btnAprobarTodo;
     Button btnRechazarTodo;
     TextView lblcontador;
@@ -79,37 +79,14 @@ public class HorasPendientesActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        final TabLayout tabs = (TabLayout) findViewById(R.id.tabs);
-
-        tabs.addTab(tabs.newTab().setText("Trato"));
-        tabs.addTab(tabs.newTab().setText("Hora Extra"));
-        tabs.addTab(tabs.newTab().setText("Festivo"));
-
-
+        radioHorasExtra = (RadioButton) findViewById(R.id.radioHorasExtras);
+        radioFestivos = (RadioButton) findViewById(R.id.radioFestivos);
         btnAprobarTodo = (Button) findViewById(R.id.btnAprobarTodo);
         btnRechazarTodo = (Button) findViewById(R.id.btnRechazarTodo);
         lblcontador = (TextView) findViewById(R.id.lblContador);
 
-        mTab=0;
+
         llenarLista();
-
-        tabs.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                mTab= tabs.getSelectedTabPosition();
-                llenarLista();
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
 
         listViewPendientes.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
@@ -203,7 +180,6 @@ public class HorasPendientesActivity extends AppCompatActivity {
                                                 fecha_A =  horasExtras.getFecha();
                                                 tipoPacto_A =  horasExtras.getTipo_pacto();
                                                 lvl_A = String.valueOf(horasExtras.getLvl());
-                                                Log.e("Omar", "Entro 0");
                                                 actualizaEstado(run_A, fecha_A, E_A, lvl_A, tipoPacto_A);
                                             }
                                         }
@@ -280,7 +256,6 @@ public class HorasPendientesActivity extends AppCompatActivity {
                                                 actualizaEstado(run_A, fecha_A, E_A, lvl_A, tipoPacto_A);
                                             }
                                         }
-
                                         lblcontador.setText(String.valueOf(contador));
                                     }
 
@@ -307,6 +282,19 @@ public class HorasPendientesActivity extends AppCompatActivity {
         });
 
 
+        radioHorasExtra.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                llenarLista();
+            }
+        });
+
+        radioFestivos.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                llenarLista();
+            }
+        });
 
     }
 
@@ -376,13 +364,9 @@ public class HorasPendientesActivity extends AppCompatActivity {
                 }
             }
 
-            if (mTab==0 && !tipoPacto.equals("T")) {
+            if (radioFestivos.isChecked() && !tipoPacto.equals("F")) {
                 lvl = 0;
-            }
-            if (mTab==1 && !tipoPacto.equals("H")) {
-                lvl = 0;
-            }
-            if (mTab==2 && !tipoPacto.equals("F")) {
+            } else if (radioHorasExtra.isChecked() && tipoPacto.equals("F")) {
                 lvl = 0;
             }
 
@@ -411,19 +395,17 @@ public class HorasPendientesActivity extends AppCompatActivity {
     public void actualizaEstado(final String rut_S,final String fecha_S, final String estado_Final,final String lvl_S, final String tipo_pacto_S){
         final VolleyS volleyS = VolleyS.getInstance(this);
 
-        if(!ValidacionConexion.isExisteConexion(HorasPendientesActivity.this)) {
-            Log.e("Omar", "Entro 1");
+        if(!ValidacionConexion.isExisteConexion(HorasPendientesActivity.this)){
             progressDialog.dismiss();
             errorconn++;
-            if (errorconn == 1) {
+            if(errorconn==1) {
 
                 llenarLista();
                 Alertas.alertaConexion(HorasPendientesActivity.this);
 
-                return;
-            }
+            return;
         }
-            Log.e("Omar", "Entro 2");
+
         final String mac = ValidacionConexion.getDireccionMAC(HorasPendientesActivity.this);
 
         final StringRequest jsonObjectRequest = new StringRequest(
@@ -451,8 +433,8 @@ public class HorasPendientesActivity extends AppCompatActivity {
                     progressDialog.dismiss();
                     if(++errorNuloVacio==1) {
 
-                        Alertas.alertaSimple(tituloERROR, mensajeERROR, HorasPendientesActivity.this);
-                        miDbHelper.insertarLogError("Variable response es Nulo o Vacio en HorasPendientesActivity, ActualizarEstado",mac);
+                        Alertas.alertaSimple(tituloERROR, mensaje, HorasPendientesActivity.this);
+                        miDbHelper.insertarLogError("Variable response es Nulo o Vacio",mac);
                         llenarLista();
 
                     }
@@ -463,9 +445,9 @@ public class HorasPendientesActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     progressDialog.dismiss();
                     if(++errorRESPONSE ==1) {
-                        Alertas.alertaSimple(tituloERROR, mensajeERROR, HorasPendientesActivity.this);
+                        Alertas.alertaSimple(tituloERROR, mensaje, HorasPendientesActivity.this);
                         llenarLista();
-                        miDbHelper.insertarLogError("Error de formato en 'response', no parece ser tipo JSON en HorasPendientesActivity, ActualizarEstado. Mensaje de error : " + e.getMessage(),mac);
+                        miDbHelper.insertarLogError("Error de formato en 'response', no parece ser tipo JSON. Mensaje de error : " + e.getMessage(),mac);
                     }
                     return;
                 }
@@ -476,8 +458,8 @@ public class HorasPendientesActivity extends AppCompatActivity {
                     e.printStackTrace();
                     progressDialog.dismiss();
                     if(++errorFormatoError ==1) {
-                        Alertas.alertaSimple(tituloERROR, mensajeERROR, HorasPendientesActivity.this);
-                        miDbHelper.insertarLogError("Error de formato en variable 'error', No existe o es un formato incorrecto en HorasPendientesActivity, ActualizarEstado. Mensaje de error : " + e.getMessage(),mac);
+                        Alertas.alertaSimple(tituloERROR, mensaje, HorasPendientesActivity.this);
+                        miDbHelper.insertarLogError("Error de formato en variable 'error', No existe o es un formato incorrecto. Mensaje de error : " + e.getMessage(),mac);
                         llenarLista();
                     }
                     return;
@@ -489,8 +471,8 @@ public class HorasPendientesActivity extends AppCompatActivity {
                     } catch (JSONException e) {
                         progressDialog.dismiss();
                         if(++errorFormatoMensaje==1) {
-                            Alertas.alertaSimple(tituloERROR, mensajeERROR, HorasPendientesActivity.this);
-                            miDbHelper.insertarLogError("Error de formato en variable 'mensaje', No existe o es un formato incorrecto en HorasPendientesActivity, ActualizarEstado. Mensaje de error : " + e.getMessage(),mac);
+                            Alertas.alertaSimple(tituloERROR, mensaje, HorasPendientesActivity.this);
+                            miDbHelper.insertarLogError("Error de formato en variable 'mensaje', No existe o es un formato incorrecto. Mensaje de error : " + e.getMessage(),mac);
                             llenarLista();
                         }
                         return;
@@ -503,7 +485,7 @@ public class HorasPendientesActivity extends AppCompatActivity {
                     }
                     return;
                 }
-                Log.e("Omar", "Llege aqui");
+
                 llenarLista();
                 progressDialog.dismiss();
                 miDbHelper.actualizarEstado(rut_S,fecha_S,estado_Final,lvl_S, tipo_pacto_S);
@@ -534,7 +516,7 @@ public class HorasPendientesActivity extends AppCompatActivity {
                 errorConnVolley++;
                 if(errorConnVolley ==1) {
                    Alertas.alertaSimple(tituloERROR, "Servidor no responde, asegurese de estar conectado a internet o intentelo mas tarde", HorasPendientesActivity.this);
-                   miDbHelper.insertarLogError("Ocurrio un error al comunicarse con el servidor a travez de Volley en HorasPendientesActivity ActualizarEstado. Mensaje : " + error,mac);
+                   miDbHelper.insertarLogError("Ocurrio un error al comunicarse con el servidor a travez de Volley. Mensaje : " + error,mac);
                    llenarLista();
                }
             }
@@ -544,4 +526,4 @@ public class HorasPendientesActivity extends AppCompatActivity {
         }
 
     }
-
+}
