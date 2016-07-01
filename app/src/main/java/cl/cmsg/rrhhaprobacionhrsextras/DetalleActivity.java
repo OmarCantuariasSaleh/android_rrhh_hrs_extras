@@ -7,6 +7,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -90,11 +91,26 @@ public class DetalleActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //Obtenemos los datos enviados por la actividad anterior y hacemos una query para obtener la fila
+
+
         Bundle bundle= getIntent().getExtras();
+        if(bundle==null || bundle.isEmpty()){
+            miDbHelper.insertarLogError("Error al mostrar datos en DetalleActivity,Bundle llego vacio o nulo",mac);
+            Alertas.alertaSimple("ERROR","Error mostrando datos, comuniquese con informatica",this);
+            finish();
+        }
+        Log.e("Omar", ""+bundle.getString("Rut","")+" / "+bundle.getString("fecha","")+" / "+bundle.getString("tipo_pacto",""));
         miDbHelper = MiDbHelper.getInstance(this);
         cursor =   miDbHelper.getDatoSolicitudDetalle(bundle.getString("Rut",""),bundle.getString("fecha",""),bundle.getString("tipo_pacto",""));
+        Log.e("Omar", String.valueOf(cursor.getCount()));
         //Imprimimos los datos en la interfase
-        if(cursor.moveToNext()){
+        if(!cursor.moveToNext()){
+            miDbHelper.insertarLogError("Error al mostrar datos en DetalleActivity, fallo la consulta a la base de datos",mac);
+            Alertas.alertaSimple("ERROR","Error de consulta",this);
+            //finish();
+            return;
+        }
+
             rut = cursor.getString(cursor.getColumnIndex("Rut"));
             lblRut.setText(rut);
 
@@ -139,7 +155,7 @@ public class DetalleActivity extends AppCompatActivity {
             E1= cursor.getString(cursor.getColumnIndex("estado1"));
             E2= cursor.getString(cursor.getColumnIndex("estado2"));
             E3= cursor.getString(cursor.getColumnIndex("estado3"));
-
+            Log.e("Omar", E1+" "+E2+" "+E3);
             // Verificar si detalle es de solicitud aprobada o pendiente, separadas por nivel
             String rut1 = cursor.getString(cursor.getColumnIndex("rut_admin1"));
             String rut2 = cursor.getString(cursor.getColumnIndex("rut_admin2"));
@@ -147,7 +163,7 @@ public class DetalleActivity extends AppCompatActivity {
 
             lvl="0";
 
-            if(E1.equals("R") || E3.equals("R") || E3.equals("R") || miDbHelper.isAdmin()) {
+            if(E1.equals("R") || E2.equals("R") || E3.equals("R") || miDbHelper.isAdmin()) {
                 layoutBotones.setVisibility(View.GONE);
 
             }else{
@@ -166,18 +182,16 @@ public class DetalleActivity extends AppCompatActivity {
             }else if(E3.equals("P") && rut3.equals(miDbHelper.getRutUsuario()) && E1.equals("A") && E2.equals("A")){
                 lvl="3";
             }
-        }else{
-            miDbHelper.insertarLogError("Error al mostrar datos en DetalleActivity, fallo la consulta a la base de datos",mac);
-            Alertas.alertaSimple("ERROR","Error de consulta",this);
-            finish();
-        }
 
         cursor.close();
         //Aprobar solicitud
         btnAprobar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if(!ValidacionConexion.isExisteConexion(DetalleActivity.this)){
+                    Alertas.alertaConexion(DetalleActivity.this);
+                    return;
+                }
                 new AlertDialog.Builder(DetalleActivity.this)
                         .setPositiveButton("Si", new DialogInterface.OnClickListener() {
                             @Override
@@ -187,32 +201,18 @@ public class DetalleActivity extends AppCompatActivity {
                                 progressDialog.setTitle("Actualizando datos");
                                 progressDialog.setMessage("Espere un momento");
                                 progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                                progressDialog.setMax(100);
                                 progressDialog.setCancelable(false);
                                 progressDialog.show();
-                                if(!ValidacionConexion.isExisteConexion(DetalleActivity.this)){
-                                    progressDialog.dismiss();
-                                    Alertas.alertaConexion(DetalleActivity.this);
-                                    return;
-                                }
-
                                 estado_Final= "A";
                                 actualizaEstado(rut,fecha,estado_Final,lvl,tipo_pacto);
                             }
                         })
-                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.cancel();
-                            }
-                        })
+                        .setNegativeButton("No", null)
                         .setCancelable(false)
                         .setTitle("¿Esta seguro?")
                         .setMessage("Esta accion no se puede deshacer.")
                         .show()
                 ;
-
-
 
             }
         });
@@ -220,6 +220,10 @@ public class DetalleActivity extends AppCompatActivity {
         btnRechazar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(!ValidacionConexion.isExisteConexion(DetalleActivity.this)){
+                    Alertas.alertaConexion(DetalleActivity.this);
+                    return;
+                }
 
                 new AlertDialog.Builder(DetalleActivity.this)
                         .setPositiveButton("Si", new DialogInterface.OnClickListener() {
@@ -232,22 +236,11 @@ public class DetalleActivity extends AppCompatActivity {
                                 progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                                 progressDialog.setCancelable(false);
                                 progressDialog.show();
-                                if(!ValidacionConexion.isExisteConexion(DetalleActivity.this)){
-                                    progressDialog.dismiss();
-                                    Alertas.alertaConexion(DetalleActivity.this);
-                                    return;
-                                }
-
                                 estado_Final= "R";
                                 actualizaEstado(rut,fecha,estado_Final,lvl,tipo_pacto);
                             }
                         })
-                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.cancel();
-                            }
-                        })
+                        .setNegativeButton("No", null)
                         .setCancelable(false)
                         .setTitle("¿Esta seguro?")
                         .setMessage("Esta accion no se puede deshacer.")
@@ -295,7 +288,6 @@ public class DetalleActivity extends AppCompatActivity {
                 +"&run_admin="+miDbHelper.getRutUsuario()
                 +"&tipo_pacto="+tipo_pacto_S
 
-                // URL QUE LLAMAREMOS, TODO reemplazar por URL nueva
                 , new Response.Listener<String>(){ // OBJETO QUE USAREMOS PARA LA ESCUCHA DE LA RESPUESTA
             @Override
             public void onResponse(String response){
@@ -326,31 +318,25 @@ public class DetalleActivity extends AppCompatActivity {
 
                 } catch (JSONException e) {
                     progressDialog.dismiss();
-                    e.printStackTrace();
-
                     Alertas.alertaSimple(tituloERROR, mensajeERROR,DetalleActivity.this);
                     miDbHelper.insertarLogError("Error de formato en variable 'error' en DetalleActivity, ActualizarEstado. No existe o es un formato incorrecto. Mensaje de error : "+e.getMessage(),mac);
                     return;
                 }
                 if(error){
-
+                    progressDialog.dismiss();
                     try {
                         mensajesrv = jsonObject.getString("mensaje");
                     } catch (JSONException e) {
-                        progressDialog.dismiss();
 
                         Alertas.alertaSimple(tituloERROR, mensajeERROR,DetalleActivity.this);
                         miDbHelper.insertarLogError("Error de formato en variable 'mensaje' en DetalleActivity, ActualizarEstado. No existe o es un formato incorrecto. Mensaje de error : "+e.getMessage(),mac);
                         return;
                     }
-                    progressDialog.dismiss();
-
                     Alertas.alertaSimple("Servidor responde con el siguiente error:",mensajesrv,DetalleActivity.this);
                     return;
                 }
 
                 miDbHelper.actualizarEstado(rut_S,fecha_S,estado_Final,lvl_S, tipo_pacto_S);
-
 
                 new AlertDialog.Builder(DetalleActivity.this)
                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -375,7 +361,7 @@ public class DetalleActivity extends AppCompatActivity {
                 progressDialog.dismiss();
                 volleyS.cancelAll();
                 Alertas.alertaSimple(tituloERROR,"Servidor no responde asegurese de estar conectado a internet o intentelo mas tarde",DetalleActivity.this);
-                miDbHelper.insertarLogError("Ocurrio un error al comunicarse con el servidor a travez de Volley en DetalleActivity, ActualizarEstado. Mensaje : "+error,mac);
+                miDbHelper.insertarLogError("Ocurrio un error al comunicarse con el servidor a travez de Volley en DetalleActivity, ActualizarEstado. Mensaje : "+error.getMessage(),mac);
 
             }
         }
