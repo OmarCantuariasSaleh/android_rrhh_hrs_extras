@@ -232,6 +232,7 @@ public class HorasRechazadasActivity extends AppCompatActivity {
                 , Calendar.getInstance().get(Calendar.YEAR)
                 , Calendar.getInstance().get(Calendar.MONTH)
                 ,Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
+        dpd.setCancelable(false);
         try {
             java.lang.reflect.Field[] datePickerDialogFields = dpd.getClass().getDeclaredFields();
             for (java.lang.reflect.Field datePickerDialogField : datePickerDialogFields) {

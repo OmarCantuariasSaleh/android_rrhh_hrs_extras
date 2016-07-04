@@ -188,7 +188,56 @@ public class MiDbHelper extends SQLiteOpenHelper{
         int pendientes = cursor.getCount();
         cursor.close();
         return pendientes;
+    }//Cuenta cantidad de solicitudes y retorna un int
+    public int CuentaSolicitudesTratos() {
+        SQLiteDatabase db = getReadableDatabase();
+        String rutUsuario = getRutUsuario();
+        Cursor cursor;
+        if (isAdmin()) {
+            cursor = db.query(tablaSolicitud, new String[]{"Rut,fecha,tipo_pacto"},null,null, null, null, null);
+        } else {
+            cursor = db.query(tablaSolicitud, new String[]{"Rut,fecha,tipo_pacto"}, "tipo_pacto='T' and (estado1='P' and rut_admin1=?"
+                            + " or estado2='P' and rut_admin2=? and estado3='A' and estado1='A'" +
+                            " or estado3='P' and rut_admin3=? and estado1='A' and estado2='A')"
+                    , new String[]{rutUsuario, rutUsuario, rutUsuario}, null, null, null);
+        }
+        int pendientes = cursor.getCount();
+        cursor.close();
+        return pendientes;
     }
+    public int CuentaSolicitudesHoraExtra() {
+        SQLiteDatabase db = getReadableDatabase();
+        String rutUsuario = getRutUsuario();
+        Cursor cursor;
+        if (isAdmin()) {
+            cursor = db.query(tablaSolicitud, new String[]{"Rut,fecha,tipo_pacto"},null,null, null, null, null);
+        } else {
+            cursor = db.query(tablaSolicitud, new String[]{"Rut,fecha,tipo_pacto"}, "tipo_pacto='H' and (estado1='P' and rut_admin1=?"
+                            + " or estado2='P' and rut_admin2=? and estado3='A' and estado1='A'" +
+                            " or estado3='P' and rut_admin3=? and estado1='A' and estado2='A')"
+                    , new String[]{rutUsuario, rutUsuario, rutUsuario}, null, null, null);
+        }
+        int pendientes = cursor.getCount();
+        cursor.close();
+        return pendientes;
+    }
+    public int CuentaSolicitudesFestivo() {
+        SQLiteDatabase db = getReadableDatabase();
+        String rutUsuario = getRutUsuario();
+        Cursor cursor;
+        if (isAdmin()) {
+            cursor = db.query(tablaSolicitud, new String[]{"Rut,fecha,tipo_pacto"},null,null, null, null, null);
+        } else {
+            cursor = db.query(tablaSolicitud, new String[]{"Rut,fecha,tipo_pacto"}, "tipo_pacto='F' and (estado1='P' and rut_admin1=?"
+                            + " or estado2='P' and rut_admin2=? and estado3='A' and estado1='A'" +
+                            " or estado3='P' and rut_admin3=? and estado1='A' and estado2='A')"
+                    , new String[]{rutUsuario, rutUsuario, rutUsuario}, null, null, null);
+        }
+        int pendientes = cursor.getCount();
+        cursor.close();
+        return pendientes;
+    }
+
     // Obtiene las solicitudes que el usuario puede ver
     public Cursor getDatoSolicitudLVL(String rut_user){
 
@@ -233,26 +282,26 @@ public class MiDbHelper extends SQLiteOpenHelper{
 
     // Borra TODAS las solicitudesa
 //TODO BORRAR CUANDO SE APRUEBE!!! -----------------------------------------------------------------
-    public boolean deleteSolicitudPendientes(){
+   /* public boolean deleteSolicitudPendientes(){
         SQLiteDatabase db = getReadableDatabase();
         long resultado = -1;
         resultado = db.delete(tablaSolicitud,null,null);
         return (resultado >= 1);
-    }
+    }*/
 //TODO FIN BORRAR ----------------------------------------------------------------------------------
 
     //TODO QUITAR COMENTARIO CUANDO SE APRUEBE------------------------------------------------------
-    /*// Borra todas las solicitudes pendientes y deja las aprobadas
+    // Borra todas las solicitudes pendientes y deja las aprobadas y Rechazadas
     public boolean deleteSolicitudPendientes(){
         SQLiteDatabase db = getReadableDatabase();
         String rutUsuario = getRutUsuario();
         long resultado = -1;
-        resultado = db.delete(tablaSolicitud, "estado1='P' and rut_admin1=?"
+        resultado = db.delete(tablaSolicitud, "estado3='P' and rut_admin3=? and estado1='A' and estado2='A'"
                         + " or estado2='P' and rut_admin2=? and estado3='A' and estado1='A'" +
-                        " or estado3='P' and rut_admin3=? and estado1='A' and estado2='A'"
+                        " or estado1='P' and rut_admin1=?"
                 , new String[]{rutUsuario, rutUsuario, rutUsuario});
         return (resultado >= 1);
-    }*/
+    }
     //TODO FIN QUITAR COMENTARIO -------------------------------------------------------------------
 
 
@@ -310,10 +359,10 @@ public class MiDbHelper extends SQLiteOpenHelper{
     public boolean insertarSolicitud(String rut, String nombre, String fecha
             , Double cant_horas, Integer monto_pagar, String motivo, String comentario
             , String centro_costo, String area, String tipo_pacto, String estado1,String rut_admin1
-            , String estado2,String rut_admin2, String estado3,String rut_admin3
+            , String estado2,String rut_admin2, String estado3,String rut_admin3,String mac
     ){
         db = getWritableDatabase();
-
+        Log.e("Omar", "Rut: "+rut+" // Fecha: "+fecha+" // Tipo_pacto: "+tipo_pacto);
         ContentValues campoValor = new ContentValues();
 
         campoValor.put("Rut", rut);
@@ -332,9 +381,15 @@ public class MiDbHelper extends SQLiteOpenHelper{
         campoValor.put("rut_admin2", rut_admin2);
         campoValor.put("estado3", estado3);
         campoValor.put("rut_admin3", rut_admin3);
+        long resultado;
+        try {
+            resultado = db.insertOrThrow(tablaSolicitud, null, campoValor);
+            return resultado >= 1;
+        }catch (Exception e){
+            insertarLogError("Error de datos a insertar en MidbHelper, InsertarSolicitud. Error :"+e.getMessage(),mac);
+            return false;
+        }
 
-        long resultado = db.insertOrThrow(tablaSolicitud, null, campoValor);
-        return resultado >= 1;
     }
     //Actualizar estado de solicitud
     public boolean actualizarEstado (String rut, String fecha,String estado,String lvl, String tipo_pacto){

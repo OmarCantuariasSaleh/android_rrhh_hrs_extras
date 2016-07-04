@@ -94,7 +94,7 @@ public class Reciever {
                     , estado2
                     , rut_admin2
                     , estado3
-                    , rut_admin3))
+                    , rut_admin3,mac))
                 {
                 miDbHelper.insertarLogError("Una o mas filas del arreglo contienen datos que no coinciden con la tabla en la fila " + String.valueOf(i)+" en Reciever, RecibirUna", mac);
 

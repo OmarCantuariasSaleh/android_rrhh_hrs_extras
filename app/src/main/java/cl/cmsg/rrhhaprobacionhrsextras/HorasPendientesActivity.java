@@ -78,20 +78,18 @@ public class HorasPendientesActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         final TabLayout tabs = (TabLayout) findViewById(R.id.tabs);
-
-        tabs.addTab(tabs.newTab().setText("Trato"));
-        tabs.addTab(tabs.newTab().setText("Hora Extra"));
-        tabs.addTab(tabs.newTab().setText("Festivo"));
 
 
         btnAprobarTodo = (Button) findViewById(R.id.btnAprobarTodo);
         btnRechazarTodo = (Button) findViewById(R.id.btnRechazarTodo);
         lblcontador = (TextView) findViewById(R.id.lblContador);
-
         mTab=0;
+        tabs.addTab(tabs.newTab().setText("Trato "));
+        tabs.addTab(tabs.newTab().setText("Hora Extra "));
+        tabs.addTab(tabs.newTab().setText("Festivo "));
         llenarLista();
+
 
         tabs.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -203,7 +201,6 @@ public class HorasPendientesActivity extends AppCompatActivity {
                                                 fecha_A =  horasExtras.getFecha();
                                                 tipoPacto_A =  horasExtras.getTipo_pacto();
                                                 lvl_A = String.valueOf(horasExtras.getLvl());
-                                                Log.e("Omar", "Entro 0");
                                                 actualizaEstado(run_A, fecha_A, E_A, lvl_A, tipoPacto_A);
                                             }
                                         }
@@ -323,13 +320,21 @@ public class HorasPendientesActivity extends AppCompatActivity {
     }
 
     void llenarLista() {
+        miDbHelper = MiDbHelper.getInstance(this);
+        TabLayout tabs = (TabLayout) findViewById(R.id.tabs);
 
+        tabs.getTabAt(0).setText("Trato \n "+
+             String.valueOf(miDbHelper.CuentaSolicitudesTratos()));
+        tabs.getTabAt(1).setText("Hora Extra \n" +
+                String.valueOf(miDbHelper.CuentaSolicitudesHoraExtra()));
+        tabs.getTabAt(2).setText("Festivo \n" +
+                String.valueOf(miDbHelper.CuentaSolicitudesFestivo()));
         lblRut = (TextView) findViewById(R.id.lblRut);
         lblNombre = (TextView) findViewById(R.id.lblNombre);
         lblFecha = (TextView) findViewById(R.id.lblFecha);
         lblTipoPacto = (TextView) findViewById(R.id.lblTipoPacto);
         listViewPendientes = (ListView) findViewById(R.id.lstHorasPendientes);
-        miDbHelper = MiDbHelper.getInstance(this);
+
         arrayListHorasExtra.clear();
         String rut_user = miDbHelper.getRutUsuario();
         Cursor cursor;
@@ -412,7 +417,6 @@ public class HorasPendientesActivity extends AppCompatActivity {
         final VolleyS volleyS = VolleyS.getInstance(this);
 
         if(!ValidacionConexion.isExisteConexion(HorasPendientesActivity.this)) {
-            Log.e("Omar", "Entro 1");
             progressDialog.dismiss();
             errorconn++;
             if (errorconn == 1) {
@@ -423,7 +427,6 @@ public class HorasPendientesActivity extends AppCompatActivity {
                 return;
             }
         }
-            Log.e("Omar", "Entro 2");
         final String mac = ValidacionConexion.getDireccionMAC(HorasPendientesActivity.this);
 
         final StringRequest jsonObjectRequest = new StringRequest(
@@ -503,7 +506,6 @@ public class HorasPendientesActivity extends AppCompatActivity {
                     }
                     return;
                 }
-                Log.e("Omar", "Llege aqui");
                 llenarLista();
                 progressDialog.dismiss();
                 miDbHelper.actualizarEstado(rut_S,fecha_S,estado_Final,lvl_S, tipo_pacto_S);

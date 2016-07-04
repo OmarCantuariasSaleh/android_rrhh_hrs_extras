@@ -509,7 +509,9 @@ public class MainActivity extends AppCompatActivity {
                         updateList();
                         return;
                     }
-
+                    if(miDbHelper.yaExiste(String.valueOf(run),fecha,tipo_pacto)){
+                        continue;
+                    }
                     if(miDbHelper.insertarSolicitud(
                             String.valueOf(run)
                             , nombre
@@ -526,8 +528,7 @@ public class MainActivity extends AppCompatActivity {
                             , estado2
                             , rut_admin2
                             , estado3
-                            , rut_admin3)){
-                        Log.e("Omar",String.valueOf(run)+" / "+fecha+" / "+estado1+" / "+rut_admin1+" / "+estado2+" / "+rut_admin2+" / "+estado3+" / "+rut_admin3+" / ");
+                            , rut_admin3,mac)){
                         progressDialog.incrementProgressBy((int) (i * 100 / total));
 
                     } else {

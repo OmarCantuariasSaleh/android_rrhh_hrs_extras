@@ -99,10 +99,8 @@ public class DetalleActivity extends AppCompatActivity {
             Alertas.alertaSimple("ERROR","Error mostrando datos, comuniquese con informatica",this);
             finish();
         }
-        Log.e("Omar", ""+bundle.getString("Rut","")+" / "+bundle.getString("fecha","")+" / "+bundle.getString("tipo_pacto",""));
         miDbHelper = MiDbHelper.getInstance(this);
         cursor =   miDbHelper.getDatoSolicitudDetalle(bundle.getString("Rut",""),bundle.getString("fecha",""),bundle.getString("tipo_pacto",""));
-        Log.e("Omar", String.valueOf(cursor.getCount()));
         //Imprimimos los datos en la interfase
         if(!cursor.moveToNext()){
             miDbHelper.insertarLogError("Error al mostrar datos en DetalleActivity, fallo la consulta a la base de datos",mac);
@@ -155,7 +153,6 @@ public class DetalleActivity extends AppCompatActivity {
             E1= cursor.getString(cursor.getColumnIndex("estado1"));
             E2= cursor.getString(cursor.getColumnIndex("estado2"));
             E3= cursor.getString(cursor.getColumnIndex("estado3"));
-            Log.e("Omar", E1+" "+E2+" "+E3);
             // Verificar si detalle es de solicitud aprobada o pendiente, separadas por nivel
             String rut1 = cursor.getString(cursor.getColumnIndex("rut_admin1"));
             String rut2 = cursor.getString(cursor.getColumnIndex("rut_admin2"));
