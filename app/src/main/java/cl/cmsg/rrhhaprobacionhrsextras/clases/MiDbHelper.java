@@ -326,7 +326,7 @@ public class MiDbHelper extends SQLiteOpenHelper{
         db = getWritableDatabase();
      //   String mac= ValidacionConexion.getDireccionMAC();
         ContentValues campoValor = new ContentValues();
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US);
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
         Date date = new Date();
 
         campoValor.put("fecha_hora", dateFormat.format(date));

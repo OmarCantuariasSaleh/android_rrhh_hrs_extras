@@ -22,6 +22,7 @@ import com.android.volley.toolbox.StringRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import cl.cmsg.rrhhaprobacionhrsextras.clases.Formatos;
 import cl.cmsg.rrhhaprobacionhrsextras.clases.MiDbHelper;
 import cl.cmsg.rrhhaprobacionhrsextras.clases.Alertas;
 import cl.cmsg.rrhhaprobacionhrsextras.clases.ValidacionConexion;
@@ -110,19 +111,19 @@ public class DetalleActivity extends AppCompatActivity {
         }
 
             rut = cursor.getString(cursor.getColumnIndex("Rut"));
-            lblRut.setText(rut);
+            lblRut.setText(Formatos.getNumberFormat().format(Integer.valueOf(rut)));
 
             nombre = cursor.getString(cursor.getColumnIndex("nombre"));
             lblNombre.setText(nombre);
 
             fecha = cursor.getString(cursor.getColumnIndex("fecha"));
-            lblFecha.setText(fecha);
+            lblFecha.setText(Formatos.fechaFormat(fecha));
 
             cant_horas = (cursor.getDouble(cursor.getColumnIndex("cant_horas")));
             lblCantHoras.setText(String.valueOf(cant_horas));
 
             monto_pagar = cursor.getInt(cursor.getColumnIndex("monto_pagar"));
-            lblMontoPagar.setText(String.valueOf(monto_pagar));
+            lblMontoPagar.setText(Formatos.getNumberFormat().format(monto_pagar));
 
             motivo = cursor.getString(cursor.getColumnIndex("motivo"));
             lblMotivo.setText(motivo);

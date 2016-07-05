@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import cl.cmsg.rrhhaprobacionhrsextras.clases.Formatos;
 import cl.cmsg.rrhhaprobacionhrsextras.clases.MiDbHelper;
 import cl.cmsg.rrhhaprobacionhrsextras.clases.ValidacionConexion;
 import cl.cmsg.rrhhaprobacionhrsextras.horasextras.HorasExtras;
@@ -223,7 +224,7 @@ public class HorasAprobadasActivity extends AppCompatActivity {
                         }
                         cursor.close();
                         if (costo > 0) {
-                            lblCostoTotal.setText("Costo total del periodo : $" + costo);
+                            lblCostoTotal.setText("Costo total del periodo : $" + Formatos.getNumberFormat().format(costo));
                             lblCostoTotal.setVisibility(View.VISIBLE);
                             lblCantAprov.setText("Total de Horas aprobadas : " + String.valueOf(cantidad));
                             lblCantAprov.setVisibility(View.VISIBLE);
