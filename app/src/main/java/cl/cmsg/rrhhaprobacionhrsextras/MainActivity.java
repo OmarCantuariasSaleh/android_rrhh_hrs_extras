@@ -282,7 +282,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-
+                Log.e("Omar", "entro 3");
                 if (!ValidacionConexion.isExisteConexion(MainActivity.this)){
                     Alertas.alertaConexion(MainActivity.this);
                     return;
@@ -362,10 +362,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        Bundle bundle= getIntent().getExtras();
 
-
-
-
+        if(bundle!=null) {
+            if (bundle.getBoolean("Update")) {
+                Log.e("Omar", "entro 2");
+                btnVersion.performClick();
+            }
+        }
 
 
 

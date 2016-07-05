@@ -1,9 +1,20 @@
 package cl.cmsg.rrhhaprobacionhrsextras.clases;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.support.v7.app.AlertDialog;
+import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import cl.cmsg.rrhhaprobacionhrsextras.R;
 
 /**
  * Created by ocantuarias on 15-06-2016.
@@ -104,6 +115,8 @@ public class Reciever {
         }
 
     }
+
+
 }
 
 
