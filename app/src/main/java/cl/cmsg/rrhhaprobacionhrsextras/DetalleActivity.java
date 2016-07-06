@@ -22,6 +22,7 @@ import com.android.volley.toolbox.StringRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import cl.cmsg.rrhhaprobacionhrsextras.clases.Formatos;
 import cl.cmsg.rrhhaprobacionhrsextras.clases.MiDbHelper;
 import cl.cmsg.rrhhaprobacionhrsextras.clases.Alertas;
 import cl.cmsg.rrhhaprobacionhrsextras.clases.ValidacionConexion;
@@ -99,10 +100,8 @@ public class DetalleActivity extends AppCompatActivity {
             Alertas.alertaSimple("ERROR","Error mostrando datos, comuniquese con informatica",this);
             finish();
         }
-        Log.e("Omar", ""+bundle.getString("Rut","")+" / "+bundle.getString("fecha","")+" / "+bundle.getString("tipo_pacto",""));
         miDbHelper = MiDbHelper.getInstance(this);
         cursor =   miDbHelper.getDatoSolicitudDetalle(bundle.getString("Rut",""),bundle.getString("fecha",""),bundle.getString("tipo_pacto",""));
-        Log.e("Omar", String.valueOf(cursor.getCount()));
         //Imprimimos los datos en la interfase
         if(!cursor.moveToNext()){
             miDbHelper.insertarLogError("Error al mostrar datos en DetalleActivity, fallo la consulta a la base de datos",mac);
@@ -112,19 +111,19 @@ public class DetalleActivity extends AppCompatActivity {
         }
 
             rut = cursor.getString(cursor.getColumnIndex("Rut"));
-            lblRut.setText(rut);
+            lblRut.setText(Formatos.getNumberFormat().format(Integer.valueOf(rut)));
 
             nombre = cursor.getString(cursor.getColumnIndex("nombre"));
             lblNombre.setText(nombre);
 
             fecha = cursor.getString(cursor.getColumnIndex("fecha"));
-            lblFecha.setText(fecha);
+            lblFecha.setText(Formatos.fechaFormat(fecha));
 
             cant_horas = (cursor.getDouble(cursor.getColumnIndex("cant_horas")));
             lblCantHoras.setText(String.valueOf(cant_horas));
 
             monto_pagar = cursor.getInt(cursor.getColumnIndex("monto_pagar"));
-            lblMontoPagar.setText(String.valueOf(monto_pagar));
+            lblMontoPagar.setText(Formatos.getNumberFormat().format(monto_pagar));
 
             motivo = cursor.getString(cursor.getColumnIndex("motivo"));
             lblMotivo.setText(motivo);
@@ -155,7 +154,6 @@ public class DetalleActivity extends AppCompatActivity {
             E1= cursor.getString(cursor.getColumnIndex("estado1"));
             E2= cursor.getString(cursor.getColumnIndex("estado2"));
             E3= cursor.getString(cursor.getColumnIndex("estado3"));
-            Log.e("Omar", E1+" "+E2+" "+E3);
             // Verificar si detalle es de solicitud aprobada o pendiente, separadas por nivel
             String rut1 = cursor.getString(cursor.getColumnIndex("rut_admin1"));
             String rut2 = cursor.getString(cursor.getColumnIndex("rut_admin2"));
