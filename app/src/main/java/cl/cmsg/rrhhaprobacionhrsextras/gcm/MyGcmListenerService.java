@@ -26,6 +26,7 @@ import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import cl.cmsg.rrhhaprobacionhrsextras.MainActivity;
+import cl.cmsg.rrhhaprobacionhrsextras.R;
 import cl.cmsg.rrhhaprobacionhrsextras.clases.MiDbHelper;
 import cl.cmsg.rrhhaprobacionhrsextras.clases.Reciever;
 
@@ -82,7 +83,14 @@ public class MyGcmListenerService extends GcmListenerService {
 
 
         Reciever reciever= new Reciever();
-        reciever.RecibirUna(datos,getApplicationContext());
+        Log.e("Omar", titulo);
+        if(titulo.toLowerCase().equals("actualizacion")){
+            Log.e("Omar","Entro");
+            intent.putExtra("Update",true);
+        }else{
+            reciever.RecibirUna(datos,getApplicationContext());
+        }
+
         int numeroSolicitudes= miDbHelper.CuentaSolicitudes();
 
 
@@ -93,14 +101,24 @@ public class MyGcmListenerService extends GcmListenerService {
                 PendingIntent.FLAG_ONE_SHOT);
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                .setSmallIcon(android.R.drawable.ic_dialog_info)
-                .setContentTitle("Solicitudes Pendientes")
-                .setContentText("Usted tiene "+numeroSolicitudes+" solicitudes pendientes")
-                .setAutoCancel(true)
-                .setSound(defaultSoundUri)
-                .setContentIntent(pendingIntent);
 
+        NotificationCompat.Builder notificationBuilder =new NotificationCompat.Builder(this);
+        if(titulo.toLowerCase().equals("actualizacion")) {
+
+                    notificationBuilder.setSmallIcon(R.mipmap.network_clock)
+                    .setContentTitle("Actualizacion disponible")
+                    .setContentText("Aprobacion de Horas Extras tiene una nueva actualizacion disponible, haga click para actualizar o")
+                    .setAutoCancel(true)
+                    .setSound(defaultSoundUri)
+                    .setContentIntent(pendingIntent);
+        }else {
+            notificationBuilder.setSmallIcon(R.mipmap.network_clock)
+                    .setContentTitle("Solicitudes Pendientes")
+                    .setContentText("Usted tiene " + numeroSolicitudes + " solicitudes pendientes")
+                    .setAutoCancel(true)
+                    .setSound(defaultSoundUri)
+                    .setContentIntent(pendingIntent);
+        }
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 

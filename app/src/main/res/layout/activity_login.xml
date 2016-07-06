@@ -27,7 +27,8 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/view"
         android:padding="10dp"
-        android:gravity="center">
+        android:gravity="center"
+        android:background="@color/colorPrimaryDark">
 
         <TextView
             android:layout_width="wrap_content"
@@ -40,7 +41,8 @@
             android:padding="5dp"
             android:background="@color/colorAccent"
             android:textColor="#ffffff"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            />
 
         <TextView
             android:layout_width="wrap_content"
@@ -62,17 +64,20 @@
             android:layout_marginTop="10dp"
             android:enabled="true"
             android:maxLength="12"
-            android:background="#ffffff" />
+            android:background="#ffffff"
+            android:textColor="@android:color/black"
+            android:padding="5dp"
+            android:gravity="center" />
 
         <Button
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:text="Registrar"
             android:id="@+id/buttonOk"
             android:textSize="20dp"
-            android:layout_gravity="center_horizontal"
             android:background="@drawable/buttonshape"
-            android:padding="10dp" />
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp" />
     </LinearLayout>
 
 </RelativeLayout>

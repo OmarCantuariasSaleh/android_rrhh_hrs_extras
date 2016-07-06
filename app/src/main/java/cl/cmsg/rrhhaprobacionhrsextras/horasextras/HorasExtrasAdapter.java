@@ -11,6 +11,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import cl.cmsg.rrhhaprobacionhrsextras.R;
+import cl.cmsg.rrhhaprobacionhrsextras.clases.Formatos;
 
 /**
  * Created by ocantuarias on 24-05-2016.
@@ -52,13 +53,15 @@ public class HorasExtrasAdapter extends BaseAdapter{
         HorasExtras horasExtras = arrayListHorasExtras.get(position);
 
         TextView rut = (TextView) convertView.findViewById(R.id.lblRut);
-        rut.setText(horasExtras.getRut());
+
+        //rut.setText(horasExtras.getRut());
+        rut.setText(Formatos.getNumberFormat().format(Integer.valueOf(horasExtras.getRut())));
 
         TextView nombre = (TextView) convertView.findViewById(R.id.lblNombre);
         nombre.setText(horasExtras.getNombre());
 
         TextView fecha = (TextView) convertView.findViewById(R.id.lblFecha);
-        fecha.setText(horasExtras.getFecha());
+        fecha.setText(Formatos.fechaFormat(horasExtras.getFecha()));
 
         TextView tipo_pacto = (TextView) convertView.findViewById(R.id.lblTipoPacto);
 

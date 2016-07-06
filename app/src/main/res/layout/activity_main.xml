@@ -24,14 +24,15 @@
             android:id="@+id/toolbar_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Aprobacion Horas Extra"
+            android:text="Solicitudes Pendientes"
             android:textColor="@android:color/white"
             android:textStyle="bold"
             android:textSize="20dp"
             style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
 
             />
-        </android.support.v7.widget.Toolbar> <TextView
+        </android.support.v7.widget.Toolbar>
+        <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
@@ -78,29 +79,31 @@
                     android:layout_height="wrap_content"
                     android:text="Solicitudes Pendientes [ 0 ]"
                     android:id="@+id/btnSolPendientes"
-                    android:background="@color/colorPrimary"
+                    android:background="@drawable/buttonshape"
                     android:textColor="#ffffff"
                     android:shadowColor="#393939"
                     android:textStyle="bold"
-                    android:textSize="16dp" />
+                    android:textSize="16dp"
+                    android:layout_marginBottom="5dp" />
 
                 <Button
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Solicitudes  Aprobadas"
                     android:id="@+id/btnSolAprobadas"
-                    android:background="@color/colorPrimary"
+                    android:background="@drawable/buttonshape"
                     android:textColor="#ffffff"
                     android:textStyle="bold"
                     android:textSize="16dp"
-                    android:layout_marginTop="5dp" />
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp" />
 
                 <Button
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Solicitudes Rechazadas"
                     android:id="@+id/btnSolRechazadas"
-                    android:background="@color/colorPrimary"
+                    android:background="@drawable/buttonshape"
                     android:textColor="#ffffff"
                     android:textStyle="bold"
                     android:textSize="16dp"
@@ -111,19 +114,18 @@
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:padding="5dp"
                 android:layout_marginTop="20dp"
                 android:gravity="center"
-                android:baselineAligned="false"
                 android:background="@color/colorAccent2">
 
                 <Button
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="45dp"
                     android:text="Enviar Errores [ 0 ]"
                     android:id="@+id/btnError"
-                    android:background="#e12268"
+                    android:background="@drawable/buttonshape2"
                     android:textColor="#ffffff"
                     android:layout_marginBottom="5dp"
                     android:shadowColor="#393939"
@@ -132,14 +134,15 @@
 
                 <Button
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="45dp"
                     android:text="Version : "
                     android:id="@+id/btnVersion"
-                    android:background="#e12268"
+                    android:background="@drawable/buttonshape2"
                     android:textColor="#ffffff"
                     android:shadowColor="#393939"
                     android:textStyle="bold"
-                    android:textSize="16dp" />
+                    android:textSize="16dp"
+                    android:layout_marginTop="5dp" />
             </LinearLayout>
 
         </LinearLayout>
