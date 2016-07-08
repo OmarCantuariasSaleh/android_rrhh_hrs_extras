@@ -59,10 +59,9 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
             android:layout_weight="1.24"
-            android:gravity="center_horizontal"
-            android:layout_marginBottom="5dp">
+            android:gravity="center|center_horizontal"
+            android:touchscreenBlocksFocus="false">
 
             <Button
                 android:layout_width="wrap_content"
@@ -83,7 +82,7 @@
                 android:id="@+id/btnRechazarTodo"
                 android:background="@drawable/buttonshape"
                 android:textColor="#ffffff"
-                android:layout_marginRight="5dp"
+                android:layout_marginRight="10dp"
                 android:textSize="13dp"
                 android:textStyle="bold"
                 android:padding="10dp" />
@@ -112,20 +111,6 @@
             </LinearLayout>
         </LinearLayout>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Seleccione solicitud a aprobar :"
-            android:id="@+id/textView12"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:textSize="18dp"
-            android:background="@color/colorPrimary"
-            android:padding="5dp"
-            android:layout_marginBottom="5dp"
-            android:gravity="center_horizontal" />
     </LinearLayout>
 
     <LinearLayout
@@ -135,7 +120,8 @@
         android:background="@android:color/holo_blue_light"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:layout_marginBottom="10dp">
+        android:layout_marginBottom="10dp"
+        android:focusableInTouchMode="false">
 
         <ListView
             android:layout_width="match_parent"
