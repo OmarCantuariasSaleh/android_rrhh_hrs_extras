@@ -71,14 +71,14 @@ public class HorasExtrasAdapter extends BaseAdapter implements Filterable{
 
         TextView tipo_pacto = (TextView) convertView.findViewById(R.id.lblTipoPacto);
 
-        switch (horasExtras.getTipo_pacto()){
-            case "H":
+        switch (horasExtras.getTipo_pacto().toLowerCase()){
+            case "h":
                 tipo_pacto.setText(R.string.HORAEXTRA);
                 break;
-            case "T":
+            case "t":
                 tipo_pacto.setText(R.string.TRATO);
                 break;
-            case "F":
+            case "f":
                 tipo_pacto.setText(R.string.FESTIVO);
                 break;
         }
@@ -103,7 +103,6 @@ public class HorasExtrasAdapter extends BaseAdapter implements Filterable{
                 @SuppressWarnings("unchecked")
                 @Override
                 protected void publishResults(CharSequence constraint,FilterResults results) {
-                    Log.e("Omar", "entro a pblish");
                     arrayListHorasExtras = (ArrayList<HorasExtras>) results.values; // has the filtered values
                     notifyDataSetChanged();  // notifies the data with new filtered values
                 }
@@ -135,19 +134,23 @@ public class HorasExtrasAdapter extends BaseAdapter implements Filterable{
                             HorasExtras data = mOriginalValues.get(i);
                            // Log.e("Omar", data.getNombre());
 
-                            if (data.getRut().toLowerCase().startsWith(constraint.toString())) {
+                            if (data.getRut().toLowerCase().contains(constraint.toString())) {
                                 FilteredArrList.add(data);
                                 continue;
                             }
-                            if (data.getFecha().toLowerCase().startsWith(constraint.toString())) {
+                            if (data.getFecha().toLowerCase().contains(constraint.toString())) {
                                 FilteredArrList.add(data);
                                 continue;
                             }
-                            if (data.getCant_horas().toLowerCase().startsWith(constraint.toString())) {
+                            if (data.getCant_horas().toLowerCase().contains(constraint.toString())) {
                                 FilteredArrList.add(data);
                                 continue;
                             }
-                            if (data.getNombre().toLowerCase().startsWith(constraint.toString())) {
+                            if (data.getNombre().toLowerCase().contains(constraint.toString())) {
+                                FilteredArrList.add(data);
+
+                            }
+                            if (data.getTipo_pacto().toLowerCase().contains(constraint.toString())) {
                                 FilteredArrList.add(data);
 
                             }

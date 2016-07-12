@@ -28,7 +28,7 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="15dp"
+        android:padding="10dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:weightSum="1"
@@ -39,26 +39,53 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:background="@android:color/holo_blue_light">
+            android:gravity="center_horizontal">
 
-            <Button
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical|center_horizontal"
+                android:padding="10dp"
+                android:background="@drawable/boxceleste"
+                android:layout_marginBottom="5dp">
 
-                android:layout_width="wrap_content"
-                android:layout_height="35dp"
-                android:text="Seleccione periodo"
-                android:id="@+id/btnPeriodoSelect"
-                android:layout_centerHorizontal="true"
-                android:layout_below="@+id/textView10"
-                android:gravity="center"
-                android:textSize="18dp"
-                android:layout_marginTop="5dp"
-                style="@style/Widget.AppCompat.Button.Small"
-                android:textAllCaps="false"
-                android:background="@drawable/buttonshape"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:layout_marginBottom="5dp" />
+                <DatePicker
+                    android:layout_width="wrap_content"
+                    android:layout_height="120dp"
+                    android:id="@+id/dp_mes"
+                    android:spinnersShown="true"
+                    android:calendarViewShown="false"
+                    android:datePickerMode="spinner"
+                    android:background="@drawable/dateshape"
+                    android:theme="@android:style/Widget.DeviceDefault.DatePicker"
+                    style="@android:style/Widget.DatePicker"
+                    android:layout_weight="0"
+                    android:minDate="2015" />
+
+                <Button
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Elegir Periodo"
+                    android:id="@+id/btnPeriodoSelect"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@+id/textView10"
+                    android:gravity="center"
+                    android:textSize="18dp"
+                    android:layout_marginTop="5dp"
+                    style="@style/Widget.AppCompat.Button.Small"
+                    android:textAllCaps="false"
+                    android:background="@drawable/buttonshape"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:layout_weight="1" />
+
+            </LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -78,8 +105,8 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@android:color/holo_blue_light"
-            android:layout_marginTop="10dp">
+            android:background="@drawable/boxceleste"
+            android:layout_marginTop="5dp">
 
             <ListView
                 android:layout_width="match_parent"
@@ -89,9 +116,10 @@
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_marginTop="10dp"
-                android:divider="#000000"
+                android:divider="@android:color/holo_blue_light"
                 android:layout_gravity="bottom"
-                android:padding="5dp" />
+                android:padding="5dp"
+                android:dividerHeight="1dp" />
         </LinearLayout>
 
     </LinearLayout>

@@ -28,7 +28,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/view2"
-        android:padding="15dp">
+        android:padding="10dp">
 
         <LinearLayout
                 android:orientation="vertical"
@@ -38,24 +38,52 @@
                 android:layout_alignParentStart="true"
                 android:weightSum="1"
                 android:layout_below="@+id/view2"
-                android:gravity="center_horizontal"
-            android:background="@android:color/holo_blue_light"
-            android:padding="10dp">
+                android:gravity="center_horizontal">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical|center_horizontal"
+                android:background="@drawable/boxceleste"
+                android:padding="10dp"
+                android:layout_marginBottom="5dp">
+
+                <DatePicker
+                    style="@android:style/Widget.DatePicker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="120dp"
+                    android:id="@+id/dp_mes"
+                    android:spinnersShown="true"
+                    android:calendarViewShown="false"
+                    android:datePickerMode="spinner"
+                    android:background="@drawable/dateshape"
+                    android:theme="@android:style/Widget.DeviceDefault.DatePicker"
+                    android:layout_weight="0">
+
+                </DatePicker>
 
                 <Button
+                    style="@style/Widget.AppCompat.Button.Small"
                     android:layout_width="wrap_content"
-                    android:layout_height="35dp"
-                    android:text="Seleccione periodo"
+                    android:layout_height="wrap_content"
+                    android:text="Elegir Periodo"
                     android:id="@+id/btnPeriodoSelect"
-                    android:textSize="18sp"
-                    android:background="@drawable/buttonshape"
-                    android:shadowColor="#5711A8"
-                    android:shadowDx="0"
-                    android:shadowDy="0"
-                    android:shadowRadius="5"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@+id/textView10"
+                    android:gravity="center"
+                    android:textSize="18dp"
+                    android:layout_marginTop="5dp"
                     android:textAllCaps="false"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp" />
+                    android:background="@drawable/buttonshape"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:layout_weight="1" />
+            </LinearLayout>
 
             <LinearLayout
                 android:orientation="vertical"
@@ -103,8 +131,8 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@android:color/holo_blue_light"
-            android:layout_marginTop="10dp">
+            android:background="@drawable/boxceleste"
+            android:layout_marginTop="5dp">
 
             <ListView
                     android:layout_width="match_parent"
