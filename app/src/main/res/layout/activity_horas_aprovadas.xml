@@ -142,9 +142,10 @@
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:layout_marginTop="10dp"
-                    android:divider="#000000"
+                    android:divider="@android:color/holo_blue_light"
                     android:layout_gravity="bottom"
-                    android:padding="5dp" />
+                    android:padding="5dp"
+                android:dividerHeight="1dp" />
         </LinearLayout>
     </LinearLayout>
 

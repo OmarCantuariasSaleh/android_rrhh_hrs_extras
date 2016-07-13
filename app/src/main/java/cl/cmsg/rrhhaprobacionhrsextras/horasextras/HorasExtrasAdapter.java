@@ -129,10 +129,8 @@ public class HorasExtrasAdapter extends BaseAdapter implements Filterable{
                         results.values = mOriginalValues;
                     } else {
                         constraint = constraint.toString().toLowerCase();
-                        //Log.e("Omar", constraint.toString());
                         for (int i = 0; i < mOriginalValues.size(); i++) {
                             HorasExtras data = mOriginalValues.get(i);
-                           // Log.e("Omar", data.getNombre());
 
                             if (data.getRut().toLowerCase().contains(constraint.toString())) {
                                 FilteredArrList.add(data);

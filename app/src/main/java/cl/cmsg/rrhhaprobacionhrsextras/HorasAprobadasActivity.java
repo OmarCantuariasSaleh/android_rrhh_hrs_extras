@@ -296,18 +296,6 @@ public class HorasAprobadasActivity extends AppCompatActivity {
     public void initMonthPicker(){
         dp_mes = (DatePicker) findViewById(R.id.dp_mes);
 
-        /*int year    = dp_mes.getYear();
-        int month   = dp_mes.getMonth();
-        int day     = dp_mes.getDayOfMonth();
-
-        dp_mes.init(year, month, day, new DatePicker.OnDateChangedListener() {
-            @Override
-            public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                int month_i = monthOfYear + 1;
-                Log.e("selected month:", Integer.toString(month_i));
-                //Add whatever you need to handle Date changes
-            }
-        });*/
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
             int daySpinnerId = Resources.getSystem().getIdentifier("day", "id", "android");

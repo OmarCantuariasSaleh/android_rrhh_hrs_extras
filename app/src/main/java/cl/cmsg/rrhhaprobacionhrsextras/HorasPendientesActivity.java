@@ -826,22 +826,7 @@ public class HorasPendientesActivity extends AppCompatActivity  {
         return super.onOptionsItemSelected(item);
     }
 
-    /*@Override
-    public boolean onQueryTextSubmit(String query) {
-        return false;
-    }
 
-    @Override
-    public boolean onQueryTextChange(String newText) {
-        if (TextUtils.isEmpty(newText)) {
-            listViewPendientes.clearTextFilter();
-        } else {
-            //listViewPendientes.setFilterText(newText);
-            horasExtrasAdapter.getFilter().filter(newText);
-        }
-        return true;
-
-    }*/
 
 
 }

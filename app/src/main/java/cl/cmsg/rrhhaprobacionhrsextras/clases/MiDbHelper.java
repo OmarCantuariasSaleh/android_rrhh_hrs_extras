@@ -267,7 +267,6 @@ public class MiDbHelper extends SQLiteOpenHelper{
     }
 
     public Cursor getDatoSolicitudDetalle(String rut, String fecha, String tipo_pacto){ //Muestra detalle
-        Log.e("Omar", "rut: "+rut+" // fecha: "+fecha+" // tipo:"+tipo_pacto);
         SQLiteDatabase db = getReadableDatabase();
         return db.query(tablaSolicitud, new String[]{"*"},"Rut=? AND fecha=? AND tipo_pacto=?",new String[]{rut,fecha,tipo_pacto} , null, null, "fecha");
 
@@ -363,7 +362,6 @@ public class MiDbHelper extends SQLiteOpenHelper{
             , String estado2,String rut_admin2, String estado3,String rut_admin3,String mac
     ){
         db = getWritableDatabase();
-        Log.e("Omar", "Rut: "+rut+" // Fecha: "+fecha+" // Tipo_pacto: "+tipo_pacto);
         ContentValues campoValor = new ContentValues();
 
         campoValor.put("Rut", rut);
