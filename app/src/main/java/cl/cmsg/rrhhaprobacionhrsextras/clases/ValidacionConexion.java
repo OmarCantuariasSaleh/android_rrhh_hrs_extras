@@ -12,25 +12,22 @@ import android.net.wifi.WifiManager;
  */
 public abstract class ValidacionConexion{
 
-    public static boolean isExisteConexion(Activity activity){
-        ConnectivityManager connMgr = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        if (networkInfo == null || !networkInfo.isConnected()){
-            return false;
-        }
-        return true;
-    }
+	public static boolean isExisteConexion(Activity activity){
+		ConnectivityManager connMgr = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+		return !(networkInfo == null || !networkInfo.isConnected());
+	}
 
-    public static String getDireccionMAC(Context context){
-        WifiManager manager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-        WifiInfo info = manager.getConnectionInfo();
-        String direccionMAC = info.getMacAddress();
+	public static String getDireccionMAC(Context context){
+		WifiManager manager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+		WifiInfo info = manager.getConnectionInfo();
+		String direccionMAC = info.getMacAddress();
 
-        if (info == null || direccionMAC == null || direccionMAC.isEmpty()){
-            return "";
-        }
+		if (info == null || direccionMAC == null || direccionMAC.isEmpty()){
+			return "";
+		}
 
-        return direccionMAC;
-    }
+		return direccionMAC;
+	}
 
 }

@@ -7,4 +7,6 @@
     <color name="azulOscuro">#3c27da</color>
     <color name="colorAccent2">#e7779d</color>
     <color name="amarillo">#e3f3ff06</color>
+    <color name="negro">#000</color>
+    <color name="blanco">#fff</color>
 </resources>

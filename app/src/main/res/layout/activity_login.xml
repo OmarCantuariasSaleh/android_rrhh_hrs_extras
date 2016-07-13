@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".LoginActivity">
 
     <android.support.design.widget.AppBarLayout
+        android:id="@+id/view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay"
-        android:id="@+id/view">
+        android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
@@ -22,62 +22,61 @@
     </android.support.design.widget.AppBarLayout>
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/view"
-        android:padding="10dp"
+        android:background="@color/colorPrimaryDark"
         android:gravity="center"
-        android:background="@color/colorPrimaryDark">
+        android:orientation="vertical"
+        android:padding="10dp">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Dispositivo sin registrar"
             android:id="@+id/textView2"
-            android:layout_marginBottom="50dp"
-            android:layout_gravity="top|center_horizontal"
-            android:padding="5dp"
-            android:background="@color/colorAccent"
-            android:textColor="#ffffff"
-            android:textStyle="bold"
-            />
-
-        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="top|center_horizontal"
+            android:layout_marginBottom="50dp"
+            android:background="@color/colorAccent"
+            android:padding="5dp"
+            android:text="Dispositivo sin registrar"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Ingrese su Rut sin codigo verificador"
+            android:textColor="#ffffff"
+            android:textStyle="bold" />
+
+        <TextView
             android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="15dp"
             android:layout_marginBottom="10dp"
-            android:gravity="center" />
+            android:layout_marginTop="15dp"
+            android:gravity="center"
+            android:text="Ingrese su Rut"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <EditText
+            android:id="@+id/editText"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
-            android:id="@+id/editText"
-            android:inputType="text"
             android:layout_marginBottom="20dp"
             android:layout_marginTop="10dp"
+            android:background="@color/blanco"
             android:enabled="true"
+            android:gravity="center"
+            android:inputType="text"
             android:maxLength="12"
-            android:background="#ffffff"
-            android:textColor="@android:color/black"
-            android:padding="5dp"
-            android:gravity="center" />
+            android:textColor="@color/negro"
+            android:padding="5dp" />
 
         <Button
+            android:id="@+id/buttonOk"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
-            android:text="Registrar"
-            android:id="@+id/buttonOk"
-            android:textSize="20dp"
             android:background="@drawable/buttonshape"
             android:paddingLeft="10dp"
-            android:paddingRight="10dp" />
+            android:paddingRight="10dp"
+            android:text="Registrar"
+            android:textSize="20sp" />
     </LinearLayout>
 
 </RelativeLayout>

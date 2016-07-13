@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/colorPrimaryDark"
     android:orientation="vertical"
-    tools:context=".HorasPendientesActivity"
-    android:background="@color/colorPrimaryDark">
+    tools:context=".HorasPendientesActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -22,92 +22,92 @@
 
             <TextView
                 android:id="@+id/toolbar_title"
+                style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
                 android:text="Solicitudes Pendientes"
                 android:textColor="@android:color/white"
-                android:textStyle="bold"
-                android:textSize="20dp"
-                style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+                android:textSize="20sp"
 
-                android:gravity="center_horizontal" />
+                android:textStyle="bold" />
 
-            </android.support.v7.widget.Toolbar>
+        </android.support.v7.widget.Toolbar>
+
         <android.support.design.widget.TabLayout
             android:id="@+id/tabs"
-            app:tabGravity="fill"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:tabIndicatorColor="@color/colorPrimary"
-            app:tabBackground="@drawable/tab_background"/>
+            app:tabBackground="@drawable/tab_background"
+            app:tabGravity="fill"
+            app:tabIndicatorColor="@color/colorPrimary" />
+
     </android.support.design.widget.AppBarLayout>
 
     <LinearLayout
-        android:orientation="vertical"
+        android:id="@+id/layBotones"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:padding="5dp"
-        android:id="@+id/layBotones"
-        android:background="@drawable/boxceleste"
+        android:layout_marginBottom="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
-        android:weightSum="1"
-        android:layout_marginBottom="10dp">
+        android:background="@drawable/boxceleste"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="5dp"
+        android:weightSum="1">
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1.24"
             android:gravity="center|center_horizontal"
-            android:touchscreenBlocksFocus="false">
+            android:orientation="horizontal">
 
             <Button
+                android:id="@+id/btnAprobarTodo"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
-                android:text="Aprobar"
-                android:id="@+id/btnAprobarTodo"
-                android:background="@drawable/buttonshape"
-                android:textColor="#ffffff"
-                android:padding="10dp"
                 android:layout_marginRight="5dp"
-                android:textSize="13dp"
+                android:background="@drawable/buttonshape"
+                android:padding="10dp"
+                android:text="Aprobar"
+                android:textColor="#ffffff"
+                android:textSize="13sp"
                 android:textStyle="bold" />
 
             <Button
+                android:id="@+id/btnRechazarTodo"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
-                android:text="Rechazar"
-                android:id="@+id/btnRechazarTodo"
-                android:background="@drawable/buttonshape"
-                android:textColor="#ffffff"
                 android:layout_marginRight="10dp"
-                android:textSize="13dp"
-                android:textStyle="bold"
-                android:padding="10dp" />
+                android:background="@drawable/buttonshape"
+                android:padding="10dp"
+                android:text="Rechazar"
+                android:textColor="#ffffff"
+                android:textSize="13sp"
+                android:textStyle="bold" />
 
             <LinearLayout
-                android:orientation="vertical"
                 android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:gravity="center">
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="Seleccionados"
                     android:id="@+id/textView4"
-                    android:textSize="14dp" />
-
-                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="Seleccionados"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="Medium Text"
+                    android:textSize="14sp" />
+
+                <TextView
                     android:id="@+id/lblContador"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Contador"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textStyle="bold" />
             </LinearLayout>
         </LinearLayout>
@@ -115,23 +115,22 @@
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/boxceleste"
+        android:layout_marginBottom="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:layout_marginBottom="10dp"
-        android:focusableInTouchMode="false">
+        android:background="@drawable/boxceleste"
+        android:focusableInTouchMode="false"
+        android:orientation="vertical">
 
         <ListView
-            android:layout_width="match_parent"
             android:id="@+id/lstHorasPendientes"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:divider="#1e1e1e"
             android:choiceMode="multipleChoice"
-             />
+            android:divider="#1e1e1e"
+            android:padding="5dp" />
 
     </LinearLayout>
 

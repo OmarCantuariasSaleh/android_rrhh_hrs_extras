@@ -179,9 +179,9 @@ public class HorasRechazadasActivity extends AppCompatActivity {
 
                                 fecha=cursor.getString(cursor.getColumnIndex("fecha"));
 
-                                tipo_pacto = cursor.getString(cursor.getColumnIndex("tipo_pacto"));
+                                tipo_pacto = cursor.getString(cursor.getColumnIndex("tipoPacto"));
 
-                                cant_horas=cursor.getDouble(cursor.getColumnIndex("cant_horas"));
+                                cant_horas=cursor.getDouble(cursor.getColumnIndex("cantidadHoras"));
 
                                 horasExtras = new HorasExtras(rut,nombre,fecha,tipo_pacto,cant_horas,lvl);
                                 arrayListHorasExtra.add(horasExtras);
@@ -210,7 +210,7 @@ public class HorasRechazadasActivity extends AppCompatActivity {
                 HorasExtras horasExtras=arrayListHorasExtra.get(position);
                 intent.putExtra("Rut",horasExtras.getRut());
                 intent.putExtra("fecha",horasExtras.getFecha());
-                intent.putExtra("tipo_pacto",horasExtras.getTipo_pacto());
+                intent.putExtra("tipoPacto",horasExtras.getTipo_pacto());
 
 
                 startActivity(intent);
