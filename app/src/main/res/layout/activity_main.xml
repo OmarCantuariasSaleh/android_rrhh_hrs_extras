@@ -24,7 +24,7 @@
             android:id="@+id/toolbar_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Solicitudes Pendientes"
+            android:text="RRHH Horas Extra"
             android:textColor="@android:color/white"
             android:textStyle="bold"
             android:textSize="20dp"
@@ -68,7 +68,7 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@android:color/holo_blue_light"
+                android:background="@drawable/boxceleste"
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:padding="5dp"
@@ -118,7 +118,7 @@
                 android:padding="5dp"
                 android:layout_marginTop="20dp"
                 android:gravity="center"
-                android:background="@color/colorAccent2">
+                android:background="@drawable/boxrojo">
 
                 <Button
                     android:layout_width="match_parent"

@@ -77,7 +77,6 @@ public class RegistrationIntentService extends IntentService{
 			try {
 				subscribeTopics(token);
 			} catch (IOException e){
-				Log.e(TAG, "Error al tratar de suscribir al Topic");
 
 			}
 		}

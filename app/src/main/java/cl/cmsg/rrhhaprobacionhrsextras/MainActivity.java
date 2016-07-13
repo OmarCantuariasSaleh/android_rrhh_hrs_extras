@@ -151,20 +151,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (miDbHelper.CuentaErrores() == 0) {
                     progressDialog.dismiss();
-                    //TODO Borrar errores de prueba ---------------
-                    miDbHelper.insertarLogError("hola",mac);
-                    miDbHelper.insertarLogError("hola",mac);
-                    //miDbHelper.insertarLogError("hola",mac);
-                    //miDbHelper.insertarLogError("hola",mac);
-                   /* miDbHelper.insertarLogError("hola",mac);
-                    miDbHelper.insertarLogError("hola",mac);
-                    miDbHelper.insertarLogError("hola",mac);
-                    miDbHelper.insertarLogError("hola",mac);
-                    miDbHelper.insertarLogError("hola",mac);
-                    miDbHelper.insertarLogError("hola",mac);
-                    miDbHelper.insertarLogError("hola",mac);
-*/
-                    //TODO Borrar errores de prueba --------------
+
                     updateList();
                     return;
                 }
@@ -282,7 +269,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                Log.e("Omar", "entro 3");
                 if (!ValidacionConexion.isExisteConexion(MainActivity.this)){
                     Alertas.alertaConexion(MainActivity.this);
                     return;
@@ -366,7 +352,6 @@ public class MainActivity extends AppCompatActivity {
 
         if(bundle!=null) {
             if (bundle.getBoolean("Update")) {
-                Log.e("Omar", "entro 2");
                 btnVersion.performClick();
             }
         }

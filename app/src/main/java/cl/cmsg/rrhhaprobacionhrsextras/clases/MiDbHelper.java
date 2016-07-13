@@ -362,7 +362,6 @@ public class MiDbHelper extends SQLiteOpenHelper{
             , String estado2,String rut_admin2, String estado3,String rut_admin3,String mac
     ){
         db = getWritableDatabase();
-        Log.e("Omar", "Rut: "+rut+" // Fecha: "+fecha+" // Tipo_pacto: "+tipo_pacto);
         ContentValues campoValor = new ContentValues();
 
         campoValor.put("Rut", rut);

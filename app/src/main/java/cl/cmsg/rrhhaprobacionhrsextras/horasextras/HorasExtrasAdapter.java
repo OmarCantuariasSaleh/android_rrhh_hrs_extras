@@ -1,14 +1,18 @@
 package cl.cmsg.rrhhaprobacionhrsextras.horasextras;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import cl.cmsg.rrhhaprobacionhrsextras.R;
 import cl.cmsg.rrhhaprobacionhrsextras.clases.Formatos;
@@ -16,11 +20,13 @@ import cl.cmsg.rrhhaprobacionhrsextras.clases.Formatos;
 /**
  * Created by ocantuarias on 24-05-2016.
  */
-public class HorasExtrasAdapter extends BaseAdapter{
+public class HorasExtrasAdapter extends BaseAdapter implements Filterable{
 
     Context context;
     ArrayList<HorasExtras> arrayListHorasExtras;
-
+    ArrayList<HorasExtras> arrayList;
+    private List<String> list = new ArrayList<String>();
+    ArrayList<HorasExtras> mOriginalValues;
 
     public HorasExtrasAdapter(ArrayList<HorasExtras> arrayListHorasExtras, Context context) {
         super();
@@ -65,14 +71,14 @@ public class HorasExtrasAdapter extends BaseAdapter{
 
         TextView tipo_pacto = (TextView) convertView.findViewById(R.id.lblTipoPacto);
 
-        switch (horasExtras.getTipo_pacto()){
-            case "H":
+        switch (horasExtras.getTipo_pacto().toLowerCase()){
+            case "h":
                 tipo_pacto.setText(R.string.HORAEXTRA);
                 break;
-            case "T":
+            case "t":
                 tipo_pacto.setText(R.string.TRATO);
                 break;
-            case "F":
+            case "f":
                 tipo_pacto.setText(R.string.FESTIVO);
                 break;
         }
@@ -89,5 +95,72 @@ public class HorasExtrasAdapter extends BaseAdapter{
         return convertView;
 
     }
+
+    @Override
+    public Filter getFilter() {
+            Filter filter = new Filter() {
+
+                @SuppressWarnings("unchecked")
+                @Override
+                protected void publishResults(CharSequence constraint,FilterResults results) {
+                    arrayListHorasExtras = (ArrayList<HorasExtras>) results.values; // has the filtered values
+                    notifyDataSetChanged();  // notifies the data with new filtered values
+                }
+
+                @Override
+                protected FilterResults performFiltering(CharSequence constraint) {
+                    FilterResults results = new FilterResults();        // Holds the results of a filtering operation in values
+                    ArrayList<HorasExtras> FilteredArrList = new ArrayList<HorasExtras>();
+
+                    if (mOriginalValues == null) {
+                        mOriginalValues = arrayListHorasExtras; // saves the original data in mOriginalValues
+                    }
+
+                    /********
+                     *
+                     *  If constraint(CharSequence that is received) is null returns the mOriginalValues(Original) values
+                     *  else does the Filtering and returns FilteredArrList(Filtered)
+                     *
+                     ********/
+                    if (constraint == null || constraint.length() == 0) {
+
+                        // set the Original result to return
+                        results.count = mOriginalValues.size();
+                        results.values = mOriginalValues;
+                    } else {
+                        constraint = constraint.toString().toLowerCase();
+                        for (int i = 0; i < mOriginalValues.size(); i++) {
+                            HorasExtras data = mOriginalValues.get(i);
+
+                            if (data.getRut().toLowerCase().contains(constraint.toString())) {
+                                FilteredArrList.add(data);
+                                continue;
+                            }
+                            if (data.getFecha().toLowerCase().contains(constraint.toString())) {
+                                FilteredArrList.add(data);
+                                continue;
+                            }
+                            if (data.getCant_horas().toLowerCase().contains(constraint.toString())) {
+                                FilteredArrList.add(data);
+                                continue;
+                            }
+                            if (data.getNombre().toLowerCase().contains(constraint.toString())) {
+                                FilteredArrList.add(data);
+
+                            }
+                            if (data.getTipo_pacto().toLowerCase().contains(constraint.toString())) {
+                                FilteredArrList.add(data);
+
+                            }
+                        }
+                        // set the Filtered result to return
+                       results.values = FilteredArrList;
+                        results.count = FilteredArrList.size();
+                    }
+                    return results;
+                }
+            };
+            return filter;
+        }
 
 }

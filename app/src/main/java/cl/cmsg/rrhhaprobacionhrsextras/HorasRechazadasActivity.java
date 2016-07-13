@@ -2,12 +2,18 @@ package cl.cmsg.rrhhaprobacionhrsextras;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.database.Cursor;
+import android.os.Build;
 import android.renderscript.Sampler;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -16,8 +22,10 @@ import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 import cl.cmsg.rrhhaprobacionhrsextras.clases.MiDbHelper;
 import cl.cmsg.rrhhaprobacionhrsextras.clases.ValidacionConexion;
@@ -25,7 +33,7 @@ import cl.cmsg.rrhhaprobacionhrsextras.horasextras.HorasExtras;
 import cl.cmsg.rrhhaprobacionhrsextras.horasextras.HorasExtrasAdapter;
 
 public class HorasRechazadasActivity extends AppCompatActivity {
-
+    DatePicker dp_mes;
     ListView listViewPendientes;
     HorasExtrasAdapter horasExtrasAdapter;
     HorasExtras horasExtras;
@@ -47,62 +55,30 @@ public class HorasRechazadasActivity extends AppCompatActivity {
         setContentView(R.layout.activity_horas_rechazadas);
         btnPeriodoSelect = (Button) findViewById(R.id.btnPeriodoSelect);
         listViewPendientes = (ListView) findViewById(R.id.lstHorasRechazadas);
+        // Datepicker, intenta esconder dia y mostrar solo meses
+        dp_mes = (DatePicker) findViewById(R.id.dp_mes);
+        dp_mes.setMaxDate(new Date().getTime());
+        Calendar cal =Calendar.getInstance();
+        cal.add(Calendar.YEAR,-2);
+        dp_mes.setMinDate(cal.getTimeInMillis());
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        initMonthPicker();
         miDbHelper = MiDbHelper.getInstance(this);
-        // Boton de seleccionar fecha, envia al dialogo de datepicker
+        // Boton de seleccionar fecha, envia al datepicker
+
         btnPeriodoSelect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DatePickerDialog createDialog = createDialog();
-
-                createDialog.getDatePicker().setMaxDate(Calendar.getInstance().getTimeInMillis());
-
-                createDialog().show();
-            }
-        });
-
-        // Al apretar un item llama a la actividad detalle para mostrar todos los datos de la solicitud
-        listViewPendientes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                Intent intent = new Intent(getApplicationContext(),DetalleActivity.class);
-                HorasExtras horasExtras=arrayListHorasExtra.get(position);
-                intent.putExtra("Rut",horasExtras.getRut());
-                intent.putExtra("fecha",horasExtras.getFecha());
-
-                String tp=horasExtras.getTipo_pacto();
-                switch (tp){
-                    case "Hora Extra":
-                        intent.putExtra("tipo_pacto","H");
-                    break;
-                    case "Festivo":
-                        intent.putExtra("tipo_pacto","F");
-                    break;
-                    case "Trato":
-                        intent.putExtra("tipo_pacto","T");
-                    break;
-                }
+                int year          = dp_mes.getYear();
+                int monthOfYear   = dp_mes.getMonth();
+                int dayOfMonth    = dp_mes.getDayOfMonth();
 
 
-                startActivity(intent);
-            }
-        });
-
-    }
-
-    //Dialogo de datepicker, intenta esconder dia y mostrar solo meses
-    private DatePickerDialog createDialog() {
-        final String mac = ValidacionConexion.getDireccionMAC(HorasRechazadasActivity.this);
-
-        DatePickerDialog dpd = new DatePickerDialog(this,
-                new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                        int month_i = monthOfYear + 1;
+                        //Add whatever you need to handle Date changes
                         // Guardar fecha
                         Calendar newDate = Calendar.getInstance();
                         newDate.set(year, monthOfYear, dayOfMonth);
@@ -203,16 +179,7 @@ public class HorasRechazadasActivity extends AppCompatActivity {
 
                                 fecha=cursor.getString(cursor.getColumnIndex("fecha"));
 
-                                tipo_pacto="";
-                                if(cursor.getString(cursor.getColumnIndex("tipo_pacto")).equals("H")){
-                                    tipo_pacto = getString(R.string.HORAEXTRA);
-                                }
-                                if(cursor.getString(cursor.getColumnIndex("tipo_pacto")).equals("T")){
-                                    tipo_pacto = getString(R.string.TRATO);
-                                }
-                                if(cursor.getString(cursor.getColumnIndex("tipo_pacto")).equals("F")){
-                                    tipo_pacto = getString(R.string.FESTIVO);
-                                }
+                                tipo_pacto = cursor.getString(cursor.getColumnIndex("tipo_pacto"));
 
                                 cant_horas=cursor.getDouble(cursor.getColumnIndex("cant_horas"));
 
@@ -222,45 +189,181 @@ public class HorasRechazadasActivity extends AppCompatActivity {
                             }
 
                         }
-                            cursor.close();
+                        cursor.close();
                         horasExtrasAdapter = new HorasExtrasAdapter(arrayListHorasExtra,getApplicationContext());
 
                         listViewPendientes.setAdapter(horasExtrasAdapter);
+                        listViewPendientes.setTextFilterEnabled(true);
 
-                    }
-                }
-                , Calendar.getInstance().get(Calendar.YEAR)
-                , Calendar.getInstance().get(Calendar.MONTH)
-                ,Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
-        dpd.setCancelable(false);
-        try {
-            java.lang.reflect.Field[] datePickerDialogFields = dpd.getClass().getDeclaredFields();
-            for (java.lang.reflect.Field datePickerDialogField : datePickerDialogFields) {
-
-                if (datePickerDialogField.getName().equals("mDatePicker")) {
-                    datePickerDialogField.setAccessible(true);
-                    DatePicker datePicker = (DatePicker) datePickerDialogField.get(dpd);
-                    java.lang.reflect.Field[] datePickerFields = datePickerDialogField.getType().getDeclaredFields();
-
-                    for (java.lang.reflect.Field datePickerField : datePickerFields) {
-                        Log.i("test", datePickerField.getName());
-
-                        if ("mDaySpinner".equals(datePickerField.getName())) {
-                            datePickerField.setAccessible(true);
-                            Object dayPicker = datePickerField.get(datePicker);
-                            ((View) dayPicker).setVisibility(View.GONE);
-                        }
-
-                    }
-
-                }
 
             }
+        });
 
+
+
+        // Al apretar un item llama a la actividad detalle para mostrar todos los datos de la solicitud
+        listViewPendientes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                Intent intent = new Intent(getApplicationContext(),DetalleActivity.class);
+                HorasExtras horasExtras=arrayListHorasExtra.get(position);
+                intent.putExtra("Rut",horasExtras.getRut());
+                intent.putExtra("fecha",horasExtras.getFecha());
+                intent.putExtra("tipo_pacto",horasExtras.getTipo_pacto());
+
+
+                startActivity(intent);
+            }
+        });
+
+    }
+
+
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_buscar_solo, menu);
+        MenuItem menuItem = menu.findItem(R.id.action_search);
+        SearchView mSearchView = (SearchView) MenuItemCompat.getActionView(menuItem);
+        //SearchView mSearchView= new SearchView(getSupportActionBar().getThemedContext());
+        // mSearchView = (SearchView) findViewById(R.id.action_search);
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                // this is your adapter that will be filtered
+                if(horasExtrasAdapter !=null){
+                    horasExtrasAdapter.getFilter().filter(query);
+                }
+
+                //System.out.println("on query submit: "+query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                // this is your adapter that will be filtered
+                // this is your adapter that will be filtered
+                if(horasExtrasAdapter !=null) {
+                    horasExtrasAdapter.getFilter().filter(newText);
+                }
+                return true;
+            }
+        });
+        //listViewPendientes.setTextFilterEnabled(true);
+
+        setupSearchView(mSearchView);
+
+
+
+        return true;
+
+    }
+
+    private void setupSearchView(SearchView mSearchView) {
+        mSearchView.setIconifiedByDefault(false);
+        mSearchView.setSubmitButtonEnabled(false);
+        // mSearchView.setOnQueryTextListener(this);
+        mSearchView.setQueryHint("Search Text");
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up buttonOk, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+
+        if (id == R.id.action_search) {
+
+            return true;
         }
-        catch (Exception ex) {
-            miDbHelper.insertarLogError("Error : "+ex.getMessage()+" en HorasRechazadasActivity, DatepickerDialog",mac);
+
+
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void initMonthPicker(){
+        dp_mes = (DatePicker) findViewById(R.id.dp_mes);
+
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            int daySpinnerId = Resources.getSystem().getIdentifier("day", "id", "android");
+            if (daySpinnerId != 0)
+            {
+                View daySpinner = dp_mes.findViewById(daySpinnerId);
+                if (daySpinner != null)
+                {
+                    daySpinner.setVisibility(View.GONE);
+                }
+            }
+
+            int monthSpinnerId = Resources.getSystem().getIdentifier("month", "id", "android");
+            if (monthSpinnerId != 0)
+            {
+                View monthSpinner = dp_mes.findViewById(monthSpinnerId);
+                if (monthSpinner != null)
+                {
+                    monthSpinner.setVisibility(View.VISIBLE);
+                }
+            }
+
+            int yearSpinnerId = Resources.getSystem().getIdentifier("year", "id", "android");
+            if (yearSpinnerId != 0)
+            {
+                View yearSpinner = dp_mes.findViewById(yearSpinnerId);
+                if (yearSpinner != null)
+                {
+                    yearSpinner.setVisibility(View.VISIBLE);
+                }
+            }
+        } else { //Older SDK versions
+            Field f[] = dp_mes.getClass().getDeclaredFields();
+            for (Field field : f)
+            {
+                if(field.getName().equals("mDayPicker") || field.getName().equals("mDaySpinner"))
+                {
+                    field.setAccessible(true);
+                    Object dayPicker = null;
+                    try {
+                        dayPicker = field.get(dp_mes);
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                    ((View) dayPicker).setVisibility(View.GONE);
+                }
+
+                if(field.getName().equals("mMonthPicker") || field.getName().equals("mMonthSpinner"))
+                {
+                    field.setAccessible(true);
+                    Object monthPicker = null;
+                    try {
+                        monthPicker = field.get(dp_mes);
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                    ((View) monthPicker).setVisibility(View.VISIBLE);
+                }
+
+                if(field.getName().equals("mYearPicker") || field.getName().equals("mYearSpinner"))
+                {
+                    field.setAccessible(true);
+                    Object yearPicker = null;
+                    try {
+                        yearPicker = field.get(dp_mes);
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                    ((View) yearPicker).setVisibility(View.VISIBLE);
+                }
+            }
         }
-        return dpd;
     }
 }
