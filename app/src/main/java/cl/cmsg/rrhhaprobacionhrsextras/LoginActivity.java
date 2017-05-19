@@ -109,7 +109,7 @@ public class LoginActivity extends AppCompatActivity{
 				registerReceiver();
 
 				if (checkPlayServices()){
-// Start IntentService to register this application with GCM.
+					// Start IntentService to register this application with GCM.
 					Intent intent = new Intent(LoginActivity.this, RegistrationIntentService.class);
 					startService(intent);
 				}
